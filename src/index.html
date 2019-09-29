@@ -26,9 +26,18 @@
         overflow-x: hidden;
         overflow-y: hidden;
       }
+      .fullscreen-centered {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="game" class="fullscreen-centered">
+      <canvas id="canvas"></canvas>
+    </div>
+    <%= htmlWebpackPlugin.options.body %>
   </body>
 </html>

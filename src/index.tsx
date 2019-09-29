@@ -1,17 +1,32 @@
 import * as React from 'react'
-import { render } from 'react-dom'
 import { Provider } from 'react-redux'
+import { render } from '@inlet/react-pixi'
+import { Application } from 'pixi.js'
 
-import App from './App'
 import { configureStore } from 'store/configureStore'
+import App from './App'
 
-const store = configureStore()
+// const store = configureStore()
+export const hexColor = {
+  brand: 0xeaad64,
+  aqua: 0x9bedf9,
+  yellow: 0xffe337,
+  black: 0x000000,
+  white: 0xffffff,
+  raspberry: 0xfb264e,
+}
 
-const root = document.getElementById('app')
+const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  root,
-)
+const pixelRatio = window.devicePixelRatio || 1
+const getWidth = () => window.innerWidth * pixelRatio
+const getHeight = () => window.innerHeight * pixelRatio
+
+const app = new Application({
+  width: getWidth(),
+  height: getHeight(),
+  backgroundColor: hexColor.yellow,
+  view: canvas,
+})
+
+render(<App />, app.stage)

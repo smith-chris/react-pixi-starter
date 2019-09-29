@@ -1,20 +1,14 @@
 import { hot } from 'react-hot-loader/root'
-import * as React from 'react'
-import { AutoCounter } from './components/AutoCounter'
-import { Counter } from 'components/Counter'
+import React from 'react'
+import { RotatingBunny } from 'Bunny'
 
-const App = () => (
-  <div>
-    <h1>Hello, world!!</h1>
-    <Counter />
-    <br />
-    <AutoCounter />
-  </div>
-)
+const App = () => <RotatingBunny />
+
+export default App
+
+// export default hot(App)
 ;(async () => {
   console.log(
     'You have async support if you read this instead of "ReferenceError: regeneratorRuntime is not defined" error.',
   )
 })()
-
-export default hot(App)
