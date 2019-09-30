@@ -17,6 +17,7 @@ export class AutoCounter extends Component<{}, { count: number }> {
   }
 
   generateString1() {
+    // Editing this should not affect this.state.count while HMR
     return '1'
   }
 
@@ -33,7 +34,7 @@ export class AutoCounter extends Component<{}, { count: number }> {
       <Text
         anchor={0.5}
         x={300}
-        y={80}
+        y={800 - 100}
         text={`${
           this.state.count
         } - ${this.generateString1()} - ${this.generateString2()}`}

@@ -1,8 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, FunctionComponent } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { counterActions } from 'store/counter/counter'
 import { State } from 'store/configureStore'
+import { Text } from '@inlet/react-pixi'
 
 const mapStateToProps = (state: State) => state
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -12,6 +13,21 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 type DispatchProps = ReturnType<typeof mapDispatchToProps>
 
 type Props = StateProps & DispatchProps
+
+const Button: FunctionComponent<{
+  onClick: () => void
+  x?: number
+  y: number
+}> = ({ onClick, children, x = 300, y }) => (
+  <Text
+    text={String(children)}
+    x={x}
+    y={y}
+    anchor={0.5}
+    interactive
+    pointerdown={onClick}
+  />
+)
 
 class CounterComponent extends Component<Props> {
   incrementIfOdd = () => {
@@ -26,13 +42,29 @@ class CounterComponent extends Component<Props> {
 
   render() {
     const { counter, increment, decrement } = this.props
+    let i = 1.5
+    const distY = 32
     return (
-      <p>
-        Clicked: {counter} times <button onClick={() => increment()}>+</button>{' '}
-        <button onClick={() => decrement()}>-</button>{' '}
-        <button onClick={this.incrementIfOdd}>Increment if odd</button>{' '}
-        <button onClick={this.incrementAsync}>Increment async</button>
-      </p>
+      <>
+        <Text
+          y={++i * distY}
+          x={300}
+          anchor={0.5}
+          text={`Clicked: ${counter} times`}
+        />
+        <Button x={290} y={++i * distY} onClick={() => decrement()}>
+          -
+        </Button>
+        <Button x={310} y={i * distY} onClick={() => increment()}>
+          +
+        </Button>
+        <Button y={++i * distY} onClick={this.incrementIfOdd}>
+          Increment if odd
+        </Button>
+        <Button y={++i * distY} onClick={this.incrementAsync}>
+          Increment async
+        </Button>
+      </>
     )
   }
 }
