@@ -7,6 +7,9 @@ const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 const isDev = process.argv.indexOf('-p') === -1
 
+const ASSETS_PATH = path.resolve('./src/assets')
+
+console.log(ASSETS_PATH)
 module.exports = {
   entry: {
     vendor: [
@@ -44,7 +47,7 @@ module.exports = {
       appName: 'React Starter',
     }),
     new ForkTsCheckerWebpackPlugin(),
-    new FriendlyErrorsWebpackPlugin(),
+    // new FriendlyErrorsWebpackPlugin(),
   ],
   module: {
     rules: [
@@ -75,7 +78,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/,
-        include: path.resolve('./src/assets'),
+        include: ASSETS_PATH,
         use: [
           {
             loader: 'sizeof-loader',
@@ -97,7 +100,7 @@ module.exports = {
       },
       {
         test: /\.(eot|ttf|woff|woff2|svg)$/,
-        include: path.resolve('./src/assets'),
+        include: ASSETS_PATH,
         use: [
           {
             loader: 'url-loader',
