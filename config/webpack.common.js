@@ -44,10 +44,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve('./src/index.html'),
       inject: 'body',
-      appName: 'React Starter',
+      appName: 'React PIXI Starter',
     }),
     new ForkTsCheckerWebpackPlugin(),
-    // new FriendlyErrorsWebpackPlugin(),
+    new FriendlyErrorsWebpackPlugin(),
   ],
   module: {
     rules: [

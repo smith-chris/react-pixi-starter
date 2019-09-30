@@ -1,10 +1,10 @@
 {
-  "name": "react-starter",
+  "name": "react-pixi-starter",
   "version": "1.0.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/smith-chris/react-starter"
+    "url": "https://github.com/smith-chris/react-pixi-starter"
   },
   "author": "Krzysztof Kowalski",
   "license": "MIT",
