@@ -1,7 +1,7 @@
 import React from 'react'
-import './checkAsync'
+import './utils/checkAsync'
 import { RotatingBunny } from 'Bunny'
 
-const App = () => <RotatingBunny x={400} />
+const App = () => <RotatingBunny x={300} />
 
 export default App
