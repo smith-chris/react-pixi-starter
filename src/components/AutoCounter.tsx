@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Text } from '@inlet/react-pixi'
 
 export class AutoCounter extends Component<{}, { count: number }> {
   interval!: number
@@ -29,9 +30,14 @@ export class AutoCounter extends Component<{}, { count: number }> {
 
   render() {
     return (
-      <span>
-        {this.state.count} - {this.generateString1()} - {this.generateString2()}
-      </span>
+      <Text
+        anchor={0.5}
+        x={300}
+        y={80}
+        text={`${
+          this.state.count
+        } - ${this.generateString1()} - ${this.generateString2()}`}
+      />
     )
   }
 }
