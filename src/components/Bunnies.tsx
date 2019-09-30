@@ -1,5 +1,5 @@
 import React from 'react'
-import { RotatingBunny } from 'RotatingBunny'
+import { RotatingBunny } from 'components/RotatingBunny'
 
 export const Bunnies = () => (
   <>

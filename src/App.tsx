@@ -1,7 +1,7 @@
 import React from 'react'
 import './utils/checkAsync'
-import { RotatingBunny } from 'RotatingBunny'
-import { Bunnies } from 'Bunnies'
+import { RotatingBunny } from 'components/RotatingBunny'
+import { Bunnies } from 'components/Bunnies'
 import { AutoCounter } from 'components/AutoCounter'
 import { Counter } from 'components/Counter'
 
