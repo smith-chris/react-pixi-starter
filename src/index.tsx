@@ -6,7 +6,8 @@ import { Application } from 'pixi.js'
 import { configureStore } from 'store/configureStore'
 import App from './App'
 
-// const store = configureStore()
+const store = configureStore()
+
 export const hexColor = {
   brand: 0xeaad64,
   aqua: 0x9bedf9,
@@ -29,4 +30,22 @@ const app = new Application({
   view: canvas,
 })
 
-render(<App />, app.stage)
+const renderApp = () => {
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    app.stage,
+  )
+}
+
+renderApp()
+
+// webpack Hot Module Replacement API
+if (module.hot) {
+  // keep in mind - here you are configuring HMR to accept CHILDREN MODULE
+  // while `hot` would configure HMR for the CURRENT module
+  module.hot.accept('./App', () => {
+    renderApp()
+  })
+}

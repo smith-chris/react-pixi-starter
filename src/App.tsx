@@ -1,14 +1,7 @@
-import { hot } from 'react-hot-loader/root'
 import React from 'react'
+import './checkAsync'
 import { RotatingBunny } from 'Bunny'
 
-const App = () => <RotatingBunny />
+const App = () => <RotatingBunny x={400} />
 
 export default App
-
-// export default hot(App)
-;(async () => {
-  console.log(
-    'You have async support if you read this instead of "ReferenceError: regeneratorRuntime is not defined" error.',
-  )
-})()
