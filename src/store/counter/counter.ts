@@ -1,6 +1,6 @@
 import { makeActionCreators, makeReducer } from 'redux-solve'
-import { CounterState } from './resolvers'
-import * as counterResolvers from './resolvers'
+import { CounterState } from './counterResolvers'
+import * as counterResolvers from './counterResolvers'
 
 export const initialState: CounterState = 0
 
