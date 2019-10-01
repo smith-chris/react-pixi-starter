@@ -11,8 +11,8 @@ const App = () => (
     <Bunnies />
     <RotatingBunny x={450} y={300} />
     <ConnectedBunny x={450} y={550} />
-    <AutoCounter />
-    <Counter />
+    {/* <AutoCounter /> */}
+    {/* <Counter /> */}
   </>
 )
 
