@@ -1,8 +1,5 @@
 import './webglPolyfill'
-import * as PIXI from 'pixi.js-legacy'
-console.log(PIXI)
-
-import * as React from 'react'
+import React from 'react'
 import { Provider } from 'react-redux'
 import { render, AppProvider } from '@inlet/react-pixi'
 
@@ -32,15 +29,3 @@ if (module.hot) {
     renderApp()
   })
 }
-
-// import './simpleApp'
-// import './webglSupported'
-
-// const canvas = document.getElementById('canvas') as HTMLCanvasElement
-// const ctx2 = canvas.getContext('webgl')
-// console.log(ctx2.getContextAttributes().stencil)
-// const ctx = canvas.getContext('webgl', { stencil: true })
-// console.log(ctx.getContextAttributes().stencil)
-// console.log(ctx === ctx2, Object.is(ctx, ctx2))
-// // console.log(ctx.getContextAttributes)
-// console.log({ stencil: true })
