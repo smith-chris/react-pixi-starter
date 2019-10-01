@@ -2,7 +2,21 @@ import * as PIXI from 'pixi.js'
 import bunny from 'assets/bunny.png'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
-
+const _t = canvas.getContext
+canvas.getContext = function(...params: any[]) {
+  console.log('Calling getContext with: ', params)
+  // @ts-ignore
+  const res = _t.apply(this, params)
+  const _t2 = res.getContextAttributes
+  res.getContextAttributes = function(...p2: any[]) {
+    console.log('Calling getContextAttributes with: ', p2)
+    const res2 = _t2.apply(this, p2)
+    console.log('Returning ', res2)
+    return res2
+  }
+  console.log('Returning ', res)
+  return res
+}
 const pixelRatio = 1
 const getWidth = () => window.innerWidth * pixelRatio
 const getHeight = () => window.innerHeight * pixelRatio
