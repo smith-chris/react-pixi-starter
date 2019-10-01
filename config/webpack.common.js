@@ -16,7 +16,7 @@ module.exports = {
       // Required to support async/await
       '@babel/polyfill',
     ],
-    main: ['./src/index'],
+    index: ['./src/index'],
   },
   output: {
     path: path.resolve('dist'),

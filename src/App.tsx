@@ -1,5 +1,5 @@
 import React from 'react'
-import './utils/checkAsync'
+// import './utils/checkAsync'
 import { RotatingBunny } from 'components/RotatingBunny'
 import { Bunnies } from 'components/Bunnies'
 import { AutoCounter } from 'components/AutoCounter'

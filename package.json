@@ -13,7 +13,12 @@
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "precommit": "lint-staged",
     "start": "webpack-dev-server --config config/webpack.dev.js",
-    "prod": "webpack --config config/webpack.prod.js -p"
+    "prod": "webpack --config config/webpack.prod.js -p",
+    "ej": "yarn ej:build && yarn ej:xc",
+    "ej:prod": "webpack --config config/webpack.ej.js -p && yarn ej:xc",
+    "ej:watch": "webpack --watch --config config/webpack.ej.js",
+    "ej:build": "webpack --config config/webpack.ej.js",
+    "ej:xc": "open ./ejecta/FruitsVsVeggies.xcodeproj"
   },
   "lint-staged": {
     "src/**/*.test.{ts,tsx}": [
@@ -29,7 +34,7 @@
     "@types/lodash.debounce": "^4.0.6",
     "@types/pixi.js": "^4.8.9",
     "lodash.debounce": "^4.0.8",
-    "pixi.js": "^5.1.5",
+    "pixi.js": "4",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-redux": "^7.1.1",
