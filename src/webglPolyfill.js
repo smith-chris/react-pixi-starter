@@ -3,6 +3,8 @@
   'HTMLVideoElement',
   'HTMLCanvasElement',
   'HTMLImageElement',
+  'TouchEvent',
+  'MouseEvent',
 ].forEach(k => {
   // if (!window[k]) {
   window[k] = function() {
