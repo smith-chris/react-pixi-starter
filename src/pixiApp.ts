@@ -20,9 +20,9 @@ const maxRatio = 6 / 13
 const designRatio = 6 / 8 // 4 / 3
 const minRatio = 6 / 7
 
-const designWidth = 600
+export const designWidth = 600
 const viewportWidth = designWidth
-const designHeight = designWidth * (1 / designRatio) // 800
+export const designHeight = designWidth * (1 / designRatio) // 800
 const pixelRatio = window.devicePixelRatio || 1
 const getWidth = () => window.innerWidth * pixelRatio
 const getHeight = () => window.innerHeight * pixelRatio
@@ -62,6 +62,7 @@ const onResize = () => {
   stage.position.y = stageTop
   Point.set(stage.scale, stageScale)
   renderer.resize(renderWidth, renderHeight)
+  console.log(renderWidth)
   canvas.style.width = `${canvasWidth}px`
   canvas.style.height = `${canvasHeight}px`
 }

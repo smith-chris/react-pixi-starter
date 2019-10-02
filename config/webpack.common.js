@@ -112,6 +112,16 @@ module.exports = {
         ],
       },
       {
+        test: /\.(fnt|xml|blk|bst|asm|tilecoll)$/,
+        include: ASSETS_PATH,
+        use: [
+          {
+            loader: 'raw-loader',
+            options: {},
+          },
+        ],
+      },
+      {
         test: /\.global\.css$/,
         include: path.resolve('./src'),
         use: ['style-loader', 'css-loader'],

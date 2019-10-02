@@ -1,4 +1,4 @@
-import './webglPolyfill'
+// import './webglPolyfill'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { render, AppProvider } from '@inlet/react-pixi'
@@ -6,6 +6,17 @@ import { render, AppProvider } from '@inlet/react-pixi'
 import { configureStore } from 'store/configureStore'
 import App from './App'
 import { pixiApp } from 'pixiApp'
+import { BitmapText, Texture } from 'pixi.js'
+import fontXML from 'assets/font.fnt'
+import fontPng from 'assets/font.png'
+const parsedXML = new DOMParser().parseFromString(fontXML, 'text/xml')
+// console.log(parsedXML.getElementsByTagName('page'))
+BitmapText.registerFont(parsedXML, Texture.from(fontPng.src))
+// @ts-ignore
+if (BitmapText.fonts && !BitmapText.fonts['PICO-8']) {
+  // @ts-ignore
+  BitmapText.fonts['PICO-8'] = BitmapText.fonts['PICO-8 mono']
+}
 
 const store = configureStore()
 

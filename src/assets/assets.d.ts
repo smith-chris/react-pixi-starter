@@ -10,3 +10,9 @@ declare module '*.png' {
 
   export default image
 }
+
+declare module '*.fnt' {
+  const font: string
+
+  export default font
+}

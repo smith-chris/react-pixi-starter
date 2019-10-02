@@ -5,6 +5,7 @@ dist
 yarn-error.log
 *.sass.d.ts
 *.css.d.ts
+poke-assets
 
 # Editor directories and files
 .idea
