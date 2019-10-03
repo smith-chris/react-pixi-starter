@@ -42,7 +42,8 @@
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",
     "redux-solve": "^0.2.1",
-    "sizeof-loader": "^1.1.1"
+    "sizeof-loader": "^1.1.1",
+    "xmldom": "^0.1.27"
   },
   "devDependencies": {
     "//": "mixin-deep & set-value are added only to solve security issues.",

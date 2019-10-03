@@ -62,7 +62,7 @@ const onResize = () => {
   stage.position.y = stageTop
   Point.set(stage.scale, stageScale)
   renderer.resize(renderWidth, renderHeight)
-  console.log(renderWidth)
+  // console.log(renderWidth)
   canvas.style.width = `${canvasWidth}px`
   canvas.style.height = `${canvasHeight}px`
 }
