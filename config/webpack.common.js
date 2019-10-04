@@ -9,8 +9,12 @@ const isDev = process.argv.indexOf('-p') === -1
 
 const ASSETS_PATH = path.resolve('./src/assets')
 
-console.log(ASSETS_PATH)
-module.exports = {
+const prefixExtensions = (extensions, prefix) => [
+  ...extensions.map(v => prefix + v),
+  ...extensions,
+]
+
+module.exports = ({ isIOS } = {}) => ({
   entry: {
     vendor: [
       // Required to support async/await
@@ -25,15 +29,10 @@ module.exports = {
   },
   devtool: false,
   resolve: {
-    extensions: [
-      '.ts',
-      '.tsx',
-      '.js',
-      '.jsx',
-      '.json',
-      isDev ? '.dev.tsx' : '.prod.tsx',
-      isDev ? '.dev.js' : '.prod.js',
-    ],
+    extensions: prefixExtensions(
+      ['.ts', '.tsx', '.js', '.json'],
+      isIOS ? '.ios' : '.web',
+    ),
     modules: ['node_modules', path.resolve('./src')],
     alias: {
       'react-dom': '@hot-loader/react-dom',
@@ -146,4 +145,4 @@ module.exports = {
       },
     ],
   },
-}
+})

@@ -5,7 +5,7 @@ const path = require('path')
 
 const isDev = process.argv.indexOf('-p') === -1
 
-module.exports = merge(common, {
+module.exports = merge(common({ isIOS: true }), {
   mode: isDev ? 'development' : 'production',
   devtool: isDev ? 'cheap-module-source-map' : false,
   output: {

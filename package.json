@@ -12,13 +12,13 @@
     "test": "jest --watch --config=config/jest.config.js",
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "precommit": "lint-staged",
-    "start": "webpack-dev-server --config config/webpack.dev.js",
-    "prod": "webpack --config config/webpack.prod.js -p",
-    "ej": "yarn ej:build && yarn ej:xc",
-    "ej:prod": "webpack --config config/webpack.ej.js -p && yarn ej:xc",
-    "ej:watch": "webpack --watch --config config/webpack.ej.js",
-    "ej:build": "webpack --config config/webpack.ej.js",
-    "ej:xc": "open ./ejecta/FruitsVsVeggies.xcodeproj"
+    "start": "webpack-dev-server --config config/webpack.web.dev.js",
+    "prod": "webpack --config config/webpack.web.prod.js -p",
+    "ios": "yarn ios:build && yarn ios:xc",
+    "ios:prod": "webpack --config config/webpack.ios.js -p && yarn ios:xc",
+    "ios:watch": "webpack --watch --config config/webpack.ios.js",
+    "ios:build": "webpack --config config/webpack.ios.js",
+    "ios:xc": "open ./ejecta/FruitsVsVeggies.xcodeproj"
   },
   "lint-staged": {
     "src/**/*.test.{ts,tsx}": [
