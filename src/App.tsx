@@ -14,9 +14,9 @@ import { Counter } from 'components/Counter'
 const font = { name: 'PICO-8', size: 30 }
 
 const App = () => (
-  <Stage width={600} height={800}>
+  <Stage width={600} height={800} options={{ backgroundColor: 0xabcdef }}>
     <Bunnies />
-    <RotatingBunny x={400} y={300} />
+    <RotatingBunny x={450} y={300} />
     {/* <ConnectedBunny x={450} y={550} /> */}
     {/* <AutoCounter /> */}
     {/* <Counter /> */}

@@ -6,7 +6,7 @@ import { render, AppProvider } from '@inlet/react-pixi'
 import { configureStore } from 'store/configureStore'
 import { pixiApp } from 'config/pixiApp'
 import 'config/picoFont'
-import App from 'App'
+import App from './App'
 
 const store = configureStore()
 

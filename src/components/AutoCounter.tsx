@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Text } from '@inlet/react-pixi'
+import { hot } from 'react-hot-loader/root'
 
 export class AutoCounter extends Component<{}, { count: number }> {
   interval!: number
@@ -42,3 +43,5 @@ export class AutoCounter extends Component<{}, { count: number }> {
     )
   }
 }
+
+export const AutoCounterHot = hot(AutoCounter)
