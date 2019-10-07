@@ -1,7 +1,5 @@
-import { Application, settings, SCALE_MODES } from 'pixi.js'
+import { Application, settings, SCALE_MODES, Point } from 'pixi.js'
 import debounce from 'lodash.debounce'
-
-import { Point } from 'utils/point'
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST
 
@@ -36,35 +34,50 @@ export const pixiApp = new Application({
 
 const { stage, renderer } = pixiApp
 
-const onResize = () => {
-  const width = window.innerWidth
-  const height = window.innerHeight
+export const getSizeProps = ({
+  width,
+  height,
+}: {
+  width: number
+  height: number
+}) => {
+  const sizeRatio = width / height
 
-  const windowRatio = width / height
-
-  const viewportRatio = Math.min(minRatio, Math.max(maxRatio, windowRatio))
+  const viewportRatio = Math.min(minRatio, Math.max(maxRatio, sizeRatio))
   const viewportHeight = Math.round(designWidth * (1 / viewportRatio)) // ranges from 700 to 1300
 
-  let canvasHeight: number, canvasWidth: number
-  const exceedsHeight = windowRatio <= maxRatio
+  const canvas = { width: 0, height: 0 }
+  const exceedsHeight = sizeRatio <= maxRatio
   if (exceedsHeight) {
-    canvasWidth = width
-    canvasHeight = Math.round(width * (1 / viewportRatio))
+    canvas.width = width
+    canvas.height = Math.round(width * (1 / viewportRatio))
   } else {
     // widescreen, so based on height
-    canvasHeight = height
-    canvasWidth = Math.round(height * viewportRatio)
+    canvas.height = height
+    canvas.width = Math.round(height * viewportRatio)
   }
-  const renderWidth = canvasWidth * pixelRatio
-  const renderHeight = canvasHeight * pixelRatio
-  const stageScale = renderWidth / designWidth
-  const stageTop = ((viewportHeight - designHeight) / 2) * stageScale
-  stage.position.y = stageTop
-  Point.set(stage.scale, stageScale)
-  renderer.resize(renderWidth, renderHeight)
-  // console.log(renderWidth)
-  canvas.style.width = `${canvasWidth}px`
-  canvas.style.height = `${canvasHeight}px`
+  const renderer = {
+    width: canvas.width * pixelRatio,
+    height: canvas.height * pixelRatio,
+  }
+  const stageScale = renderer.width / designWidth
+  const stage = {
+    scale: stageScale,
+    position: new Point(0, ((viewportHeight - designHeight) / 2) * stageScale),
+  }
+  return { canvas, renderer, stage }
+}
+
+const onResize = () => {
+  const sizeProps = getSizeProps({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  })
+
+  Object.assign(stage, sizeProps.stage)
+  renderer.resize(sizeProps.renderer.width, sizeProps.renderer.height)
+  canvas.style.width = `${sizeProps.canvas.width}px`
+  canvas.style.height = `${sizeProps.canvas.height}px`
 }
 onResize()
 
