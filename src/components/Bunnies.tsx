@@ -1,4 +1,4 @@
-// import { hot } from 'react-hot-loader/root'
+import { hot } from 'react-hot-loader/root'
 import React from 'react'
 import { RotatingBunny } from 'components/RotatingBunny'
 
@@ -10,4 +10,4 @@ export const Bunnies = () => (
   </>
 )
 
-// export const BunniesHot = hot(Bunnies)
+export const BunniesHot = hot(Bunnies)

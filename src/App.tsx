@@ -16,9 +16,8 @@ const App = () => (
   <>
     <Bunnies />
     <RotatingBunny x={450} y={300} />
-    {/* Uncomment any of those two to get the error */}
-    {/* <ConnectedBunny x={450} y={550} />
-    <Counter /> */}
+    <ConnectedBunny x={450} y={550} />
+    <Counter />
     <AutoCounter />
     <Typography y={designHeight * 0.1} anchor={new Point(0, 0.5)}>
       Hello
@@ -33,5 +32,5 @@ const App = () => (
   </>
 )
 
-export default App
-// export default hot(App)
+// export default App
+export default hot(App)
