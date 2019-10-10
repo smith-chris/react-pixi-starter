@@ -62,7 +62,7 @@ export const getSizeProps = ({
   }
   const stageScale = renderer.width / designWidth
   const stage = {
-    scale: stageScale,
+    scale: new Point(stageScale, stageScale),
     position: new Point(0, ((viewportHeight - designHeight) / 2) * stageScale),
   }
   return { canvas, renderer, stage }
@@ -75,6 +75,7 @@ const onResize = () => {
   })
 
   Object.assign(stage, sizeProps.stage)
+
   renderer.resize(sizeProps.renderer.width, sizeProps.renderer.height)
   canvas.style.width = `${sizeProps.canvas.width}px`
   canvas.style.height = `${sizeProps.canvas.height}px`

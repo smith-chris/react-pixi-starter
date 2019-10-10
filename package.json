@@ -13,6 +13,7 @@
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "precommit": "lint-staged",
     "start": "webpack-dev-server --config config/webpack.web.dev.js",
+    "iweb": "webpack-dev-server --config config/webpack.ios.js",
     "prod": "webpack --config config/webpack.web.prod.js -p",
     "ios": "yarn ios:build && yarn ios:xc",
     "ios:prod": "webpack --config config/webpack.ios.js -p && yarn ios:xc",
