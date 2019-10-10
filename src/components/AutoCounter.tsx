@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Text } from '@inlet/react-pixi'
 import { hot } from 'react-hot-loader/root'
+import { Typography } from './Typography'
 
 export class AutoCounter extends Component<{}, { count: number }> {
   interval!: number
@@ -32,14 +32,9 @@ export class AutoCounter extends Component<{}, { count: number }> {
 
   render() {
     return (
-      <Text
-        anchor={0.5}
-        x={300}
-        y={800 - 100}
-        text={`${
-          this.state.count
-        } - ${this.generateString1()} - ${this.generateString2()}`}
-      />
+      <Typography anchor={0.5} x={300} y={800 - 100}>
+        {this.state.count} - {this.generateString1()} - {this.generateString2()}
+      </Typography>
     )
   }
 }
