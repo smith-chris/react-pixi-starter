@@ -9,8 +9,6 @@ const isDev = process.argv.indexOf('-p') === -1
 
 const ASSETS_PATH = path.resolve('./src/assets')
 
-const paths = require('./paths')
-
 const prefixExtensions = (extensions, prefix) => [
   ...extensions.map(v => prefix + v),
   ...extensions,
@@ -52,39 +50,6 @@ module.exports = ({ isIOS } = {}) => ({
   ],
   module: {
     rules: [
-      // {
-      //   test: /\.(js|mjs|jsx|ts|tsx)$/,
-      //   include: paths.appSrc,
-      //   loader: require.resolve('babel-loader'),
-      //   options: {
-      //     customize: require.resolve(
-      //       'babel-preset-react-app/webpack-overrides',
-      //     ),
-
-      //     plugins: [
-      //       '@babel/plugin-transform-react-jsx',
-      //       '@babel/plugin-proposal-class-properties',
-      //       [
-      //         require.resolve('babel-plugin-named-asset-import'),
-      //         {
-      //           loaderMap: {
-      //             svg: {
-      //               ReactComponent:
-      //                 '@svgr/webpack?-svgo,+titleProp,+ref![path]',
-      //             },
-      //           },
-      //         },
-      //       ],
-      //     ],
-      //     // This is a feature of `babel-loader` for webpack (not Babel itself).
-      //     // It enables caching results in ./node_modules/.cache/babel-loader/
-      //     // directory for faster rebuilds.
-      //     cacheDirectory: true,
-      //     // See #6846 for context on why cacheCompression is disabled
-      //     cacheCompression: false,
-      //     compact: !isDev,
-      //   },
-      // },
       {
         test: /\.(j|t)sx?$/,
         include: path.resolve('./src'),
@@ -92,6 +57,8 @@ module.exports = ({ isIOS } = {}) => ({
           loader: 'babel-loader',
           options: {
             cacheDirectory: true,
+            // See https://github.com/facebook/create-react-app/issues/6846 for context
+            cacheCompression: false,
             babelrc: false,
             presets: [
               [
