@@ -18,21 +18,21 @@ import { AutoCounter } from 'components/AutoCounter'
 import { Counter } from 'components/Counter'
 import { pixiApp } from 'config/pixiApp'
 import { useWindowSize } from 'hooks/useWindowSize'
+import { AutoResizeStage } from 'components/AutoResizeStage'
+import { Provider } from 'react-redux'
 
-const App = () => {
-  const size = useWindowSize()
-  const sizeProps = getSizeProps(size)
+import { configureStore } from 'store/configureStore'
+const store = configureStore()
 
-  return (
-    <Stage {...sizeProps.renderer} options={{ backgroundColor: 0xabcdef }}>
-      <Container {...sizeProps.stage}>
-        <Bunnies />
-        <RotatingBunny x={450} y={300} />
-        {/* <ConnectedBunny x={450} y={550} /> */}
-        {/* <AutoCounter /> */}
-        {/* <Counter /> */}
-        {/* <Sprite texture={A} anchor={new Point(0.5)} x={designWidth/2} y={designHeight/2}/> */}
-        {/* <BitmapText
+const App = () => (
+  <AutoResizeStage>
+    <Bunnies />
+    <RotatingBunny x={450} y={300} />
+    {/* <ConnectedBunny x={450} y={550} /> */}
+    {/* <AutoCounter /> */}
+    {/* <Counter /> */}
+    {/* <Sprite texture={A} anchor={new Point(0.5)} x={designWidth/2} y={designHeight/2}/> */}
+    {/* <BitmapText
       y={designHeight * 0.1}
       anchor={new Point(0, 0.5)}
       text="Hello"
@@ -52,9 +52,7 @@ const App = () => {
       text="Hello"
       style={{ font }}
     /> */}
-      </Container>
-    </Stage>
-  )
-}
+  </AutoResizeStage>
+)
 
 export default hot(App)

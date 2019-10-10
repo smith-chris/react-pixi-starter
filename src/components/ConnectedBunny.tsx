@@ -1,4 +1,4 @@
-import React, { Component, FunctionComponent } from 'react'
+import React, { FunctionComponent } from 'react'
 import { Sprite, useTick } from '@inlet/react-pixi'
 import { Point } from 'pixi.js'
 import bunny from 'assets/bunny.png'

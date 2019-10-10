@@ -36,9 +36,9 @@ module.exports = ({ isIOS } = {}) => ({
       isIOS ? '.ios' : '.web',
     ),
     modules: ['node_modules', path.resolve('./src')],
-    alias: {
-      'react-dom': '@hot-loader/react-dom',
-    },
+    // alias: {
+    //   'react-dom': '@hot-loader/react-dom',
+    // },
   },
   devtool: 'source-map',
   plugins: [

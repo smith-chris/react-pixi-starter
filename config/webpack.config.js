@@ -320,6 +320,7 @@ const createConfig = function(webpackEnv) {
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
         ...(modules.webpackAliases || {}),
+        // ...(isEnvDevelopment && { 'react-dom': '@hot-loader/react-dom' }),
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding

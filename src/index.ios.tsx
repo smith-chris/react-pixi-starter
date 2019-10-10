@@ -10,6 +10,8 @@ import App from './App'
 
 const store = configureStore()
 
+console.log('Running iOS')
+
 render(
   <Provider store={store}>
     <AppProvider value={pixiApp}>

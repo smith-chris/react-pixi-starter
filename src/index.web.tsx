@@ -1,16 +1,17 @@
 // import './config/webglPolyfill'
 import React from 'react'
-import { Provider } from 'react-redux'
 import { render } from 'react-dom'
 
-import { configureStore } from 'store/configureStore'
 import App from './App'
-import { pixiApp } from 'config/pixiApp'
 import 'config/picoFont'
-import { Stage } from '@inlet/react-pixi'
+import { configureStore } from 'store/configureStore'
+import { AutoResizeStage } from 'components/AutoResizeStage'
+import { Provider } from 'react-redux'
 const store = configureStore()
 
 const rootElement = document.getElementById('game')
+
+console.log('Running Web')
 
 render(
   <Provider store={store}>
