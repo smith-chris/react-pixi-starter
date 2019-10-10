@@ -2,10 +2,13 @@ import React, { ComponentProps, FunctionComponent } from 'react'
 import { BitmapText } from '@inlet/react-pixi'
 // import { hot } from 'react-hot-loader/root'
 
-type Props = Omit<ComponentProps<typeof BitmapText>, 'text'> & {
+export type TypographyProps = Omit<
+  ComponentProps<typeof BitmapText>,
+  'text'
+> & {
   size?: number
 }
-export const Typography: FunctionComponent<Props> = ({
+export const Typography: FunctionComponent<TypographyProps> = ({
   children,
   size = 18,
   ...props

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { counterActions } from 'store/counter/counter'
 import { State } from 'store/configureStore'
-import { Text } from '@inlet/react-pixi'
+import { Typography, TypographyProps } from './Typography'
 
 const mapStateToProps = (state: State) => state
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -14,18 +14,17 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>
 
 type Props = StateProps & DispatchProps
 
-const Button: FunctionComponent<{
-  onClick: () => void
-  x?: number
-  y: number
-}> = ({ onClick, children, x = 300, y }) => (
-  <Text
-    text={String(children)}
-    x={x}
-    y={y}
-    anchor={0.5}
+const Button: FunctionComponent<
+  TypographyProps & {
+    onClick: () => void
+  }
+> = ({ onClick, anchor = 0.5, x = 300, ...props }) => (
+  <Typography
     interactive
     pointerdown={onClick}
+    anchor={anchor}
+    x={x}
+    {...props}
   />
 )
 
@@ -46,12 +45,9 @@ class CounterComponent extends Component<Props> {
     const distY = 32
     return (
       <>
-        <Text
-          y={++i * distY}
-          x={300}
-          anchor={0.5}
-          text={`Clicked: ${counter} times`}
-        />
+        <Typography y={++i * distY} x={300} anchor={0.5}>
+          Clicked: {counter} times
+        </Typography>
         <Button x={290} y={++i * distY} onClick={() => decrement()}>
           -
         </Button>

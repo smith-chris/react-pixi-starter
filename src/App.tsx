@@ -14,16 +14,13 @@ import { Typography } from 'components/Typography'
 
 const App = () => (
   <>
-    {/* <AutoResizeStage> */}
     <Bunnies />
     <RotatingBunny x={450} y={300} />
-    {/* <ConnectedBunny x={450} y={550} /> */}
-    {/* <Counter /> */}
+    {/* Uncomment any of those two to get the error */}
+    {/* <ConnectedBunny x={450} y={550} />
+    <Counter /> */}
     <AutoCounter />
     <Typography y={designHeight * 0.1} anchor={new Point(0, 0.5)}>
-      Hello
-    </Typography>
-    <Typography y={designHeight * 0.1} x={designWidth / 2} anchor={0.5}>
       Hello
     </Typography>
     <Typography
@@ -33,7 +30,6 @@ const App = () => (
     >
       Hello
     </Typography>
-    {/* </AutoResizeStage> */}
   </>
 )
 
