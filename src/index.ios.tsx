@@ -1,4 +1,5 @@
 import 'config/webglPolyfill'
+import 'utils/checkAsync'
 import React from 'react'
 import { Provider } from 'react-redux'
 import { render, AppProvider } from '@inlet/react-pixi'

@@ -25,7 +25,6 @@ module.exports = ({ isIOS } = {}) => ({
   output: {
     path: path.resolve('dist'),
     filename: '[name].js',
-    // publicPath: '',
   },
   devtool: false,
   resolve: {
@@ -34,9 +33,6 @@ module.exports = ({ isIOS } = {}) => ({
       isIOS ? '.ios' : '.web',
     ),
     modules: ['node_modules', path.resolve('./src')],
-    // alias: {
-    //   'react-dom': '@hot-loader/react-dom',
-    // },
   },
   devtool: 'source-map',
   plugins: [

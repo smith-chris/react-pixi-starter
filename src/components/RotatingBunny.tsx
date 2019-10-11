@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Sprite, useTick } from '@inlet/react-pixi'
 import { Point } from 'pixi.js'
 import bunny from 'assets/bunny.png'
-// import { hot } from 'react-hot-loader/root'
 
 export const RotatingBunny = ({ x, y = 400 }: { x: number; y?: number }) => {
   const [rotation, setRotation] = useState(0)
@@ -27,5 +26,3 @@ export const RotatingBunny = ({ x, y = 400 }: { x: number; y?: number }) => {
     />
   )
 }
-
-// export const RotatingBunnyHot = hot(RotatingBunny)

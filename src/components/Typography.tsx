@@ -1,6 +1,5 @@
 import React, { ComponentProps, FunctionComponent } from 'react'
 import { BitmapText } from '@inlet/react-pixi'
-// import { hot } from 'react-hot-loader/root'
 
 export type TypographyProps = Omit<
   ComponentProps<typeof BitmapText>,
@@ -21,5 +20,3 @@ export const Typography: FunctionComponent<TypographyProps> = ({
     />
   )
 }
-
-// export const TypographyHot = hot(Typography)

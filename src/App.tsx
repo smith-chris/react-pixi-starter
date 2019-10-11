@@ -1,4 +1,3 @@
-// import './utils/checkAsync'
 import { hot } from 'react-hot-loader/root'
 import React from 'react'
 
@@ -7,7 +6,6 @@ import { Bunnies } from 'components/Bunnies'
 import { Point } from 'pixi.js'
 import { designWidth, designHeight } from 'config/pixiApp'
 import { AutoCounter } from 'components/AutoCounter'
-import { AutoResizeStage } from 'components/AutoResizeStage'
 import { ConnectedBunny } from 'components/ConnectedBunny'
 import { Counter } from 'components/Counter'
 import { Typography } from 'components/Typography'
@@ -32,5 +30,4 @@ const App = () => (
   </>
 )
 
-// export default App
 export default hot(App)

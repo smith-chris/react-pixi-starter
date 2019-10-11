@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { hot } from 'react-hot-loader/root'
 import { Typography } from './Typography'
 
 export class AutoCounter extends Component<{}, { count: number }> {
@@ -38,5 +37,3 @@ export class AutoCounter extends Component<{}, { count: number }> {
     )
   }
 }
-
-export const AutoCounterHot = hot(AutoCounter)
