@@ -35,9 +35,6 @@ module.exports = {
       isDev ? '.dev.js' : '.prod.js',
     ],
     modules: ['node_modules', path.resolve('./src')],
-    alias: {
-      'react-dom': '@hot-loader/react-dom',
-    },
   },
   devtool: 'source-map',
   plugins: [

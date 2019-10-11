@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader/root'
 import React from 'react'
 import './utils/checkAsync'
 import { RotatingBunny } from 'components/RotatingBunny'
@@ -16,4 +17,4 @@ const App = () => (
   </>
 )
 
-export default App
+export default hot(App)
