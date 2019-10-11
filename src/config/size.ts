@@ -1,18 +1,6 @@
-import { Application, settings, SCALE_MODES, Point } from 'pixi.js'
-import debounce from 'lodash.debounce'
+import { settings, SCALE_MODES, Point } from 'pixi.js'
 
 settings.SCALE_MODE = SCALE_MODES.NEAREST
-
-export const hexColor = {
-  brand: 0xeaad64,
-  aqua: 0x9bedf9,
-  yellow: 0xffe337,
-  black: 0x000000,
-  white: 0xffffff,
-  raspberry: 0xfb264e,
-}
-
-const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 const maxRatio = 6 / 13
 const designRatio = 6 / 8 // 4 / 3
@@ -22,17 +10,6 @@ export const designWidth = 600
 const viewportWidth = designWidth
 export const designHeight = designWidth * (1 / designRatio) // 800
 const pixelRatio = window.devicePixelRatio || 1
-const getWidth = () => window.innerWidth * pixelRatio
-const getHeight = () => window.innerHeight * pixelRatio
-
-export const pixiApp = new Application({
-  width: getWidth(),
-  height: getHeight(),
-  backgroundColor: hexColor.yellow,
-  view: canvas,
-})
-
-const { stage, renderer } = pixiApp
 
 export const getSizeProps = ({
   width,
@@ -67,20 +44,3 @@ export const getSizeProps = ({
   }
   return { canvas, renderer, stage }
 }
-
-const onResize = () => {
-  const sizeProps = getSizeProps({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  })
-
-  Object.assign(stage, sizeProps.stage)
-
-  renderer.resize(sizeProps.renderer.width, sizeProps.renderer.height)
-  canvas.style.width = `${sizeProps.canvas.width}px`
-  canvas.style.height = `${sizeProps.canvas.height}px`
-}
-onResize()
-
-// window.addEventListener('resize', ejecta ? onResize : debounce(onResize, 300))
-window.addEventListener('resize', true ? onResize : debounce(onResize, 300))

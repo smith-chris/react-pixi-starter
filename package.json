@@ -13,13 +13,7 @@
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "precommit": "lint-staged",
     "start": "webpack-dev-server --config config/webpack.web.dev.js",
-    "iweb": "webpack-dev-server --config config/webpack.ios.js",
-    "prod": "webpack --config config/webpack.web.prod.js -p",
-    "ios": "yarn ios:build && yarn ios:xc",
-    "ios:prod": "webpack --config config/webpack.ios.js -p && yarn ios:xc",
-    "ios:watch": "webpack --watch --config config/webpack.ios.js",
-    "ios:build": "webpack --config config/webpack.ios.js",
-    "ios:xc": "open ./ejecta/FruitsVsVeggies.xcodeproj"
+    "prod": "webpack --config config/webpack.web.prod.js -p"
   },
   "lint-staged": {
     "src/**/*.test.{ts,tsx}": [
@@ -39,8 +33,7 @@
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",
-    "redux-solve": "^0.2.1",
-    "xmldom": "^0.1.27"
+    "redux-solve": "^0.2.1"
   },
   "devDependencies": {
     "//": "mixin-deep & set-value are added only to solve security issues.",
@@ -74,6 +67,7 @@
     "jest": "^24.9.0",
     "lint-staged": "^9.4.2",
     "mixin-deep": "^2.0.1",
+    "prettier": "^1.18.2",
     "raw-loader": "^3.1.0",
     "react-hot-loader": "^4.12.15",
     "set-value": "^3.0.1",

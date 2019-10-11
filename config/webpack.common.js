@@ -14,7 +14,7 @@ const prefixExtensions = (extensions, prefix) => [
   ...extensions,
 ]
 
-module.exports = ({ isIOS } = {}) => ({
+module.exports = () => ({
   entry: {
     vendor: [
       // Required to support async/await
@@ -28,10 +28,7 @@ module.exports = ({ isIOS } = {}) => ({
   },
   devtool: false,
   resolve: {
-    extensions: prefixExtensions(
-      ['.ts', '.tsx', '.js', '.json'],
-      isIOS ? '.ios' : '.web',
-    ),
+    extensions: prefixExtensions(['.ts', '.tsx', '.js', '.json'], '.web'),
     modules: ['node_modules', path.resolve('./src')],
   },
   devtool: 'source-map',

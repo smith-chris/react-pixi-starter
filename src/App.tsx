@@ -4,7 +4,7 @@ import React from 'react'
 import { RotatingBunny } from 'components/RotatingBunny'
 import { Bunnies } from 'components/Bunnies'
 import { Point } from 'pixi.js'
-import { designWidth, designHeight } from 'config/pixiApp'
+import { designWidth, designHeight } from 'config/size'
 import { AutoCounter } from 'components/AutoCounter'
 import { ConnectedBunny } from 'components/ConnectedBunny'
 import { Counter } from 'components/Counter'
@@ -25,7 +25,7 @@ const App = () => (
       x={designWidth}
       anchor={new Point(1, 0.5)}
     >
-      Hello
+      World
     </Typography>
   </>
 )
