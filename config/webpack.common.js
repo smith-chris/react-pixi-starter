@@ -16,10 +16,6 @@ const prefixExtensions = (extensions, prefix) => [
 
 module.exports = ({ isIOS } = {}) => ({
   entry: {
-    vendor: [
-      // Required to support async/await
-      '@babel/polyfill',
-    ],
     index: ['./src/index'],
   },
   output: {
