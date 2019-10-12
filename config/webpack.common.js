@@ -33,6 +33,9 @@ module.exports = ({ isIOS } = {}) => ({
       isIOS ? '.ios' : '.web',
     ),
     modules: ['node_modules', path.resolve('./src')],
+    // alias: {
+    //   'pixi.js': path.resolve('src/vendor/pixi.js'),
+    // },
   },
   devtool: 'source-map',
   plugins: [
@@ -46,6 +49,12 @@ module.exports = ({ isIOS } = {}) => ({
   ],
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        include: path.resolve('./src/vendor'),
+        use: ['script-loader'],
+        enforce: 'pre',
+      },
       {
         test: /\.(j|t)sx?$/,
         include: path.resolve('./src'),
@@ -72,6 +81,14 @@ module.exports = ({ isIOS } = {}) => ({
             ],
           },
         },
+      },
+      {
+        test: /\.json$/,
+        // We could restrict using json-loader only on .json files in the
+        // node_modules/pixi.js directory, but the ability to load .json files
+        // could be useful elsewhere in our app, so I usually don't.
+        //include: path.resolve(__dirname, 'node_modules/pixi.js'),
+        loader: 'json',
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/,
@@ -140,6 +157,10 @@ module.exports = ({ isIOS } = {}) => ({
             },
           },
         ],
+      },
+      {
+        include: path.resolve('./node_modules/pixi.js'),
+        loader: 'transform-loader?brfs',
       },
     ],
   },

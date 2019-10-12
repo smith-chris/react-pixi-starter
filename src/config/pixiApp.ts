@@ -1,7 +1,7 @@
 import { Application, settings, SCALE_MODES, Point } from 'pixi.js'
 import debounce from 'lodash.debounce'
 
-settings.SCALE_MODE = SCALE_MODES.NEAREST
+// settings.SCALE_MODE = SCALE_MODES.NEAREST
 
 export const hexColor = {
   brand: 0xeaad64,
@@ -68,19 +68,19 @@ export const getSizeProps = ({
   return { canvas, renderer, stage }
 }
 
-const onResize = () => {
-  const sizeProps = getSizeProps({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  })
+// const onResize = () => {
+//   const sizeProps = getSizeProps({
+//     width: window.innerWidth,
+//     height: window.innerHeight,
+//   })
 
-  Object.assign(stage, sizeProps.stage)
+//   Object.assign(stage, sizeProps.stage)
 
-  renderer.resize(sizeProps.renderer.width, sizeProps.renderer.height)
-  canvas.style.width = `${sizeProps.canvas.width}px`
-  canvas.style.height = `${sizeProps.canvas.height}px`
-}
-onResize()
+//   renderer.resize(sizeProps.renderer.width, sizeProps.renderer.height)
+//   canvas.style.width = `${sizeProps.canvas.width}px`
+//   canvas.style.height = `${sizeProps.canvas.height}px`
+// }
+// onResize()
 
-// window.addEventListener('resize', ejecta ? onResize : debounce(onResize, 300))
-window.addEventListener('resize', true ? onResize : debounce(onResize, 300))
+// // window.addEventListener('resize', ejecta ? onResize : debounce(onResize, 300))
+// window.addEventListener('resize', true ? onResize : debounce(onResize, 300))

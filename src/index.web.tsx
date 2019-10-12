@@ -1,4 +1,5 @@
 import { setConfig } from 'react-hot-loader'
+import 'config/setupApplication'
 import React from 'react'
 import { render } from 'react-dom'
 
