@@ -1,6 +1,6 @@
 import { Application } from 'pixi.js'
 import debounce from 'lodash.debounce'
-import { pixelRatio } from './const'
+import { pixelRatio } from './dimensions'
 import { getSizeProps } from './getSizeProps'
 
 export const hexColor = {

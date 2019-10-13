@@ -1,29 +1,14 @@
 import React from 'react'
 
-import { RotatingBunny } from 'components/RotatingBunny'
-import { Bunnies } from 'components/Bunnies'
 import { Point } from 'pixi.js'
-import { designWidth, designHeight } from 'setup/const'
-import { AutoCounter } from 'components/AutoCounter'
-import { ConnectedBunny } from 'components/ConnectedBunny'
-import { Counter } from 'components/Counter'
+import { designWidth, designHeight } from 'setup/dimensions'
 import { Typography } from 'components/Typography'
+import { Minotaur } from 'components/Minotaur'
 
 export const Game = () => (
   <>
-    <Bunnies />
-    <RotatingBunny x={450} y={300} />
-    <ConnectedBunny x={450} y={550} />
-    <Counter />
-    <AutoCounter />
+    <Minotaur x={300} />
     <Typography y={designHeight * 0.1} anchor={new Point(0, 0.5)}>
-      Hello
-    </Typography>
-    <Typography
-      y={designHeight * 0.1}
-      x={designWidth}
-      anchor={new Point(1, 0.5)}
-    >
       Hello
     </Typography>
   </>

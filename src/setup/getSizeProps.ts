@@ -5,7 +5,7 @@ import {
   pixelRatio,
   designHeight,
   minRatio,
-} from './const'
+} from './dimensions'
 
 export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
   const sizeRatio = width / height
