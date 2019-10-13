@@ -34,13 +34,7 @@ export const pixiApp = new Application({
 
 const { stage, renderer } = pixiApp
 
-export const getSizeProps = ({
-  width,
-  height,
-}: {
-  width: number
-  height: number
-}) => {
+export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
   const sizeRatio = width / height
 
   const viewportRatio = Math.min(minRatio, Math.max(maxRatio, sizeRatio))
@@ -57,8 +51,8 @@ export const getSizeProps = ({
     canvas.width = Math.round(height * viewportRatio)
   }
   const renderer = {
-    width: canvas.width * pixelRatio,
-    height: canvas.height * pixelRatio,
+    width: canvas.width * ratio,
+    height: canvas.height * ratio,
   }
   const stageScale = renderer.width / designWidth
   const stage = {
