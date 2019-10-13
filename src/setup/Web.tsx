@@ -1,5 +1,5 @@
 import React from 'react'
-import { AutoResizeStage } from 'components/AutoResizeStage'
+import { AutoResizeStage } from 'setup/AutoResizeStage'
 import { Game } from 'Game'
 
 import { Provider } from 'react-redux'

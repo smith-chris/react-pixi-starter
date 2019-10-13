@@ -1,7 +1,3 @@
-import { settings, SCALE_MODES } from 'pixi.js'
-
-settings.SCALE_MODE = SCALE_MODES.NEAREST
-
 export const maxRatio = 6 / 13
 export const designRatio = 6 / 8 // 4 / 3
 export const minRatio = 6 / 7
