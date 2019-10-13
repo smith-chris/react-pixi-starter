@@ -1,4 +1,3 @@
-import { hot } from 'react-hot-loader/root'
 import React from 'react'
 
 import { RotatingBunny } from 'components/RotatingBunny'
@@ -10,10 +9,10 @@ import { ConnectedBunny } from 'components/ConnectedBunny'
 import { Counter } from 'components/Counter'
 import { Typography } from 'components/Typography'
 
-const Game = () => (
+export const Game = () => (
   <>
     <Bunnies />
-    <RotatingBunny x={430} y={300} />
+    <RotatingBunny x={450} y={300} />
     <ConnectedBunny x={450} y={550} />
     <Counter />
     <AutoCounter />
@@ -29,5 +28,3 @@ const Game = () => (
     </Typography>
   </>
 )
-
-export default hot(Game)

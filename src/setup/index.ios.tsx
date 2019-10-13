@@ -9,7 +9,7 @@ import { render, AppProvider } from '@inlet/react-pixi'
 import { configureStore } from 'store/configureStore'
 import { pixiApp } from 'setup/pixiApp'
 import 'setup/picoFont'
-import Game from '../Game'
+import { Game } from '../Game'
 
 const store = configureStore()
 
