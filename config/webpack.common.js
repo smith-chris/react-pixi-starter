@@ -16,7 +16,7 @@ const prefixExtensions = (extensions, prefix) => [
 
 module.exports = ({ isIOS } = {}) => ({
   entry: {
-    index: ['./src/index'],
+    index: ['./src/setup/index'],
   },
   output: {
     path: path.resolve('dist'),

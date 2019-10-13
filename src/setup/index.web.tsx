@@ -6,8 +6,8 @@ setConfig({
   showReactDomPatchNotification: false,
 })
 
-import 'config/picoFont'
-import { Web } from 'Web'
+import 'setup/picoFont'
+import { Web } from 'setup/Web'
 
 const rootElement = document.getElementById('game')
 

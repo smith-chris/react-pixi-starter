@@ -4,16 +4,16 @@ import React from 'react'
 import { RotatingBunny } from 'components/RotatingBunny'
 import { Bunnies } from 'components/Bunnies'
 import { Point } from 'pixi.js'
-import { designWidth, designHeight } from 'config/const'
+import { designWidth, designHeight } from 'setup/const'
 import { AutoCounter } from 'components/AutoCounter'
 import { ConnectedBunny } from 'components/ConnectedBunny'
 import { Counter } from 'components/Counter'
 import { Typography } from 'components/Typography'
 
-const App = () => (
+const Game = () => (
   <>
     <Bunnies />
-    <RotatingBunny x={450} y={300} />
+    <RotatingBunny x={430} y={300} />
     <ConnectedBunny x={450} y={550} />
     <Counter />
     <AutoCounter />
@@ -30,4 +30,4 @@ const App = () => (
   </>
 )
 
-export default hot(App)
+export default hot(Game)
