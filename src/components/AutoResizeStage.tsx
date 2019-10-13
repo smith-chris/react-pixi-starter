@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Stage, Container } from '@inlet/react-pixi'
 
-import { getSizeProps } from 'config/pixiApp'
+import { getSizeProps } from 'config/getSizeProps'
 import { useWindowSize } from 'hooks/useWindowSize'
 
 export const AutoResizeStage: FunctionComponent = ({ children }) => {
