@@ -1,7 +1,7 @@
 import React from 'react'
 import { Sprite } from '@inlet/react-pixi'
 import { Point, Texture, Rectangle, BaseTexture } from 'pixi.js'
-import minotaurImage from 'assets/minotaur-idle.png'
+import ghostImage from 'assets/ghost-idle.png'
 
 const cutTexture = (baseTexture: BaseTexture) => (
   x = 0,
@@ -27,10 +27,10 @@ const makeTexture = (asset: ImageAsset) => {
   }
 }
 
-const mtx = makeTexture(minotaurImage)
-const texture = mtx.cutTexture(0, 0, 128, 80)
+const mtx = makeTexture(ghostImage)
+const texture = mtx.cutTexture(0, 0, 32, 32)
 
-export const Minotaur = ({ x = 0, y = 400 }: { x: number; y?: number }) => {
+export const Ghost = ({ x = 0, y = 400 }: { x: number; y?: number }) => {
   return (
     <Sprite
       texture={texture}
