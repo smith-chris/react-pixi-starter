@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
-import { center } from 'setup/dimensions'
 import { Sprite, useTick } from '@inlet/react-pixi'
 import { useViewport } from 'setup/getSizeProps'
 import { Point } from 'pixi.js'
 
 import baseImage from 'assets/sprites/base.png'
+import { Bird } from 'components/Bird'
 
 export const Game = () => {
   const { bottom } = useViewport()
@@ -26,10 +26,7 @@ export const Game = () => {
         {...baseProps}
         image={require('assets/sprites/background-day.png').src}
       />
-      <Sprite
-        {...center}
-        image={require('assets/sprites/yellowbird-midflap.png').src}
-      />
+      <Bird />
       <Sprite {...baseProps} x={baseOffset} image={baseImage.src} />
     </>
   )
