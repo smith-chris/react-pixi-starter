@@ -6,6 +6,7 @@ import {
   designHeight,
   minRatio,
 } from './dimensions'
+import { useWindowSize } from 'hooks/useWindowSize'
 
 export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
   const sizeRatio = width / height
@@ -33,4 +34,9 @@ export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
     position: new Point(0, ((viewportHeight - designHeight) / 2) * stageScale),
   }
   return { canvas, renderer, stage }
+}
+
+export const useSize = () => {
+  const size = useWindowSize()
+  return getSizeProps(size)
 }

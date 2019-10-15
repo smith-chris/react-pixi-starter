@@ -1,13 +1,11 @@
 import React, { FunctionComponent, useRef, useEffect } from 'react'
 import { Stage, Container } from '@inlet/react-pixi'
-
-import { getSizeProps } from 'setup/getSizeProps'
-import { useWindowSize } from 'hooks/useWindowSize'
 import { Application } from 'pixi.js'
 
+import { useSize } from './getSizeProps'
+
 export const AutoResizeStage: FunctionComponent = ({ children }) => {
-  const size = useWindowSize()
-  const sizeProps = getSizeProps(size)
+  const sizeProps = useSize()
   const appRef = useRef<Application | null>(null)
 
   useEffect(() => {
