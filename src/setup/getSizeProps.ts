@@ -29,9 +29,10 @@ export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
     height: canvas.height * ratio,
   }
   const stageScale = renderer.width / designWidth
+  const stageTop = ((viewportHeight - designHeight) / 2) * stageScale
   const stage = {
     scale: new Point(stageScale, stageScale),
-    position: new Point(0, ((viewportHeight - designHeight) / 2) * stageScale),
+    position: new Point(0, stageTop),
   }
   return { canvas, renderer, stage }
 }
@@ -39,4 +40,12 @@ export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
 export const useSize = () => {
   const size = useWindowSize()
   return getSizeProps(size)
+}
+
+export const useViewport = () => {
+  const { stage } = useSize()
+  const stageTop = stage.position.y
+  const stageScale = stage.scale.x
+  const extraHeight = Math.round(stageTop / stageScale)
+  return { bottom: designHeight + extraHeight, extraHeight }
 }
