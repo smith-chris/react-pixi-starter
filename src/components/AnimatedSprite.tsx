@@ -95,6 +95,7 @@ export class AnimatedSprite extends Component<Props, State> {
     this.ticker.destroy()
   }
   render() {
+    // eslint-disable @typescript-eslint/no-unused-vars
     const { onFinish, animation, ...spriteProps } = this.props
     const texture = this.texture || this.props.texture
     if (!texture) {
