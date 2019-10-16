@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Sprite, useTick } from '@inlet/react-pixi'
 import { Point } from 'pixi.js'
 import { designWidth, designHeight } from 'setup/dimensions'
+import { useResolvers } from 'hooks/useResolvers'
 
 const down = require('assets/sprites/yellowbird-downflap.png').src
 const mid = require('assets/sprites/yellowbird-midflap.png').src
@@ -15,22 +16,50 @@ const getImage = (v: number) => {
 
 const getY = (variation: number) => designHeight / 2 + Math.round(variation * 5)
 
+const initialState = {
+  isPlaying: false,
+  variation: 0,
+  velocity: 0,
+  timePassed: 0,
+  y: designHeight / 2,
+}
+
+type State = typeof initialState
+
+const birdResolvers = {
+  onTouch: (state: State) => (): State => {
+    let { isPlaying, y } = state
+    if (!isPlaying) {
+      isPlaying = true
+      y = getY(state.variation)
+    }
+    return { ...state, isPlaying, y, velocity: 6 }
+  },
+  update: (state: State) => (delta = 0): State => {
+    let { velocity, timePassed, y, variation, isPlaying } = state
+    timePassed += delta
+    if (!isPlaying) {
+      variation = Math.sin(timePassed / 7)
+    } else {
+      if (y > designHeight) {
+        isPlaying = false
+      }
+      velocity -= 0.25
+      y -= velocity
+    }
+    return { ...state, velocity, timePassed, y, variation, isPlaying }
+  },
+}
+
 export const Bird = ({ x = designWidth / 3 }) => {
-  const timePassed = useRef(0)
-  const isPlaying2 = useRef(false)
-  const [variation, setVariation] = useState(0)
-  const [velocity, setVelocity] = useState(0)
-  const [y, setY] = useState(designHeight / 2)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [{ variation, isPlaying, y }, { onTouch, update }] = useResolvers(
+    birdResolvers,
+    initialState,
+  )
 
   useEffect(() => {
     const touchStart = () => {
-      if (!isPlaying2.current) {
-        setIsPlaying(true)
-        isPlaying2.current = true
-        setY(getY(variation))
-      }
-      setVelocity(6)
+      onTouch()
     }
 
     window.addEventListener('pointerdown', touchStart)
@@ -41,19 +70,7 @@ export const Bird = ({ x = designWidth / 3 }) => {
     }
   }, [])
 
-  useTick((delta = 0) => {
-    timePassed.current += delta
-    if (!isPlaying) {
-      setVariation(Math.sin(timePassed.current / 7))
-    } else {
-      if (y > designHeight) {
-        setIsPlaying(false)
-        isPlaying2.current = false
-      }
-      setVelocity(v => v - 0.25)
-      setY(v => v - velocity)
-    }
-  })
+  useTick(update)
 
   return (
     <Sprite
