@@ -8,17 +8,28 @@ const down = require('assets/sprites/yellowbird-downflap.png').src
 const mid = require('assets/sprites/yellowbird-midflap.png').src
 const up = require('assets/sprites/yellowbird-upflap.png').src
 
-const getImage = (v: number) => {
+const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
+
+const getImage = (timePassed: number) => {
+  const v = getVariation(timePassed)
   if (v > 0.33) return up
   if (v < -0.33) return down
   return mid
 }
 
-const getY = (variation: number) => designHeight / 2 + Math.round(variation * 5)
+const getY = (timePassed: number) =>
+  designHeight / 2 + Math.round(getVariation(timePassed) * 5)
+
+const getRotation = (velocity: number) => {
+  // Moving upwards
+  if (velocity > 0) return Math.max(-0.5, -velocity / 10)
+  // Moving downwards
+  else if (velocity < 0) return Math.min(1.5, -velocity / 10)
+  return 0
+}
 
 const initialState = {
   isPlaying: false,
-  variation: 0,
   velocity: 0,
   timePassed: 0,
   y: designHeight / 2,
@@ -31,15 +42,14 @@ const birdResolvers = {
     let { isPlaying, y } = state
     if (!isPlaying) {
       isPlaying = true
-      y = getY(state.variation)
+      y = getY(state.timePassed)
     }
     return { ...state, isPlaying, y, velocity: 6 }
   },
   update: (state: State) => (delta = 0): State => {
-    let { velocity, timePassed, y, variation, isPlaying } = state
+    let { velocity, timePassed, y, isPlaying } = state
     timePassed += delta
     if (!isPlaying) {
-      variation = Math.sin(timePassed / 7)
     } else {
       if (y > designHeight) {
         isPlaying = false
@@ -47,26 +57,22 @@ const birdResolvers = {
       velocity -= 0.25
       y -= velocity
     }
-    return { ...state, velocity, timePassed, y, variation, isPlaying }
+    return { ...state, velocity, timePassed, y, isPlaying }
   },
 }
 
 export const Bird = ({ x = designWidth / 3 }) => {
-  const [{ variation, isPlaying, y }, { onTouch, update }] = useResolvers(
-    birdResolvers,
-    initialState,
-  )
+  const [
+    { timePassed, isPlaying, y, velocity },
+    { onTouch, update },
+  ] = useResolvers(birdResolvers, initialState)
 
   useEffect(() => {
-    const touchStart = () => {
-      onTouch()
-    }
-
-    window.addEventListener('pointerdown', touchStart)
-    window.addEventListener('touchstart', touchStart)
+    window.addEventListener('pointerdown', onTouch)
+    window.addEventListener('touchstart', onTouch)
     return () => {
-      window.removeEventListener('pointerdown', touchStart)
-      window.removeEventListener('touchstart', touchStart)
+      window.removeEventListener('pointerdown', onTouch)
+      window.removeEventListener('touchstart', onTouch)
     }
   }, [])
 
@@ -74,9 +80,10 @@ export const Bird = ({ x = designWidth / 3 }) => {
 
   return (
     <Sprite
-      image={getImage(variation)}
+      image={getImage(timePassed)}
+      rotation={isPlaying ? getRotation(velocity) : 0}
       x={x}
-      y={isPlaying ? y : getY(variation)}
+      y={isPlaying ? y : getY(timePassed)}
       anchor={new Point(0.5, 0.5)}
     />
   )
