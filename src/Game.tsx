@@ -26,6 +26,19 @@ export const Game = () => {
         {...baseProps}
         image={require('assets/sprites/background-day.png').src}
       />
+      <Sprite
+        anchor={0.5}
+        x={200}
+        y={400}
+        image={require('assets/sprites/pipe-green.png').src}
+      />
+      <Sprite
+        anchor={0.5}
+        x={200}
+        y={-100}
+        scale={[1, -1]}
+        image={require('assets/sprites/pipe-green.png').src}
+      />
       <Bird />
       <Sprite {...baseProps} x={baseOffset} image={baseImage.src} />
     </>

@@ -49,8 +49,7 @@ const birdResolvers = {
   update: (state: State) => (delta = 0): State => {
     let { velocity, timePassed, y, isPlaying } = state
     timePassed += delta
-    if (!isPlaying) {
-    } else {
+    if (isPlaying) {
       if (y > designHeight) {
         isPlaying = false
       }
