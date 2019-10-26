@@ -90,23 +90,26 @@ type GetActionDispatcher<T extends ActionResolver> = ReturnType<T> extends (
   ? (...payload: U) => void
   : never
 
-export const useResolvers = <T extends ActionResolvers<U>, U = any>(
+export const makeResolvers = <U extends object, T extends ActionResolvers<U>>(
   actionResolvers: T,
   initialState: U,
 ) => {
   const reducer = makeReducer(actionResolvers, initialState)
   const actions = makeActionCreators(actionResolvers, initialState)
-  const [state, dispatch] = useReducer(reducer, initialState)
 
-  return [
-    state,
-    mapValues(actions, a => (...params: any[]) =>
-      dispatch(a(...params) as Action),
-    ),
-  ] as [
-    typeof state,
-    {
-      [K in keyof T]: GetActionDispatcher<T[K]>
-    },
-  ]
+  return () => {
+    const [state, dispatch] = useReducer(reducer, initialState)
+
+    return [
+      state,
+      mapValues(actions, a => (...params: any[]) =>
+        dispatch(a(...params) as Action),
+      ),
+    ] as [
+      typeof state,
+      {
+        [K in keyof T]: GetActionDispatcher<T[K]>
+      },
+    ]
+  }
 }
