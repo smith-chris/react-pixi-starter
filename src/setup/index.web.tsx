@@ -1,3 +1,4 @@
+import '@babel/polyfill'
 import 'setup/pixiSettings'
 import 'setup/picoFont'
 import { setConfig } from 'react-hot-loader'
