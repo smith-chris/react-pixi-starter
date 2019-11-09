@@ -18,7 +18,7 @@ export const makeImmerHook = <
 
   const wrapActionsWithDispatch = (dispatch: Dispatch<any>) =>
     Object.entries(actions).reduce(
-      (acc, [key, action]: [string, Function]) => ({
+      (acc, [key, action]: [string, any]) => ({
         ...acc,
         [key]: (...params: any[]) => dispatch(action(...params)),
       }),

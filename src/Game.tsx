@@ -6,17 +6,13 @@ import { Point } from 'pixi.js'
 
 import baseImage from 'assets/sprites/base.png'
 import { Bird } from 'components/Bird'
-import { useGameResolvers } from 'useGameResolvers'
-import { useGameState } from 'hooks/useGameState'
-import { Typography } from 'components/Typography'
-import { designWidth, designHeight } from 'setup/dimensions'
+import { useGameReducer } from 'hooks/useGameState'
 
 export const Game = () => {
   const { bottom } = useViewport()
   const [baseOffset, setBaseOffset] = useState(0)
   const [viewportX, setViewportX] = useState(0)
-  const game = useGameResolvers()
-  const [state, actions] = useGameState()
+  const game = useGameReducer()
 
   const baseProps = {
     anchor: new Point(0, 1),
@@ -34,11 +30,6 @@ export const Game = () => {
       <Sprite
         {...baseProps}
         interactive
-        pointerdown={() => {
-          actions.setFirstName(
-            state.user.firstName === 'hello' ? 'world' : 'hello',
-          )
-        }}
         image={require('assets/sprites/background-day.png').src}
       />
       <Sprite
@@ -56,9 +47,6 @@ export const Game = () => {
       />
       <Bird game={game} />
       <Sprite {...baseProps} x={baseOffset} image={baseImage.src} />
-      <Typography x={designWidth / 2} y={designHeight / 2}>
-        {state.user.firstName}
-      </Typography>
     </>
   )
 }
