@@ -1,6 +1,7 @@
 import { ImmerReducer } from 'immer-reducer'
 import { makeImmerHook } from './makeImmerHook'
-import { designHeight } from 'setup/dimensions'
+import { designHeight, designWidth } from 'setup/dimensions'
+import { Point } from 'pixi.js'
 
 const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
 
@@ -24,7 +25,9 @@ const getTextureName = (timePassed: number) => {
 
 export type BirdTexture = ReturnType<typeof getTextureName>
 
-const pipes = [{ x: 100, y: 100 }, { x: 200, y: 100 }]
+const pipeDist = 150
+
+const pipes: Array<{ x: number; y: number }> = []
 
 const initialState = {
   isPlaying: false,
@@ -33,7 +36,7 @@ const initialState = {
   y: designHeight / 2,
   rotation: 0,
   textureName: 'mid' as BirdTexture,
-  viewportX: 0,
+  viewportLeft: 0,
   pipes,
 }
 
@@ -43,18 +46,33 @@ class GameReducer extends ImmerReducer<typeof initialState> {
     if (!ds.isPlaying) {
       ds.isPlaying = true
       ds.y = getY(this.state.timePassed)
+      ds.viewportLeft = 0
     }
     ds.velocity = 6
   }
 
   update(delta: number) {
     const { draftState: ds } = this
-    ds.viewportX += delta
+    if (ds.isPlaying) {
+      ds.viewportLeft += delta
+      const viewportRight = ds.viewportLeft + designWidth
+      const lastPipe = ds.pipes.length && ds.pipes[ds.pipes.length - 1]
+      const startPiping = ds.viewportLeft > 50
+      const needsPipe = !lastPipe || lastPipe.x < viewportRight - pipeDist
+      if (startPiping && needsPipe) {
+        const newPipe = {
+          x: Math.round(viewportRight),
+          y: Math.round(designHeight / 2 - Math.random() * 100),
+        }
+        ds.pipes.push(newPipe)
+      }
+    }
     ds.timePassed += delta
     ds.textureName = getTextureName(ds.timePassed)
     if (ds.isPlaying) {
       if (ds.y > designHeight) {
         ds.isPlaying = false
+        ds.pipes = []
       }
       ds.velocity -= 0.25
       ds.y -= ds.velocity

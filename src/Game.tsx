@@ -8,9 +8,8 @@ import baseImage from 'assets/sprites/base.png'
 import { Bird } from 'components/Bird'
 import { useGameReducer } from 'hooks/useGameState'
 import { Rectangle } from 'components/Rectangle'
-import { designWidth, designHeight } from 'setup/dimensions'
 
-const PointHelper = () => {}
+const pipeHeight = 100
 
 export const Game = () => {
   const { bottom } = useViewport()
@@ -38,19 +37,19 @@ export const Game = () => {
       {state.pipes.map(({ x, y }, i) => (
         <Fragment key={i}>
           <Sprite
-            anchor={0.5}
-            x={x}
-            y={300}
+            // anchor={[0.5, 0]}
+            x={x - state.viewportLeft}
+            y={y + pipeHeight / 2}
             image={require('assets/sprites/pipe-green.png').src}
           />
           <Sprite
-            anchor={0.5}
-            x={x}
-            y={-100}
+            // anchor={[0.5, 0]}
+            x={x - state.viewportLeft}
+            y={y - pipeHeight / 2}
             scale={[1, -1]}
             image={require('assets/sprites/pipe-green.png').src}
           />
-          <Rectangle x={x} y={y} width={50} height={100} anchor={0.5} />
+          {/* <Rectangle x={x} y={y} width={50} height={pipeHeight} anchor={0.5} /> */}
         </Fragment>
       ))}
       <Bird game={game} />
