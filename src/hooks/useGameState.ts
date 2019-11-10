@@ -24,6 +24,8 @@ const getTextureName = (timePassed: number) => {
 
 export type BirdTexture = ReturnType<typeof getTextureName>
 
+const pipes = [{ x: 100, y: 100 }, { x: 200, y: 100 }]
+
 const initialState = {
   isPlaying: false,
   velocity: 0,
@@ -31,6 +33,8 @@ const initialState = {
   y: designHeight / 2,
   rotation: 0,
   textureName: 'mid' as BirdTexture,
+  viewportX: 0,
+  pipes,
 }
 
 class GameReducer extends ImmerReducer<typeof initialState> {
@@ -45,6 +49,7 @@ class GameReducer extends ImmerReducer<typeof initialState> {
 
   update(delta: number) {
     const { draftState: ds } = this
+    ds.viewportX += delta
     ds.timePassed += delta
     ds.textureName = getTextureName(ds.timePassed)
     if (ds.isPlaying) {

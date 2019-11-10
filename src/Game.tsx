@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 
 import { Sprite, useTick } from '@inlet/react-pixi'
 import { useViewport } from 'setup/getSizeProps'
@@ -7,12 +7,16 @@ import { Point } from 'pixi.js'
 import baseImage from 'assets/sprites/base.png'
 import { Bird } from 'components/Bird'
 import { useGameReducer } from 'hooks/useGameState'
+import { Rectangle } from 'components/Rectangle'
+import { designWidth, designHeight } from 'setup/dimensions'
+
+const PointHelper = () => {}
 
 export const Game = () => {
   const { bottom } = useViewport()
   const [baseOffset, setBaseOffset] = useState(0)
-  const [viewportX, setViewportX] = useState(0)
   const game = useGameReducer()
+  const [state] = game
 
   const baseProps = {
     anchor: new Point(0, 1),
@@ -22,7 +26,6 @@ export const Game = () => {
   useTick((delta = 0) => {
     const movement = delta
     setBaseOffset(v => (v < -46 ? 0 : v - movement))
-    setViewportX(v => v + movement)
   })
 
   return (
@@ -32,19 +35,24 @@ export const Game = () => {
         interactive
         image={require('assets/sprites/background-day.png').src}
       />
-      <Sprite
-        anchor={0.5}
-        x={200}
-        y={400}
-        image={require('assets/sprites/pipe-green.png').src}
-      />
-      <Sprite
-        anchor={0.5}
-        x={200}
-        y={-100}
-        scale={[1, -1]}
-        image={require('assets/sprites/pipe-green.png').src}
-      />
+      {state.pipes.map(({ x, y }, i) => (
+        <Fragment key={i}>
+          <Sprite
+            anchor={0.5}
+            x={x}
+            y={300}
+            image={require('assets/sprites/pipe-green.png').src}
+          />
+          <Sprite
+            anchor={0.5}
+            x={x}
+            y={-100}
+            scale={[1, -1]}
+            image={require('assets/sprites/pipe-green.png').src}
+          />
+          <Rectangle x={x} y={y} width={50} height={100} anchor={0.5} />
+        </Fragment>
+      ))}
       <Bird game={game} />
       <Sprite {...baseProps} x={baseOffset} image={baseImage.src} />
     </>
