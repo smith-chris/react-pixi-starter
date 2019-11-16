@@ -9,7 +9,7 @@ export type TypographyProps = Omit<
 }
 export const Typography: FunctionComponent<TypographyProps> = ({
   children,
-  size = 18,
+  size = 8,
   ...props
 }) => {
   return (

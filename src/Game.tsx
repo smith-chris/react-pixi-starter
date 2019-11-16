@@ -6,10 +6,10 @@ import { Point } from 'pixi.js'
 
 import baseImage from 'assets/sprites/base.png'
 import { Bird } from 'components/Bird'
-import { useGameReducer } from 'hooks/useGameState'
+import { useGameReducer, pipeGap } from 'hooks/useGameState'
 import { Rectangle } from 'components/Rectangle'
-
-const pipeHeight = 100
+import { Typography } from 'components/Typography'
+import { designWidth, designHeight } from 'setup/dimensions'
 
 export const Game = () => {
   const { bottom } = useViewport()
@@ -39,13 +39,13 @@ export const Game = () => {
           <Sprite
             // anchor={[0.5, 0]}
             x={x - state.viewportLeft}
-            y={y + pipeHeight / 2}
+            y={y + pipeGap / 2}
             image={require('assets/sprites/pipe-green.png').src}
           />
           <Sprite
             // anchor={[0.5, 0]}
             x={x - state.viewportLeft}
-            y={y - pipeHeight / 2}
+            y={y - pipeGap / 2}
             scale={[1, -1]}
             image={require('assets/sprites/pipe-green.png').src}
           />
@@ -53,6 +53,9 @@ export const Game = () => {
         </Fragment>
       ))}
       <Bird game={game} />
+      <Typography anchor={0.5} x={designWidth / 2} y={designHeight / 10}>
+        Score: {state.score}
+      </Typography>
       <Sprite {...baseProps} x={baseOffset} image={baseImage.src} />
     </>
   )

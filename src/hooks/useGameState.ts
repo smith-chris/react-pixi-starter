@@ -1,7 +1,6 @@
 import { ImmerReducer } from 'immer-reducer'
 import { makeImmerHook } from './makeImmerHook'
 import { designHeight, designWidth } from 'setup/dimensions'
-import { Point } from 'pixi.js'
 
 const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
 
@@ -27,7 +26,7 @@ export type BirdTexture = ReturnType<typeof getTextureName>
 
 const pipeDist = 150
 
-const pipes: Array<{ x: number; y: number }> = []
+const pipes: Array<{ x: number; y: number; passed?: boolean }> = []
 
 const initialState = {
   isPlaying: false,
@@ -37,6 +36,7 @@ const initialState = {
   rotation: 0,
   textureName: 'mid' as BirdTexture,
   viewportLeft: 0,
+  score: 0,
   pipes,
 }
 
@@ -44,6 +44,8 @@ export type GameState = typeof initialState
 
 // TODO: get it from texture
 const pipeWidth = 52
+export const pipeGap = 115
+export const birdRadius = 27
 
 class GameReducer extends ImmerReducer<GameState> {
   onTouch() {
@@ -55,6 +57,13 @@ class GameReducer extends ImmerReducer<GameState> {
       ds.viewportLeft = 0
     }
     ds.velocity = 6
+  }
+
+  gameOver() {
+    const { draftState: ds } = this
+    ds.isPlaying = false
+    ds.score = 0
+    ds.pipes = []
   }
 
   update(delta?: number) {
@@ -80,12 +89,28 @@ class GameReducer extends ImmerReducer<GameState> {
     ds.textureName = getTextureName(ds.timePassed)
     if (ds.isPlaying) {
       if (ds.bird.y + 12 > designHeight) {
-        ds.isPlaying = false
-        ds.pipes = []
+        this.gameOver()
       }
       ds.velocity -= 0.25
       ds.bird.y -= ds.velocity
       ds.rotation = getRotation(ds.velocity)
+      ds.pipes = ds.pipes.map(p => {
+        if (!p.passed && ds.bird.x > p.x + pipeWidth) {
+          ds.score++
+          return { ...p, passed: true }
+        }
+        return p
+      })
+      // Collision
+      const overlapingPipes = ds.pipes.filter(({ x, y }) => {
+        const overlapsX =
+          Math.abs(ds.bird.x - (x + pipeWidth / 2)) < pipeWidth / 2
+        const overlapsY = Math.abs(ds.bird.y - y) > (pipeGap - birdRadius) / 2
+        return overlapsX && overlapsY
+      })
+      if (overlapingPipes.length) {
+        this.gameOver()
+      }
     } else {
       ds.bird.y = getY(ds.timePassed)
       ds.rotation = 0
