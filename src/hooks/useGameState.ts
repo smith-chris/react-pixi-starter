@@ -33,28 +33,36 @@ const initialState = {
   isPlaying: false,
   velocity: 0,
   timePassed: 0,
-  y: designHeight / 2,
+  bird: { x: designWidth / 3, y: getY(0) },
   rotation: 0,
   textureName: 'mid' as BirdTexture,
   viewportLeft: 0,
   pipes,
 }
 
-class GameReducer extends ImmerReducer<typeof initialState> {
+export type GameState = typeof initialState
+
+// TODO: get it from texture
+const pipeWidth = 52
+
+class GameReducer extends ImmerReducer<GameState> {
   onTouch() {
     const { draftState: ds } = this
     if (!ds.isPlaying) {
       ds.isPlaying = true
-      ds.y = getY(this.state.timePassed)
+      ds.bird = initialState.bird
+      ds.timePassed = 0
       ds.viewportLeft = 0
     }
     ds.velocity = 6
   }
 
-  update(delta: number) {
+  update(delta?: number) {
+    delta = delta || 1000 / 60
     const { draftState: ds } = this
     if (ds.isPlaying) {
       ds.viewportLeft += delta
+      ds.bird.x += delta
       const viewportRight = ds.viewportLeft + designWidth
       const lastPipe = ds.pipes.length && ds.pipes[ds.pipes.length - 1]
       const startPiping = ds.viewportLeft > 50
@@ -64,24 +72,27 @@ class GameReducer extends ImmerReducer<typeof initialState> {
           x: Math.round(viewportRight),
           y: Math.round(designHeight / 2 - Math.random() * 100),
         }
+        ds.pipes = ds.pipes.filter(({ x }) => x + pipeWidth > ds.viewportLeft)
         ds.pipes.push(newPipe)
       }
     }
     ds.timePassed += delta
     ds.textureName = getTextureName(ds.timePassed)
     if (ds.isPlaying) {
-      if (ds.y > designHeight) {
+      if (ds.bird.y + 12 > designHeight) {
         ds.isPlaying = false
         ds.pipes = []
       }
       ds.velocity -= 0.25
-      ds.y -= ds.velocity
+      ds.bird.y -= ds.velocity
       ds.rotation = getRotation(ds.velocity)
     } else {
-      ds.y = getY(ds.timePassed)
+      ds.bird.y = getY(ds.timePassed)
       ds.rotation = 0
     }
   }
 }
 
 export const useGameReducer = makeImmerHook(GameReducer, initialState)
+
+export type GameHook = ReturnType<typeof useGameReducer>

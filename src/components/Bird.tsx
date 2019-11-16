@@ -1,8 +1,7 @@
 import React, { useEffect, ComponentProps } from 'react'
 import { Sprite, useTick } from '@inlet/react-pixi'
-import { designWidth } from 'setup/dimensions'
-import { GameHook, BirdTexture } from 'useGameResolvers'
 import { Point } from 'pixi.js'
+import { GameHook, BirdTexture } from 'hooks/useGameState'
 
 const textures: Record<BirdTexture, string> = {
   down: require('assets/sprites/yellowbird-downflap.png').src,
@@ -14,8 +13,11 @@ type BirdProps = ComponentProps<typeof Sprite> & {
   game: GameHook
 }
 
-export const Bird = ({ x = designWidth / 3, game }: BirdProps) => {
-  const [{ textureName, y, rotation }, { onTouch, update }] = game
+export const Bird = ({ game }: BirdProps) => {
+  const [
+    { textureName, bird, rotation, viewportLeft },
+    { onTouch, update },
+  ] = game
 
   useEffect(() => {
     window.addEventListener('pointerdown', onTouch)
@@ -32,8 +34,7 @@ export const Bird = ({ x = designWidth / 3, game }: BirdProps) => {
     <Sprite
       image={textures[textureName]}
       rotation={rotation}
-      x={x}
-      y={y}
+      position={[bird.x - viewportLeft, bird.y]}
       anchor={new Point(0.5, 0.5)}
     />
   )
