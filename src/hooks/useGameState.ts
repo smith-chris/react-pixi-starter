@@ -43,8 +43,8 @@ const initialState = {
 export type GameState = typeof initialState
 
 // TODO: get it from texture
-const pipeWidth = 52
-export const pipeGap = 115
+export const pipeWidth = require('assets/sprites/pipe-green.png').width
+export const pipeGap = 120
 export const birdRadius = 27
 
 class GameReducer extends ImmerReducer<GameState> {

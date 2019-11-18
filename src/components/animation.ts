@@ -1,5 +1,5 @@
 import { BaseTexture, Texture, Rectangle } from 'pixi.js'
-import { Point } from 'utils/point'
+import { Point } from 'utils/math'
 import ghostIdle from 'assets/ghost-idle.png'
 
 export type ObjectOf<T> = {
