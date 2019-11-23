@@ -13,13 +13,7 @@
     "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "precommit": "lint-staged",
     "start": "webpack-dev-server --config config/webpack.web.dev.js",
-    "iweb": "webpack-dev-server --config config/webpack.ios.js",
-    "prod": "webpack --config config/webpack.web.prod.js -p",
-    "ios": "yarn ios:build && yarn ios:xc",
-    "ios:prod": "webpack --config config/webpack.ios.js -p && yarn ios:xc",
-    "ios:watch": "webpack --watch --config config/webpack.ios.js",
-    "ios:build": "webpack --config config/webpack.ios.js",
-    "ios:xc": "open ./ejecta/FruitsVsVeggies.xcodeproj"
+    "prod": "webpack --config config/webpack.web.prod.js -p"
   },
   "lint-staged": {
     "src/**/*.test.{ts,tsx}": [
@@ -43,7 +37,6 @@
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",
     "redux-solve": "^0.2.1",
-    "rezolve": "^0.3.2",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
