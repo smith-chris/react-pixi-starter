@@ -1,4 +1,4 @@
-import 'utils/liquidfun'
+import { Box2D } from 'utils/Box2D'
 import React, { useState, useEffect } from 'react'
 
 import { Sprite, useTick, Container } from '@inlet/react-pixi'
@@ -13,6 +13,8 @@ import { designWidth, designHeight } from 'setup/dimensions'
 import { debug } from './utils/debug'
 import pipeTexture from 'assets/sprites/pipe-green.png'
 import backgroundTexture from 'assets/sprites/background-day.png'
+
+console.log(Box2D)
 
 export const Game = () => {
   const viewport = useViewport()
