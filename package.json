@@ -30,6 +30,7 @@
     "@inlet/react-pixi": "^1.1.2",
     "@types/lodash.mapvalues": "^4.6.6",
     "immer-reducer": "^0.7.8",
+    "liquidfun-emscripten": "^1.1.4",
     "lodash.debounce": "^4.0.8",
     "lodash.mapvalues": "^4.6.0",
     "pixi.js": "^5.1.5",
@@ -40,6 +41,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-solve": "^0.2.1",
     "rezolve": "^0.3.2",
+    "script-loader": "^0.7.2",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {

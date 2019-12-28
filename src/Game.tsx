@@ -1,3 +1,4 @@
+import 'utils/liquidfun'
 import React, { useState, useEffect } from 'react'
 
 import { Sprite, useTick, Container } from '@inlet/react-pixi'
