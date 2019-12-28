@@ -10,6 +10,7 @@ import { useGameReducer, pipeGap, pipeWidth } from 'hooks/useGameState'
 import { Rectangle } from 'components/Rectangle'
 import { Typography } from 'components/Typography'
 import { designWidth, designHeight } from 'setup/dimensions'
+import { debug } from './utils/const'
 
 export const Game = () => {
   const { bottom } = useViewport()
@@ -41,14 +42,16 @@ export const Game = () => {
             y={y + pipeGap / 2}
             image={require('assets/sprites/pipe-green.png').src}
           />
-          <Rectangle
-            y={y + pipeGap / 2}
-            alpha={0.5}
-            color={0xff9c2b}
-            width={pipeWidth}
-            height={200}
-            // anchor={0.5}
-          />
+          {debug && (
+            <Rectangle
+              y={y + pipeGap / 2}
+              alpha={0.5}
+              color={0xff9c2b}
+              width={pipeWidth}
+              height={200}
+              // anchor={0.5}
+            />
+          )}
           <Sprite
             // anchor={[0.5, 0]}
             y={y - pipeGap / 2}

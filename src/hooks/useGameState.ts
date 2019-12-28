@@ -1,6 +1,7 @@
 import { ImmerReducer } from 'immer-reducer'
 import { makeImmerHook } from './makeImmerHook'
 import { designHeight, designWidth } from 'setup/dimensions'
+import { debug } from 'utils/const'
 
 const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
 
@@ -30,6 +31,10 @@ const pipes: Array<{ x: number; y: number; passed?: boolean }> = []
 
 const initialState = {
   isPlaying: false,
+  debug: {
+    isPLaying: debug,
+    freeze: false,
+  },
   velocity: 0,
   timePassed: 0,
   bird: { x: designWidth / 3, y: getY(0) },
@@ -52,6 +57,9 @@ class GameReducer extends ImmerReducer<GameState> {
     const { draftState: ds } = this
     if (!ds.isPlaying) {
       ds.isPlaying = true
+      if (debug) {
+        ds.debug.isPLaying = true
+      }
       ds.bird = initialState.bird
       ds.timePassed = 0
       ds.viewportLeft = 0
@@ -61,15 +69,19 @@ class GameReducer extends ImmerReducer<GameState> {
 
   gameOver() {
     const { draftState: ds } = this
-    ds.isPlaying = false
-    ds.score = 0
-    ds.pipes = []
+    if (!debug) {
+      ds.isPlaying = false
+      ds.score = 0
+      ds.pipes = []
+    } else {
+      ds.debug.freeze = true
+    }
   }
 
   update(delta?: number) {
     delta = delta || 1000 / 60
     const { draftState: ds } = this
-    if (ds.isPlaying) {
+    if (ds.isPlaying || (ds.debug.isPLaying && !ds.debug.freeze)) {
       ds.viewportLeft += delta
       ds.bird.x += delta
       const viewportRight = ds.viewportLeft + designWidth
@@ -87,13 +99,16 @@ class GameReducer extends ImmerReducer<GameState> {
     }
     ds.timePassed += delta
     ds.textureName = getTextureName(ds.timePassed)
-    if (ds.isPlaying) {
+    if (ds.isPlaying || ds.debug.isPLaying) {
       if (ds.bird.y + 12 > designHeight) {
         this.gameOver()
       }
-      ds.velocity -= 0.25
-      ds.bird.y -= ds.velocity
-      ds.rotation = getRotation(ds.velocity)
+      if (!debug) {
+        // gravity only while not debugging
+        ds.velocity -= 0.25
+        ds.bird.y -= ds.velocity
+        ds.rotation = getRotation(ds.velocity)
+      }
       ds.pipes = ds.pipes.map(p => {
         if (!p.passed && ds.bird.x > p.x + pipeWidth) {
           ds.score++
