@@ -36,18 +36,13 @@ export const Bird = ({ game }: BirdProps) => {
 
   return (
     <Container position={[bird.x - viewportLeft, bird.y]}>
-      <Sprite
-        // anchor={0.5}
-        image={textures[textureName]}
-        rotation={rotation}
-      />
+      <Sprite image={textures[textureName]} rotation={rotation} />
       {debug && (
         <Rectangle
           alpha={0.5}
           color={0xff9c2b}
-          width={texture.width}
-          height={texture.height}
-          // anchor={0.5}
+          width={bird.width}
+          height={bird.height}
         />
       )}
     </Container>

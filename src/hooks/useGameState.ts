@@ -2,6 +2,7 @@ import { ImmerReducer } from 'immer-reducer'
 import { makeImmerHook } from './makeImmerHook'
 import { designHeight, designWidth } from 'setup/dimensions'
 import { debug } from 'utils/const'
+import { intersectRects } from 'utils/math'
 import birdTexture from 'assets/sprites/yellowbird-midflap.png'
 
 const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
@@ -30,7 +31,7 @@ export type BirdTexture = ReturnType<typeof getTextureName>
 
 const pipeDist = 150
 
-type Rct = { width: number; y: number; height: number; anchor?: any }
+type Rct = { width: number; x: number; y: number; height: number; anchor?: any }
 
 const pipes: Array<{
   center: {
@@ -53,7 +54,7 @@ const initialState = {
   bird: {
     x: designWidth / 4,
     y: getY(0),
-    width: birdTexture.width,
+    width: birdTexture.width - 1,
     height: birdTexture.height,
   },
   rotation: 0,
@@ -119,11 +120,13 @@ class GameReducer extends ImmerReducer<GameState> {
         ds.pipes.push({
           center,
           down: {
+            x: center.x,
             y: center.y + pipeGap / 2,
             width: pipeWidth,
             height: pipeHeight,
           },
           up: {
+            x: center.x,
             y: center.y - pipeGap / 2 - pipeHeight,
             width: pipeWidth,
             height: pipeHeight,
@@ -151,11 +154,8 @@ class GameReducer extends ImmerReducer<GameState> {
         return p
       })
       // Collision
-      const overlapingPipes = ds.pipes.filter(({ center: { x, y } }) => {
-        const overlapsX =
-          Math.abs(ds.bird.x - (x + pipeWidth / 2)) < pipeWidth / 2
-        const overlapsY = Math.abs(ds.bird.y - y) > (pipeGap - birdRadius) / 2
-        return overlapsX && overlapsY
+      const overlapingPipes = ds.pipes.filter(({ down, up }) => {
+        return intersectRects(down, ds.bird) || intersectRects(up, ds.bird)
       })
       if (overlapingPipes.length) {
         this.gameOver()

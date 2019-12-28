@@ -42,8 +42,8 @@ export const Game = () => {
             image={pipeTexture.src}
           />
           <Sprite y={down.y} image={pipeTexture.src} />
-          {debug && <Rectangle alpha={0.5} color={0xff9c2b} {...down} />}
-          {debug && <Rectangle alpha={0.5} color={0xff9c2b} {...up} />}
+          {debug && <Rectangle alpha={0.5} color={0xff9c2b} {...down} x={0} />}
+          {debug && <Rectangle alpha={0.5} color={0xff9c2b} {...up} x={0} />}
         </Container>
       ))}
       <Bird game={game} />

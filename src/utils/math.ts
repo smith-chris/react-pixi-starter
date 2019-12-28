@@ -147,7 +147,7 @@ const intersectLeft = (a: IntersectValue, b: IntersectValue) => {
   return null
 }
 
-export const intersect = (a: IntersectValue, b: IntersectValue) => {
+export const intersects = (a: IntersectValue, b: IntersectValue) => {
   return intersectLeft(a, b) || intersectLeft(b, a)
 }
 
