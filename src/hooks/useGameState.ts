@@ -2,11 +2,14 @@ import { ImmerReducer } from 'immer-reducer'
 import { makeImmerHook } from './makeImmerHook'
 import { designHeight, designWidth } from 'setup/dimensions'
 import { debug } from 'utils/const'
+import birdTexture from 'assets/sprites/yellowbird-midflap.png'
 
 const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
 
 const getY = (timePassed: number) =>
-  designHeight / 2 + Math.round(getVariation(timePassed) * 5)
+  designHeight / 2 -
+  birdTexture.height / 2 +
+  Math.round(getVariation(timePassed) * 5)
 
 const getRotation = (velocity: number) => {
   // Moving upwards
@@ -27,7 +30,17 @@ export type BirdTexture = ReturnType<typeof getTextureName>
 
 const pipeDist = 150
 
-const pipes: Array<{ x: number; y: number; passed?: boolean }> = []
+type Rct = { width: number; y: number; height: number; anchor?: any }
+
+const pipes: Array<{
+  center: {
+    x: number
+    y: number
+  }
+  passed?: boolean
+  down: Rct
+  up: Rct
+}> = []
 
 const initialState = {
   isPlaying: false,
@@ -37,7 +50,12 @@ const initialState = {
   },
   velocity: 0,
   timePassed: 0,
-  bird: { x: designWidth / 3, y: getY(0) },
+  bird: {
+    x: designWidth / 4,
+    y: getY(0),
+    width: birdTexture.width,
+    height: birdTexture.height,
+  },
   rotation: 0,
   textureName: 'mid' as BirdTexture,
   viewportLeft: 0,
@@ -49,7 +67,8 @@ export type GameState = typeof initialState
 
 // TODO: get it from texture
 export const pipeWidth = require('assets/sprites/pipe-green.png').width
-export const pipeGap = 120
+export const pipeHeight = require('assets/sprites/pipe-green.png').height
+export const pipeGap = debug ? 60 : 120
 export const birdRadius = 27
 
 class GameReducer extends ImmerReducer<GameState> {
@@ -87,14 +106,29 @@ class GameReducer extends ImmerReducer<GameState> {
       const viewportRight = ds.viewportLeft + designWidth
       const lastPipe = ds.pipes.length && ds.pipes[ds.pipes.length - 1]
       const startPiping = ds.viewportLeft > 50
-      const needsPipe = !lastPipe || lastPipe.x < viewportRight - pipeDist
+      const needsPipe =
+        !lastPipe || lastPipe.center.x < viewportRight - pipeDist
       if (startPiping && needsPipe) {
-        const newPipe = {
+        const center = {
           x: Math.round(viewportRight),
           y: Math.round(designHeight / 2 - Math.random() * 100),
         }
-        ds.pipes = ds.pipes.filter(({ x }) => x + pipeWidth > ds.viewportLeft)
-        ds.pipes.push(newPipe)
+        ds.pipes = ds.pipes.filter(
+          ({ center: { x } }) => x + pipeWidth > ds.viewportLeft,
+        )
+        ds.pipes.push({
+          center,
+          down: {
+            y: center.y + pipeGap / 2,
+            width: pipeWidth,
+            height: pipeHeight,
+          },
+          up: {
+            y: center.y - pipeGap / 2 - pipeHeight,
+            width: pipeWidth,
+            height: pipeHeight,
+          },
+        })
       }
     }
     ds.timePassed += delta
@@ -110,14 +144,14 @@ class GameReducer extends ImmerReducer<GameState> {
         ds.rotation = getRotation(ds.velocity)
       }
       ds.pipes = ds.pipes.map(p => {
-        if (!p.passed && ds.bird.x > p.x + pipeWidth) {
+        if (!p.passed && ds.bird.x > p.center.x + pipeWidth) {
           ds.score++
           return { ...p, passed: true }
         }
         return p
       })
       // Collision
-      const overlapingPipes = ds.pipes.filter(({ x, y }) => {
+      const overlapingPipes = ds.pipes.filter(({ center: { x, y } }) => {
         const overlapsX =
           Math.abs(ds.bird.x - (x + pipeWidth / 2)) < pipeWidth / 2
         const overlapsY = Math.abs(ds.bird.y - y) > (pipeGap - birdRadius) / 2

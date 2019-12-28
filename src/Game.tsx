@@ -11,6 +11,8 @@ import { Rectangle } from 'components/Rectangle'
 import { Typography } from 'components/Typography'
 import { designWidth, designHeight } from 'setup/dimensions'
 import { debug } from './utils/const'
+import pipeTexture from 'assets/sprites/pipe-green.png'
+import backgroundTexture from 'assets/sprites/background-day.png'
 
 export const Game = () => {
   const { bottom } = useViewport()
@@ -30,35 +32,18 @@ export const Game = () => {
 
   return (
     <>
-      <Sprite
-        {...baseProps}
-        interactive
-        image={require('assets/sprites/background-day.png').src}
-      />
-      {state.pipes.map(({ x, y }, i) => (
-        <Container key={i} x={x - state.viewportLeft}>
+      <Sprite {...baseProps} interactive image={backgroundTexture.src} />
+      {state.pipes.map(({ center, down, up }, i) => (
+        <Container key={i} x={center.x - state.viewportLeft}>
           <Sprite
-            // anchor={[0.5, 0]}
-            y={y + pipeGap / 2}
-            image={require('assets/sprites/pipe-green.png').src}
-          />
-          {debug && (
-            <Rectangle
-              y={y + pipeGap / 2}
-              alpha={0.5}
-              color={0xff9c2b}
-              width={pipeWidth}
-              height={200}
-              // anchor={0.5}
-            />
-          )}
-          <Sprite
-            // anchor={[0.5, 0]}
-            y={y - pipeGap / 2}
+            y={up.y}
+            anchor={[0, 1]}
             scale={[1, -1]}
-            image={require('assets/sprites/pipe-green.png').src}
+            image={pipeTexture.src}
           />
-          {/* <Rectangle x={x} y={y} width={50} height={pipeHeight} anchor={0.5} /> */}
+          <Sprite y={down.y} image={pipeTexture.src} />
+          {debug && <Rectangle alpha={0.5} color={0xff9c2b} {...down} />}
+          {debug && <Rectangle alpha={0.5} color={0xff9c2b} {...up} />}
         </Container>
       ))}
       <Bird game={game} />

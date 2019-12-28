@@ -3,6 +3,7 @@ import { Sprite, Container, useTick } from '@inlet/react-pixi'
 import { GameHook, BirdTexture } from 'hooks/useGameState'
 import { Rectangle } from './Rectangle'
 import { debug } from 'utils/const'
+import birdTexture from 'assets/sprites/yellowbird-midflap.png'
 
 const textures: Record<BirdTexture, string> = {
   down: require('assets/sprites/yellowbird-downflap.png').src,
@@ -35,14 +36,18 @@ export const Bird = ({ game }: BirdProps) => {
 
   return (
     <Container position={[bird.x - viewportLeft, bird.y]}>
-      <Sprite anchor={0.5} image={textures[textureName]} rotation={rotation} />
+      <Sprite
+        // anchor={0.5}
+        image={textures[textureName]}
+        rotation={rotation}
+      />
       {debug && (
         <Rectangle
           alpha={0.5}
           color={0xff9c2b}
           width={texture.width}
           height={texture.height}
-          anchor={0.5}
+          // anchor={0.5}
         />
       )}
     </Container>
