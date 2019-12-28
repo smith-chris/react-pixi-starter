@@ -2,7 +2,7 @@ import React, { useEffect, ComponentProps } from 'react'
 import { Sprite, Container, useTick } from '@inlet/react-pixi'
 import { GameHook, BirdTexture } from 'hooks/useGameState'
 import { Rectangle } from './Rectangle'
-import { debug } from 'utils/const'
+import { debug } from 'utils/debug'
 import birdTexture from 'assets/sprites/yellowbird-midflap.png'
 
 const textures: Record<BirdTexture, string> = {
@@ -18,10 +18,7 @@ type BirdProps = ComponentProps<typeof Sprite> & {
 }
 
 export const Bird = ({ game }: BirdProps) => {
-  const [
-    { textureName, bird, rotation, viewportLeft },
-    { onTouch, update },
-  ] = game
+  const [{ textureName, bird, rotation, viewportLeft }, { onTouch }] = game
 
   useEffect(() => {
     window.addEventListener('pointerdown', onTouch)
@@ -32,11 +29,15 @@ export const Bird = ({ game }: BirdProps) => {
     }
   }, [])
 
-  useTick(update)
-
   return (
     <Container position={[bird.x - viewportLeft, bird.y]}>
-      <Sprite image={textures[textureName]} rotation={rotation} />
+      <Sprite
+        image={textures[textureName]}
+        rotation={rotation}
+        anchor={0.5}
+        x={birdTexture.width / 2}
+        y={birdTexture.height / 2}
+      />
       {debug && (
         <Rectangle
           alpha={0.5}

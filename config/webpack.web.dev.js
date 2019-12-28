@@ -6,6 +6,6 @@ module.exports = merge(common(), {
   devtool: 'cheap-module-source-map',
   devServer: {
     quiet: true,
-    hot: true,
+    // hot: true,
   },
 })

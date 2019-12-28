@@ -86,11 +86,12 @@ export class Point {
 }
 
 export class Rect {
+  anchor?: Point | number
   constructor(
     public x = 0,
     public y = 0,
     public width = 0,
-    public height = 0,
+    public height = 0, // public anchor = Point.ZERO,
   ) {}
 
   static isRect(v: any): v is Rect {
@@ -106,12 +107,41 @@ export class Rect {
     return r.width <= 0 || r.height <= 0
   }
 
+  static anchor(r: Rect) {
+    if (typeof r.anchor === 'number') {
+      return new Point(r.anchor, r.anchor)
+    }
+    if (!r.anchor) {
+      return Point.ZERO
+    }
+    const xNumber = typeof r.anchor.x === 'number'
+    const yNumber = typeof r.anchor.y === 'number'
+    if (xNumber && yNumber) {
+      return r.anchor
+    }
+    if (xNumber && !yNumber) {
+      return new Point(r.anchor.x, 0)
+    }
+    if (!xNumber && yNumber) {
+      return new Point(0, r.anchor.y)
+    }
+    return Point.ZERO
+  }
+
+  static top(r: Rect) {
+    return r.y - r.height * Rect.anchor(r).y
+  }
+
   static right(r: Rect) {
-    return r.x + r.width
+    return r.x + r.width * (1 - Rect.anchor(r).x)
   }
 
   static bottom(r: Rect) {
-    return r.y + r.height
+    return r.y + r.height * (1 - Rect.anchor(r).y)
+  }
+
+  static left(r: Rect) {
+    return r.x - r.width * Rect.anchor(r).x
   }
 }
 
@@ -153,10 +183,10 @@ export const intersects = (a: IntersectValue, b: IntersectValue) => {
 
 export const intersectRects = (r1: Rect, r2: Rect) => {
   return !(
-    r2.x > Rect.right(r1) ||
-    Rect.right(r2) < r1.x ||
-    r2.y > Rect.bottom(r1) ||
-    Rect.bottom(r2) < r1.y
+    Rect.left(r2) > Rect.right(r1) ||
+    Rect.right(r2) < Rect.left(r1) ||
+    Rect.top(r2) > Rect.bottom(r1) ||
+    Rect.bottom(r2) < Rect.top(r1)
   )
 }
 

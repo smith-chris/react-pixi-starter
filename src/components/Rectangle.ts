@@ -6,7 +6,7 @@ export type Rect = {
   y?: number
   width: number
   height: number
-  anchor?: number
+  anchor?: number | Point
 }
 
 export const rectsEqual = (rA: Rect, rB: Rect) =>
@@ -18,7 +18,7 @@ export const rectsEqual = (rA: Rect, rB: Rect) =>
 
 type RectangleProps = {
   position?: Point
-  anchor?: number
+  anchor?: number | Point
   color?: number
   width: number
   height: number
@@ -50,8 +50,8 @@ export const Rectangle = PixiComponent<RectangleProps, Graphics>('Rect', {
       instance.clear()
       instance.beginFill(color || 0xffffff, alpha)
       instance.drawRect(
-        (x || 0) - width * anchor,
-        (y || 0) - height * anchor,
+        (x || 0) - width * (typeof anchor === 'number' ? anchor : anchor.x),
+        (y || 0) - height * (typeof anchor === 'number' ? anchor : anchor.y),
         width,
         height,
       )

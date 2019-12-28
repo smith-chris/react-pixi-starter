@@ -24,10 +24,6 @@
   "lint-staged": {
     "src/**/*.test.{ts,tsx}": [
       "jest --config=config/jest.config.js"
-    ],
-    "src/**/*.{ts,tsx}": [
-      "yarn lint",
-      "git add"
     ]
   },
   "dependencies": {

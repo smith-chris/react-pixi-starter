@@ -49,3 +49,5 @@ export const useViewport = () => {
   const extraHeight = Math.round(stageTop / stageScale)
   return { bottom: designHeight + extraHeight, extraHeight }
 }
+
+export type ViewportProps = ReturnType<typeof useViewport>

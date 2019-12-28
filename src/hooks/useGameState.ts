@@ -1,9 +1,11 @@
 import { ImmerReducer } from 'immer-reducer'
 import { makeImmerHook } from './makeImmerHook'
 import { designHeight, designWidth } from 'setup/dimensions'
-import { debug } from 'utils/const'
-import { intersectRects } from 'utils/math'
+import { debug } from 'utils/debug'
+import { intersectRects, Point } from 'utils/math'
 import birdTexture from 'assets/sprites/yellowbird-midflap.png'
+import baseTexture from 'assets/sprites/base.png'
+import { ViewportProps } from 'setup/getSizeProps'
 
 const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
 
@@ -44,7 +46,15 @@ const pipes: Array<{
 }> = []
 
 const initialState = {
+  system: {
+    scroll: debug,
+    gravity: false,
+    collision: true,
+  },
   isPlaying: false,
+  isTouchable: true,
+  alive: debug,
+  frozen: false,
   debug: {
     isPLaying: debug,
     freeze: false,
@@ -57,6 +67,12 @@ const initialState = {
     width: birdTexture.width - 1,
     height: birdTexture.height,
   },
+  base: {
+    x: 0,
+    y: 0,
+    anchor: new Point(0, 1),
+    offset: 0,
+  },
   rotation: 0,
   textureName: 'mid' as BirdTexture,
   viewportLeft: 0,
@@ -66,7 +82,6 @@ const initialState = {
 
 export type GameState = typeof initialState
 
-// TODO: get it from texture
 export const pipeWidth = require('assets/sprites/pipe-green.png').width
 export const pipeHeight = require('assets/sprites/pipe-green.png').height
 export const pipeGap = debug ? 60 : 120
@@ -75,33 +90,59 @@ export const birdRadius = 27
 class GameReducer extends ImmerReducer<GameState> {
   onTouch() {
     const { draftState: ds } = this
-    if (!ds.isPlaying) {
-      ds.isPlaying = true
-      if (debug) {
-        ds.debug.isPLaying = true
+    if (ds.isTouchable) {
+      if (!ds.isPlaying) {
+        ds.isPlaying = true
+        ds.system.scroll = true
+        ds.system.gravity = true
+        ds.system.collision = true
+        ds.alive = true
+        ds.frozen = false
+        if (debug) {
+          ds.debug.isPLaying = true
+        }
+        ds.bird = initialState.bird
+        ds.timePassed = 0
+        ds.viewportLeft = 0
       }
-      ds.bird = initialState.bird
-      ds.timePassed = 0
-      ds.viewportLeft = 0
+      ds.velocity = 6
     }
-    ds.velocity = 6
   }
 
-  gameOver() {
+  pipeDeath() {
+    log('pipeDeath')
     const { draftState: ds } = this
-    if (!debug) {
+    if (!ds.frozen) {
+      ds.isTouchable = false
       ds.isPlaying = false
-      ds.score = 0
-      ds.pipes = []
-    } else {
-      ds.debug.freeze = true
+      ds.system.scroll = false
+      ds.system.gravity = true
+      ds.alive = false
     }
+  }
+
+  baseDeath() {
+    log('baseDeath')
+    const { draftState: ds } = this
+    this.pipeDeath()
+    ds.frozen = true
+    ds.system.collision = false
+    ds.isTouchable = true
+  }
+
+  onViewportChange({ bottom }: ViewportProps) {
+    this.draftState.base.y = Math.max(450, bottom)
   }
 
   update(delta?: number) {
     delta = delta || 1000 / 60
     const { draftState: ds } = this
-    if (ds.isPlaying || (ds.debug.isPLaying && !ds.debug.freeze)) {
+
+    ds.timePassed += delta
+    ds.textureName = ds.alive ? getTextureName(ds.timePassed) : 'mid'
+
+    if (ds.system.scroll) {
+      ds.base.offset = ds.base.offset < -46 ? 0 : ds.base.offset - delta
       ds.viewportLeft += delta
       ds.bird.x += delta
       const viewportRight = ds.viewportLeft + designWidth
@@ -134,17 +175,30 @@ class GameReducer extends ImmerReducer<GameState> {
         })
       }
     }
-    ds.timePassed += delta
-    ds.textureName = getTextureName(ds.timePassed)
-    if (ds.isPlaying || ds.debug.isPLaying) {
-      if (ds.bird.y + 12 > designHeight) {
-        this.gameOver()
-      }
-      if (!debug) {
-        // gravity only while not debugging
-        ds.velocity -= 0.25
+
+    if (!ds.frozen) {
+      if (ds.system.gravity) {
+        ds.velocity -= ds.alive ? 0.25 : 0.5
         ds.bird.y -= ds.velocity
-        ds.rotation = getRotation(ds.velocity)
+        ds.rotation = getRotation(ds.alive ? ds.velocity : ds.velocity * 2)
+      } else {
+        ds.bird.y = getY(ds.timePassed)
+        ds.rotation = 0
+      }
+    }
+
+    if (ds.system.collision) {
+      if (
+        intersectRects(
+          {
+            ...ds.base,
+            width: baseTexture.width,
+            height: baseTexture.height,
+          },
+          { ...ds.bird, height: ds.bird.height + 7 },
+        )
+      ) {
+        this.baseDeath()
       }
       ds.pipes = ds.pipes.map(p => {
         if (!p.passed && ds.bird.x > p.center.x + pipeWidth) {
@@ -153,16 +207,12 @@ class GameReducer extends ImmerReducer<GameState> {
         }
         return p
       })
-      // Collision
       const overlapingPipes = ds.pipes.filter(({ down, up }) => {
         return intersectRects(down, ds.bird) || intersectRects(up, ds.bird)
       })
       if (overlapingPipes.length) {
-        this.gameOver()
+        this.pipeDeath()
       }
-    } else {
-      ds.bird.y = getY(ds.timePassed)
-      ds.rotation = 0
     }
   }
 }

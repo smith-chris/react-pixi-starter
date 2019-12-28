@@ -1,38 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Sprite, useTick, Container } from '@inlet/react-pixi'
 import { useViewport } from 'setup/getSizeProps'
-import { Point } from 'pixi.js'
 
-import baseImage from 'assets/sprites/base.png'
+import baseTexture from 'assets/sprites/base.png'
 import { Bird } from 'components/Bird'
-import { useGameReducer, pipeGap, pipeWidth } from 'hooks/useGameState'
+import { useGameReducer } from 'hooks/useGameState'
 import { Rectangle } from 'components/Rectangle'
 import { Typography } from 'components/Typography'
 import { designWidth, designHeight } from 'setup/dimensions'
-import { debug } from './utils/const'
+import { debug } from './utils/debug'
 import pipeTexture from 'assets/sprites/pipe-green.png'
 import backgroundTexture from 'assets/sprites/background-day.png'
 
 export const Game = () => {
-  const { bottom } = useViewport()
-  const [baseOffset, setBaseOffset] = useState(0)
+  const viewport = useViewport()
   const game = useGameReducer()
+  const [{ base }, { update, onViewportChange }] = game
   const [state] = game
 
-  const baseProps = {
-    anchor: new Point(0, 1),
-    y: Math.max(450, bottom),
-  }
+  useTick(update)
 
-  useTick((delta = 0) => {
-    const movement = delta
-    setBaseOffset(v => (v < -46 ? 0 : v - movement))
-  })
+  useEffect(() => {
+    onViewportChange(viewport)
+  }, [viewport])
 
   return (
     <>
-      <Sprite {...baseProps} interactive image={backgroundTexture.src} />
+      <Sprite {...base} interactive image={backgroundTexture.src} />
       {state.pipes.map(({ center, down, up }, i) => (
         <Container key={i} x={center.x - state.viewportLeft}>
           <Sprite
@@ -50,7 +45,16 @@ export const Game = () => {
       <Typography anchor={0.5} x={designWidth / 2} y={designHeight / 10}>
         Score: {state.score}
       </Typography>
-      <Sprite {...baseProps} x={baseOffset} image={baseImage.src} />
+      <Sprite {...base} x={base.offset} image={baseTexture.src} />
+      {debug && (
+        <Rectangle
+          alpha={0.5}
+          color={0xfa0c2c}
+          {...base}
+          width={baseTexture.width}
+          height={baseTexture.height}
+        />
+      )}
     </>
   )
 }
