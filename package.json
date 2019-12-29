@@ -30,6 +30,7 @@
     "@inlet/react-pixi": "^1.1.2",
     "@types/lodash.mapvalues": "^4.6.6",
     "@types/matter-js": "^0.10.7",
+    "copy-webpack-plugin": "^5.1.1",
     "immer-reducer": "^0.7.8",
     "lodash.debounce": "^4.0.8",
     "lodash.mapvalues": "^4.6.0",

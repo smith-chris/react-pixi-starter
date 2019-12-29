@@ -2,6 +2,7 @@ const path = require('path')
 
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
@@ -37,6 +38,7 @@ module.exports = ({ isIOS } = {}) => ({
       inject: 'body',
       appName: 'React PIXI Starter',
     }),
+    new CopyPlugin([{ from: path.resolve('./src/assets'), to: 'assets' }]),
     new ForkTsCheckerWebpackPlugin(),
     new FriendlyErrorsWebpackPlugin(),
   ],
