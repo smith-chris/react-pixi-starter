@@ -34,3 +34,6 @@ document.createElement = function(...createElementParams) {
   }
   return createElementResult
 }
+
+// For phaser ios check (so it equals false)
+navigator.userAgent = 'Ejecta/2.1'

@@ -34,6 +34,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.mapvalues": "^4.6.0",
     "matter-js": "^0.14.2",
+    "phaser": "^3.21.0",
     "pixi.js": "^5.1.5",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
