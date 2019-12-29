@@ -34,7 +34,12 @@ export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
     scale: new Point(stageScale, stageScale),
     position: new Point(0, stageTop),
   }
-  return { canvas, renderer, stage }
+  return {
+    canvas,
+    renderer,
+    stage,
+    viewport: { width: designWidth, height: viewportHeight },
+  }
 }
 
 export const useSize = () => {

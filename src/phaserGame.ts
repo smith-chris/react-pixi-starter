@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { designHeight, designWidth, minRatio, maxRatio } from 'setup/dimensions'
+import { getSizeProps } from 'setup/getSizeProps'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
@@ -31,6 +32,11 @@ class MainScene extends Phaser.Scene {
   }
 }
 
+const sizeProps = getSizeProps({
+  width: window.innerWidth,
+  height: window.innerHeight,
+})
+
 export const game = new Phaser.Game({
   title: 'Sample',
 
@@ -40,23 +46,8 @@ export const game = new Phaser.Game({
 
   scene: MainScene,
 
-  width: designWidth,
-  height: designHeight,
-
-  // scale: {
-  //   mode: Phaser.Scale.ENVELOP,
-  //   // autoCenter: Phaser.Scale.NO_CENTER,
-  //   width: designWidth,
-  //   height: designHeight,
-  //   min: {
-  //     width: designWidth,
-  //     height: designWidth * (1 / minRatio),
-  //   },
-  //   max: {
-  //     width: designWidth,
-  //     height: designWidth * (1 / maxRatio),
-  //   },
-  // },
+  width: sizeProps.viewport.width,
+  height: sizeProps.viewport.height,
 
   input: {
     keyboard: true,
@@ -70,10 +61,38 @@ export const game = new Phaser.Game({
     },
   },
 
+  render: {
+    pixelArt: true,
+  },
+
   backgroundColor: '#abcdef',
   customEnvironment: true,
 })
 
-setTimeout(() => {
-  console.log(game.renderer.width, game.renderer.height)
+const onResize = () => {
+  const sizeProps = getSizeProps({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  })
+
+  // Object.assign(stage, sizeProps.stage)
+
+  game.renderer?.resize(sizeProps.viewport.width, sizeProps.viewport.height)
+  canvas.style.width = `${sizeProps.canvas.width}px`
+  canvas.style.height = `${sizeProps.canvas.height}px`
+  console.log(sizeProps.stage)
+  console.log(sizeProps.canvas)
+  console.log(sizeProps.renderer)
+  console.log(sizeProps.viewport)
+  // console.log(game.renderer.width, game.renderer.height)
+}
+
+window.addEventListener('resize', onResize)
+onResize()
+// @ts-ignore
+window.game = game
+// setTimeout(onResize, 10)
+
+game.events.on('load', () => {
+  console.log('load')
 })
