@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { designHeight, designWidth, minRatio, maxRatio } from 'setup/dimensions'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
@@ -39,18 +40,40 @@ export const game = new Phaser.Game({
 
   scene: MainScene,
 
-  scale: {
-    width: window.innerWidth,
-    height: window.innerHeight,
+  width: designWidth,
+  height: designHeight,
+
+  // scale: {
+  //   mode: Phaser.Scale.ENVELOP,
+  //   // autoCenter: Phaser.Scale.NO_CENTER,
+  //   width: designWidth,
+  //   height: designHeight,
+  //   min: {
+  //     width: designWidth,
+  //     height: designWidth * (1 / minRatio),
+  //   },
+  //   max: {
+  //     width: designWidth,
+  //     height: designWidth * (1 / maxRatio),
+  //   },
+  // },
+
+  input: {
+    keyboard: true,
   },
 
   physics: {
     default: 'arcade',
     arcade: {
       debug: true,
+      gravity: { y: 300 },
     },
   },
 
   backgroundColor: '#abcdef',
   customEnvironment: true,
+})
+
+setTimeout(() => {
+  console.log(game.renderer.width, game.renderer.height)
 })
