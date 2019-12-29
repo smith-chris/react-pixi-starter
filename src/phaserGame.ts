@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import { designHeight, designWidth, minRatio, maxRatio } from 'setup/dimensions'
 import { getSizeProps } from 'setup/getSizeProps'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
@@ -56,7 +55,7 @@ const sizeProps = getSizeProps({
 })
 
 export const game = new Phaser.Game({
-  title: 'Sample',
+  title: 'Flappy bird',
 
   type: Phaser.WEBGL,
 
@@ -97,42 +96,24 @@ const onResize = () => {
     height: window.innerHeight,
   })
 
-  // Object.assign(stage, sizeProps.stage)
-
-  // game.renderer?.resize(sizeProps.viewport.width, sizeProps.viewport.height)
-  // game.width
   if (game.scale.baseSize && game.scale.canvas) {
     game.scale.resize(sizeProps.viewport.width, sizeProps.viewport.height)
+  } else {
+    log('Postponing resize')
+    setTimeout(onResize, 50)
+    return
   }
-  // canvas.width = sizeProps.canvas.width
-  // canvas.height = sizeProps.canvas.height
   canvas.style.width = `${sizeProps.canvas.width}px`
   canvas.style.height = `${sizeProps.canvas.height}px`
-  // game.scale.
-  // game.scale.width = sizeProps.viewport.width
-  // game.scale.height = sizeProps.viewport.height
-  // const currentScene = game.scene.scenes[0]
-  // if (currentScene) {
-  //   log('Setting scene')
-  //   currentScene.scale = sizeProps.stage.scale
-  //   currentScene.position = sizeProps.stage.position
-  // } else {
-  //   log('No scene', game.scene.scenes)
-  // }
-  // console.log(sizeProps.stage)
-  // console.log(sizeProps.canvas)
-  // console.log(sizeProps.renderer)
-  // console.log(sizeProps.viewport)
-  // console.log(game.renderer.width, game.renderer.height)
 }
 
 window.addEventListener('resize', onResize)
-onResize()
+setTimeout(onResize)
 // @ts-ignore
 window.game = game
-// window.Phaser = Phaser
-// setTimeout(onResize, 10)
-
-game.events.on('load', () => {
-  console.log('load')
-})
+setTimeout(() => {
+  // console.log(game.scene.getScene('OtherScene'))
+  // console.log(game.scene.isActive('OtherScene'))
+  // console.log(game.scene.isActive('MainScene'))
+  game.scene.run('OtherScene')
+}, 100)
