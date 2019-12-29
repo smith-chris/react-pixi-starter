@@ -2,10 +2,11 @@ import { ImmerReducer } from 'immer-reducer'
 import { makeImmerHook } from './makeImmerHook'
 import { designHeight, designWidth } from 'setup/dimensions'
 import { debug } from 'utils/debug'
-import { intersectRects, Point } from 'utils/math'
+import { intersectRects } from 'utils/math'
 import birdTexture from 'assets/sprites/yellowbird-midflap.png'
 import baseTexture from 'assets/sprites/base.png'
 import { ViewportProps } from 'setup/getSizeProps'
+import { Point } from 'pixi.js'
 
 const getVariation = (timePassed: number) => Math.sin(timePassed / 7)
 

@@ -14,16 +14,6 @@ import { debug } from './utils/debug'
 import pipeTexture from 'assets/sprites/pipe-green.png'
 import backgroundTexture from 'assets/sprites/background-day.png'
 
-console.log(Axes)
-World.add(world, [
-  stack,
-  // walls
-  Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
-  Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
-  Bodies.rectangle(0, 300, 50, 600, { isStatic: true }),
-  Bodies.rectangle(400, 605, 800, 50, { isStatic: true }),
-])
-
 export const Game = () => {
   const viewport = useViewport()
   const game = useGameReducer()

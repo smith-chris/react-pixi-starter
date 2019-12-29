@@ -86,7 +86,7 @@ export class Point {
 }
 
 export class Rect {
-  anchor?: Point | number
+  anchor?: Point | number | PIXI.Point
   constructor(
     public x = 0,
     public y = 0,
