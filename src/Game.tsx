@@ -1,5 +1,5 @@
-import { Box2D } from 'utils/Box2D'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
+import { Axes, World } from 'matter-js'
 
 import { Sprite, useTick, Container } from '@inlet/react-pixi'
 import { useViewport } from 'setup/getSizeProps'
@@ -14,7 +14,15 @@ import { debug } from './utils/debug'
 import pipeTexture from 'assets/sprites/pipe-green.png'
 import backgroundTexture from 'assets/sprites/background-day.png'
 
-console.log(Box2D)
+console.log(Axes)
+World.add(world, [
+  stack,
+  // walls
+  Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
+  Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
+  Bodies.rectangle(0, 300, 50, 600, { isStatic: true }),
+  Bodies.rectangle(400, 605, 800, 50, { isStatic: true }),
+])
 
 export const Game = () => {
   const viewport = useViewport()

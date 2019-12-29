@@ -29,12 +29,11 @@
   "dependencies": {
     "@inlet/react-pixi": "^1.1.2",
     "@types/lodash.mapvalues": "^4.6.6",
-    "box2d.js": "https://github.com/kripken/box2d.js.git",
+    "@types/matter-js": "^0.10.7",
     "immer-reducer": "^0.7.8",
-    "liquidfun-emscripten": "^1.1.4",
-    "liquidfun-prizz": "^1.0.0",
     "lodash.debounce": "^4.0.8",
     "lodash.mapvalues": "^4.6.0",
+    "matter-js": "^0.14.2",
     "pixi.js": "^5.1.5",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
@@ -43,7 +42,6 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-solve": "^0.2.1",
     "rezolve": "^0.3.2",
-    "script-loader": "^0.7.2",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
