@@ -16,15 +16,13 @@ const responsive = (listener: Listener) => {
   )
 }
 
+type A = Phaser.Physics.Arcade.Body['maxVelocity']
+
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 class GameScene extends Phaser.Scene {
-  bird = {
-    x: designWidth / 3,
-    y: designHeight / 2,
-  }
-
   surface!: Phaser.GameObjects.Container
+  player!: Phaser.Physics.Arcade.Sprite
 
   constructor() {
     super('GameScene')
@@ -33,20 +31,51 @@ class GameScene extends Phaser.Scene {
     this.load.image('background-day', 'assets/sprites/background-day.png')
     this.load.image('base', 'assets/sprites/base.png')
     this.load.image('bird', 'assets/sprites/yellowbird-midflap.png')
+    this.load.image('pipe', 'assets/sprites/pipe-green.png')
   }
   create() {
     this.surface = this.add.container(0, 0)
     const bg = this.add.image(0, 0, 'background-day').setOrigin(0, 1)
     this.surface.add(bg)
 
-    const player = this.physics.add.sprite(this.bird.x, this.bird.y, 'bird')
+    const player = this.physics.add.sprite(
+      designWidth / 3,
+      designHeight / 2,
+      'bird',
+    )
+    const playerBody = player.body as Phaser.Physics.Arcade.Body
+    this.player = player
+    // @ts-ignore
+    window.player = player
+    playerBody.maxVelocity.y = 0
+    // player.setVelocityX(20)
+    playerBody.world
+    // player.setMaxVelocity(1, 0)
+    // player.body.physicsType = 1
     this.surface.add(player)
-    const base = this.add.image(0, 0, 'base').setOrigin(0, 1)
-    this.surface.add(base)
 
-    setTimeout(() => {
-      player.disableBody()
-    }, 20)
+    const pipe = this.physics.add.sprite(200, 300, 'pipe')
+    const pipeBody = pipe.body as Phaser.Physics.Arcade.Body
+    pipeBody.velocity.x = -100
+    pipeBody.maxVelocity.y = 0
+    this.surface.add(pipe)
+    this.physics.add.collider(player, pipe)
+
+    const obstaclesGroup = this.physics.add.group({
+      allowGravity: false,
+      velocityY: 100,
+    })
+
+    const base = this.physics.add.sprite(0, 0, 'base').setOrigin(0, 1)
+    // Make it static
+    base.setMaxVelocity(0)
+    base.setImmovable(true)
+
+    this.physics.add.collider(player, base)
+    // base.body.allowGravity = false
+    // base.body.is
+    this.surface.add(base)
+    // obstaclesGroup.add(base)
 
     responsive(({ stage, viewport }) => {
       const extraHeight = stage.position.y / stage.scale.y
@@ -68,6 +97,12 @@ class GameScene extends Phaser.Scene {
         .strokeRect(0, (designHeight - minHeight) / 2, designWidth, minHeight)
       this.surface.add(debugLines)
     }
+  }
+
+  update(_, delta: number) {
+    const px = delta / (1000 / 60)
+    // this.player.x += px
+    // this.cameras.main.centerOnX(this.player.x + designWidth / 6)
   }
 }
 

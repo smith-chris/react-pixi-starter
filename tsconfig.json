@@ -5,7 +5,7 @@
     "outDir": "./dist/",
     "skipLibCheck": true,
     "sourceMap": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
