@@ -1,51 +1,28 @@
 import Phaser from 'phaser'
 import { getSizeProps } from 'setup/getSizeProps'
+import { designWidth, designHeight } from 'setup/dimensions'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
-class MainScene extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
+  bird = {
+    x: designWidth / 3,
+    y: designHeight / 2,
+  }
   constructor() {
-    super('MainScene')
+    super('GameScene')
+  }
+  preload() {
+    this.load.image('background-day', 'assets/sprites/background-day.png')
+    this.load.image('bird', 'assets/sprites/yellowbird-midflap.png')
   }
   create() {
-    const stage = this.add.container(0, 0)
-    const logo = stage.add(this.add.text(100, 150, 'Hello', { fontSize: 30 }))
+    this.add.image(designWidth / 2, designHeight / 2, 'background-day')
 
-    logo.setInteractive().on('pointerdown', () => {
-      console.log('PD!!')
-    })
-
-    this.tweens.add({
-      targets: logo,
-      y: 250,
-      duration: 200000,
-      ease: 'Power2',
-      yoyo: true,
-      loop: -1,
-    })
-  }
-}
-
-class OtherScene extends Phaser.Scene {
-  constructor() {
-    super('OtherScene')
-  }
-  create() {
-    const stage = this.add.container(0, 0)
-    const logo = stage.add(this.add.text(100, 250, 'Hello', { fontSize: 30 }))
-
-    logo.setInteractive().on('pointerdown', () => {
-      console.log('PD!!')
-    })
-
-    this.tweens.add({
-      targets: logo,
-      y: 150,
-      duration: 200000,
-      ease: 'Power2',
-      yoyo: true,
-      loop: -1,
-    })
+    const player = this.physics.add.sprite(this.bird.x, this.bird.y, 'bird')
+    setTimeout(() => {
+      player.disableBody()
+    }, 10)
   }
 }
 
@@ -61,7 +38,7 @@ export const game = new Phaser.Game({
 
   canvas,
 
-  scene: [MainScene, OtherScene],
+  scene: [GameScene],
 
   width: sizeProps.viewport.width,
   height: sizeProps.viewport.height,
@@ -115,5 +92,5 @@ setTimeout(() => {
   // console.log(game.scene.getScene('OtherScene'))
   // console.log(game.scene.isActive('OtherScene'))
   // console.log(game.scene.isActive('MainScene'))
-  game.scene.run('OtherScene')
+  // game.scene.run('OtherScene')
 }, 100)
