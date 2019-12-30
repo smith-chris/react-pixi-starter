@@ -1,4 +1,4 @@
-export const debug = true
+export const debug = false
 
 // @ts-ignore
 window.log = (...params: any[]) => {
