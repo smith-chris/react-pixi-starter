@@ -1,6 +1,20 @@
 import Phaser from 'phaser'
 import { getSizeProps } from 'setup/getSizeProps'
-import { designWidth, designHeight } from 'setup/dimensions'
+import { designWidth, designHeight, minHeight } from 'setup/dimensions'
+import { debug } from 'utils/debug'
+
+type Listener = (v: ReturnType<typeof getSizeProps>) => void
+const listeners: Listener[] = []
+
+const responsive = (listener: Listener) => {
+  listeners.push(listener)
+  listener(
+    getSizeProps({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }),
+  )
+}
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
@@ -9,20 +23,51 @@ class GameScene extends Phaser.Scene {
     x: designWidth / 3,
     y: designHeight / 2,
   }
+
+  surface!: Phaser.GameObjects.Container
+
   constructor() {
     super('GameScene')
   }
   preload() {
     this.load.image('background-day', 'assets/sprites/background-day.png')
+    this.load.image('base', 'assets/sprites/base.png')
     this.load.image('bird', 'assets/sprites/yellowbird-midflap.png')
   }
   create() {
-    this.add.image(designWidth / 2, designHeight / 2, 'background-day')
+    this.surface = this.add.container(0, 0)
+    const bg = this.add.image(0, 0, 'background-day').setOrigin(0, 1)
+    this.surface.add(bg)
 
     const player = this.physics.add.sprite(this.bird.x, this.bird.y, 'bird')
+    this.surface.add(player)
+    const base = this.add.image(0, 0, 'base').setOrigin(0, 1)
+    this.surface.add(base)
+
     setTimeout(() => {
       player.disableBody()
-    }, 10)
+    }, 20)
+
+    responsive(({ stage, viewport }) => {
+      const extraHeight = stage.position.y / stage.scale.y
+      const bottom = designHeight + extraHeight
+      const top = -extraHeight
+      this.surface.y = extraHeight
+      const baseBottom = Math.max(450, bottom)
+      bg.setY(baseBottom)
+      base.setY(baseBottom)
+    })
+
+    if (debug) {
+      // The design viewport
+      const debugLines = this.add
+        .graphics()
+        .lineStyle(2, 0xffff00, 0.5)
+        .strokeRect(0, 0, designWidth, designHeight)
+        .lineStyle(2, 0xff00ff, 0.5)
+        .strokeRect(0, (designHeight - minHeight) / 2, designWidth, minHeight)
+      this.surface.add(debugLines)
+    }
   }
 }
 
@@ -54,7 +99,7 @@ export const game = new Phaser.Game({
   physics: {
     default: 'arcade',
     arcade: {
-      debug: true,
+      debug,
       gravity: { y: 300 },
     },
   },
@@ -82,6 +127,7 @@ const onResize = () => {
   }
   canvas.style.width = `${sizeProps.canvas.width}px`
   canvas.style.height = `${sizeProps.canvas.height}px`
+  listeners.forEach(f => f(sizeProps))
 }
 
 window.addEventListener('resize', onResize)
