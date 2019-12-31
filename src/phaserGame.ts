@@ -46,6 +46,16 @@ class GameScene extends Phaser.Scene {
       designHeight / 2,
       'bird',
     )
+    const circleOffset = {
+      x: 8,
+      y: 1,
+    }
+    player.setOrigin(
+      0.5 + circleOffset.x / 2 / player.width,
+      0.5 + circleOffset.y / 2 / player.height,
+    )
+    player.setCircle(12, circleOffset.x, circleOffset.y)
+    // player.rotation = 10
     player.body.setMass(Number.MAX_SAFE_INTEGER)
 
     const playerBody = player.body as Phaser.Physics.Arcade.Body
@@ -96,8 +106,24 @@ class GameScene extends Phaser.Scene {
   pipeDist = 150
   pipeGap = debug ? 60 : 120
 
-  update(_, delta: number) {
-    // const px = delta / (1000 / 60)
+  getVariation = (timePassed: number) => Math.sin(timePassed / 7 / 16.66)
+
+  getY = (timePassed: number) =>
+    designHeight / 2 -
+    this.player.height / 2 +
+    Math.round(this.getVariation(timePassed) * 5)
+
+  getTextureName = (timePassed: number) => {
+    const v = this.getVariation(timePassed)
+    if (v > 0.33) return 'up'
+    if (v < -0.33) return 'down'
+    return 'mid'
+  }
+
+  update(timePassed: number, delta: number) {
+    const px = delta / (1000 / 60)
+    // this.player.rotation += px / 100
+    this.player.y = this.getY(timePassed)
     if (this.state.playing) {
       const pipeSprites = this.pipes.getChildren() as Phaser.Physics.Arcade.Sprite[]
       const lastPipeX = pipeSprites.length
