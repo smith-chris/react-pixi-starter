@@ -16,8 +16,6 @@ const responsive = (listener: Listener) => {
   )
 }
 
-type A = Phaser.Physics.Arcade.Body['maxVelocity']
-
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 class GameScene extends Phaser.Scene {
@@ -28,6 +26,7 @@ class GameScene extends Phaser.Scene {
   state = {
     playing: true,
   }
+  debugLines?: Phaser.GameObjects.Graphics
 
   constructor() {
     super('GameScene')
@@ -69,6 +68,17 @@ class GameScene extends Phaser.Scene {
     this.children.bringToTop(base)
     // this.physics.add.collider(player, base)
 
+    if (debug) {
+      // The design viewport
+      this.debugLines = this.add
+        .graphics()
+        .lineStyle(2, 0xff0000, 0.75)
+        .strokeRect(0, 0, designWidth, designHeight)
+        .lineStyle(2, 0xfffb00, 0.75)
+        .strokeRect(0, (designHeight - minHeight) / 2, designWidth, minHeight)
+      // this.map.add(debugLines)
+    }
+
     responsive(({ stage }) => {
       const extraHeight = stage.position.y / stage.scale.y
       const bottom = designHeight + extraHeight
@@ -77,21 +87,14 @@ class GameScene extends Phaser.Scene {
       const baseBottom = Math.max(450, bottom) + extraHeight
       bg.setY(baseBottom)
       base.setY(baseBottom)
+      if (this.debugLines) {
+        this.debugLines.y = extraHeight
+      }
     })
-
-    if (debug) {
-      // The design viewport
-      const debugLines = this.add
-        .graphics()
-        .lineStyle(2, 0xffff00, 0.5)
-        .strokeRect(0, 0, designWidth, designHeight)
-        .lineStyle(2, 0xff00ff, 0.5)
-        .strokeRect(0, (designHeight - minHeight) / 2, designWidth, minHeight)
-      this.map.add(debugLines)
-    }
   }
 
   pipeDist = 150
+  pipeGap = debug ? 60 : 120
 
   update(_, delta: number) {
     // const px = delta / (1000 / 60)
@@ -107,13 +110,37 @@ class GameScene extends Phaser.Scene {
             p.destroy()
           }
         })
-        const pipe = this.physics.add.sprite(designWidth, 300, 'pipe')
-        pipe.setOrigin(0, 0)
-        const pipeBody = pipe.body as Phaser.Physics.Arcade.Body
-        pipeBody.maxVelocity.y = 0
-        this.pipes.add(pipe)
+        const variation = 125
+        const centerY = Math.round(
+          designHeight / 2 + variation * 0.75 - Math.random() * variation,
+        )
+
+        const topPipe = this.physics.add.sprite(
+          designWidth,
+          centerY - this.pipeGap / 2,
+          'pipe',
+        )
+        topPipe.setOrigin(0, 1)
+        topPipe.flipY = true
+        const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body
+        topPipeBody.maxVelocity.y = 0
+        this.pipes.add(topPipe)
+
+        const bottomPipe = this.physics.add.sprite(
+          designWidth,
+          centerY + this.pipeGap / 2,
+          'pipe',
+        )
+        bottomPipe.setOrigin(0, 0)
+        const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body
+        bottomPipeBody.maxVelocity.y = 0
+        this.pipes.add(bottomPipe)
+
         // For whatever reason this is necessary
         this.children.bringToTop(this.base)
+        if (this.debugLines) {
+          this.children.bringToTop(this.debugLines)
+        }
 
         // this.physics.add.collider(player, pipe)
       }
