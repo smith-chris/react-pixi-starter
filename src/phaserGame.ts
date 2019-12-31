@@ -24,7 +24,9 @@ class GameScene extends Phaser.Scene {
   base!: Phaser.Physics.Arcade.Sprite
   pipes!: Phaser.Physics.Arcade.Group
   state = {
-    playing: true,
+    playing: false,
+    touchable: true,
+    alive: true,
   }
   debugLines?: Phaser.GameObjects.Graphics
 
@@ -34,7 +36,9 @@ class GameScene extends Phaser.Scene {
   preload() {
     this.load.image('background-day', 'assets/sprites/background-day.png')
     this.load.image('base', 'assets/sprites/base.png')
-    this.load.image('bird', 'assets/sprites/yellowbird-midflap.png')
+    this.load.image('midflap', 'assets/sprites/yellowbird-midflap.png')
+    this.load.image('upflap', 'assets/sprites/yellowbird-upflap.png')
+    this.load.image('downflap', 'assets/sprites/yellowbird-downflap.png')
     this.load.image('pipe', 'assets/sprites/pipe-green.png')
   }
   create() {
@@ -44,7 +48,7 @@ class GameScene extends Phaser.Scene {
     const player = this.physics.add.sprite(
       designWidth / 3,
       designHeight / 2,
-      'bird',
+      'midflap',
     )
     const circleOffset = {
       x: 8,
@@ -56,19 +60,21 @@ class GameScene extends Phaser.Scene {
     )
     player.setCircle(12, circleOffset.x, circleOffset.y)
     // player.rotation = 10
-    player.body.setMass(Number.MAX_SAFE_INTEGER)
+    // player.body.setMass(Number.MAX_SAFE_INTEGER)
+    // playerBody.onCollide()
 
     const playerBody = player.body as Phaser.Physics.Arcade.Body
     this.player = player
     // @ts-ignore
     window.player = player
     playerBody.maxVelocity.y = 0
-    playerBody.world
     this.map.add(player)
 
     this.pipes = this.physics.add.group({
       velocityX: -100,
     })
+    // this.physics.add.collider(player, this.pipes)
+    this.physics.add.overlap(player, this.pipes, this.onPipeCollision)
 
     const base = this.physics.add.sprite(0, 0, 'base').setOrigin(0, 1)
     // Make it static
@@ -77,6 +83,9 @@ class GameScene extends Phaser.Scene {
     this.base = base
     this.children.bringToTop(base)
     // this.physics.add.collider(player, base)
+    this.physics.add.overlap(player, base, this.onBaseCollision)
+
+    this.input.on('pointerdown', this.onTouch)
 
     if (debug) {
       // The design viewport
@@ -103,28 +112,72 @@ class GameScene extends Phaser.Scene {
     })
   }
 
-  pipeDist = 150
-  pipeGap = debug ? 60 : 120
+  onPipeCollision = () => {
+    this.pipes.setVelocityX(0)
+    this.state.touchable = false
+  }
 
-  getVariation = (timePassed: number) => Math.sin(timePassed / 7 / 16.66)
+  onBaseCollision = () => {
+    this.player.setMaxVelocity(0)
+    this.state.alive = false
+  }
+
+  onTouch = () => {
+    if (!this.state.touchable) {
+      return
+    }
+    if (!this.state.playing) {
+      this.state.playing = true
+      // @ts-ignore
+      this.player.body.maxVelocity.y = this.player.body.maxVelocity.x
+    }
+    this.player.setVelocityY(-300)
+  }
+
+  pipeDist = 150
+  pipeGap = debug ? 120 : 120
+
+  getVariation = (timePassed: number) => Math.sin(timePassed / 7 / (1000 / 60))
 
   getY = (timePassed: number) =>
     designHeight / 2 -
     this.player.height / 2 +
     Math.round(this.getVariation(timePassed) * 5)
 
+  getRotation = (velocity: number) => {
+    // Moving upwards
+    if (velocity < 0) return Math.max(-0.5, velocity / 500)
+    // Moving downwards
+    else if (velocity > 0) return Math.min(1.5, velocity / 500)
+    return 0
+  }
+
   getTextureName = (timePassed: number) => {
     const v = this.getVariation(timePassed)
-    if (v > 0.33) return 'up'
-    if (v < -0.33) return 'down'
-    return 'mid'
+    if (v > 0.33) return 'upflap'
+    if (v < -0.33) return 'downflap'
+    return 'midflap'
   }
 
   update(timePassed: number, delta: number) {
     const px = delta / (1000 / 60)
     // this.player.rotation += px / 100
-    this.player.y = this.getY(timePassed)
+    if (this.state.alive) {
+      const textureName = this.getTextureName(
+        this.state.playing ? timePassed * 3 : timePassed,
+      )
+      if (textureName !== this.player.texture.key) {
+        this.player.setTexture(textureName)
+      }
+    }
+    if (!this.state.playing) {
+      this.player.y = this.getY(timePassed)
+    }
     if (this.state.playing) {
+      if (this.state.alive) {
+        this.player.rotation = this.getRotation(this.player.body.velocity.y)
+      }
+
       const pipeSprites = this.pipes.getChildren() as Phaser.Physics.Arcade.Sprite[]
       const lastPipeX = pipeSprites.length
         ? pipeSprites[pipeSprites.length - 1].x
@@ -163,6 +216,7 @@ class GameScene extends Phaser.Scene {
         this.pipes.add(bottomPipe)
 
         // For whatever reason this is necessary
+        this.children.bringToTop(this.map)
         this.children.bringToTop(this.base)
         if (this.debugLines) {
           this.children.bringToTop(this.debugLines)
@@ -205,7 +259,7 @@ export const game = new Phaser.Game({
     default: 'arcade',
     arcade: {
       debug,
-      gravity: { y: 300 },
+      gravity: { y: 1000 },
     },
   },
 
