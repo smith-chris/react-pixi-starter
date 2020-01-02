@@ -55,6 +55,10 @@ class GameScene extends Phaser.Scene {
     this.load.image('pipe', 'assets/sprites/pipe.png')
     this.load.image('gameover', 'assets/sprites/gameover.png')
     this.load.image('board', 'assets/sprites/board.png')
+
+    for (let i = 0; i <= 9; i++) {
+      this.load.image(String(i), `assets/sprites/numbers/${i}.png`)
+    }
   }
   create() {
     const bg = this.add.image(0, 0, 'background-day').setOrigin(0, 1)
