@@ -7,6 +7,7 @@ import {
   maxHeight,
 } from 'setup/dimensions'
 import { debug } from 'utils/debug'
+import { GameoverLayer } from 'gameover/Gameover'
 
 type Listener = (v: ReturnType<typeof getSizeProps>) => void
 const listeners: Listener[] = []
@@ -25,11 +26,6 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 class GameScene extends Phaser.Scene {
   map!: Phaser.GameObjects.Container
-  uiContainer!: Phaser.GameObjects.Container
-  ui: Partial<Record<'gameover' | 'board', Phaser.GameObjects.Image>> = {}
-  gameoverY = 68
-  boardDist = 25
-  boardBottom = designHeight - 135
   front: Phaser.GameObjects.GameObject[] = []
   player!: Phaser.Physics.Arcade.Sprite
   playerStartY = designHeight * 0.5
@@ -38,6 +34,7 @@ class GameScene extends Phaser.Scene {
   pipes: Phaser.GameObjects.Sprite[] = []
   whiteRect!: Phaser.GameObjects.Rectangle
   debugLines?: Phaser.GameObjects.Graphics
+  gameoverLayer!: GameoverLayer
 
   state = {
     playing: false,
@@ -81,7 +78,7 @@ class GameScene extends Phaser.Scene {
   }
 
   onGameStart = () => {
-    Object.values(this.ui).forEach(e => e?.setAlpha(0))
+    this.gameoverLayer.hide()
     // @ts-ignore
     this.player.body.maxVelocity.y = this.player.body.maxVelocity.x
   }
@@ -99,7 +96,7 @@ class GameScene extends Phaser.Scene {
         repeat: 0, // -1: infinity
         yoyo: false,
         onComplete: () => {
-          this.showBoard()
+          this.gameoverLayer.show()
         },
       })
       return
@@ -109,48 +106,6 @@ class GameScene extends Phaser.Scene {
     }
     this.state.alive = false
     this.player.setMaxVelocity(0)
-  }
-
-  showBoard = () => {
-    const time = 100
-    // this.children.bringToTop(this.uiContainer)
-    Object.values(this.ui).forEach(e => {
-      console.log(e)
-      e?.setDepth(2)
-    })
-
-    this.tweens.add({
-      targets: this.ui.gameover,
-      y: this.gameoverY - 2,
-      ease: 'Linear',
-      duration: time,
-      onComplete: () => {
-        this.tweens.add({
-          targets: this.ui.gameover,
-          y: this.gameoverY + 2,
-          ease: 'Linear',
-          duration: time,
-          onComplete: () => {
-            if (this.ui.board) {
-              this.ui.board.y = maxHeight + (this.ui.board?.height || 0)
-              this.ui.board.setAlpha(1)
-              this.tweens.add({
-                targets: this.ui.board,
-                y: this.boardBottom,
-                ease: 'Quad',
-                duration: 333, //166
-              })
-            }
-          },
-        })
-      },
-    })
-    this.tweens.add({
-      targets: this.ui.gameover,
-      alpha: 1,
-      ease: 'Bounce',
-      duration: time,
-    })
   }
 
   onTouch = () => {
@@ -206,9 +161,6 @@ class GameScene extends Phaser.Scene {
       0.5 + circleOffset.y / 2 / player.height,
     )
     player.setCircle(12, circleOffset.x, circleOffset.y)
-    // player.rotation = 10
-    // player.body.setMass(Number.MAX_SAFE_INTEGER)
-    // playerBody.onCollide()
 
     const playerBody = player.body as Phaser.Physics.Arcade.Body
     this.player = player
@@ -217,18 +169,12 @@ class GameScene extends Phaser.Scene {
     playerBody.maxVelocity.y = 0
     this.map.add(player)
 
-    // this.pipes = this.physics.add.group()
-    // this.pipes.setDepth(1)
-    // this.physics.add.collider(player, this.pipes)
-    // this.physics.add.overlap(player, this.pipes, this.onPipeCollision)
-
     const base = this.physics.add.sprite(0, 0, 'base').setOrigin(0, 1)
     // Make it static
     base.setMaxVelocity(0)
     base.setImmovable(true)
     this.base = base
     this.children.bringToTop(base)
-    // this.physics.add.collider(player, base)
     this.physics.add.overlap(player, base, this.onBaseCollision)
 
     this.input.on('pointerdown', this.onTouch)
@@ -239,18 +185,9 @@ class GameScene extends Phaser.Scene {
       .setAlpha(0)
     this.front.push(this.whiteRect)
 
-    this.ui.gameover = this.add
-      .sprite(designWidth / 2, this.gameoverY, 'gameover')
-      .setAlpha(0)
-
-    this.ui.board = this.add
-      .sprite(designWidth / 2, 0, 'board')
-      .setOrigin(0.5, 1)
-      .setAlpha(0)
-
-    // const uiContainer = this.add.container(0, 0)
-    // this.uiContainer = uiContainer
-    // Object.values(this.ui).forEach(e => e && uiContainer.add(e))
+    this.gameoverLayer = new GameoverLayer(this)
+    // @ts-ignore
+    window.scene = this
 
     if (debug) {
       // The design viewport
@@ -267,7 +204,6 @@ class GameScene extends Phaser.Scene {
       const bottom = designHeight + extraHeight
       const top = -extraHeight
       this.map.y = extraHeight
-      // uiContainer.y = extraHeight
       const baseBottom = Math.max(450, bottom) + extraHeight
       bg.setY(baseBottom)
       base.setY(baseBottom)
@@ -284,7 +220,6 @@ class GameScene extends Phaser.Scene {
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)
       const movement = Math.round(2 * px)
-      // this.player.rotation += px / 100
       if (this.state.touchable) {
         this.base.x = this.base.x < -11 ? 0 : this.base.x - movement
 
