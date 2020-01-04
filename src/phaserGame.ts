@@ -32,8 +32,10 @@ class GameScene extends Phaser.Scene {
   boardBottom = designHeight - 135
   front: Phaser.GameObjects.GameObject[] = []
   player!: Phaser.Physics.Arcade.Sprite
+  playerStartY = designHeight * 0.5
   base!: Phaser.Physics.Arcade.Sprite
-  pipes!: Phaser.Physics.Arcade.Group
+  // pipes!: Phaser.Physics.Arcade.Group
+  pipes: Phaser.GameObjects.Sprite[] = []
   whiteRect!: Phaser.GameObjects.Rectangle
   debugLines?: Phaser.GameObjects.Graphics
 
@@ -58,108 +60,23 @@ class GameScene extends Phaser.Scene {
 
     for (let i = 0; i <= 9; i++) {
       this.load.image(String(i), `assets/sprites/numbers/${i}.png`)
+      this.load.image(`sm${i}`, `assets/sprites/numbers/sm${i}.png`)
     }
-  }
-  create() {
-    const bg = this.add.image(0, 0, 'background-day').setOrigin(0, 1)
-    this.map = this.add.container(0, 0)
-
-    const player = this.physics.add.sprite(
-      designWidth / 3,
-      designHeight / 2,
-      'midflap',
-    )
-    const circleOffset = {
-      x: 8,
-      y: 1,
-    }
-    player.setOrigin(
-      0.5 + circleOffset.x / 2 / player.width,
-      0.5 + circleOffset.y / 2 / player.height,
-    )
-    player.setCircle(12, circleOffset.x, circleOffset.y)
-    // player.rotation = 10
-    // player.body.setMass(Number.MAX_SAFE_INTEGER)
-    // playerBody.onCollide()
-
-    const playerBody = player.body as Phaser.Physics.Arcade.Body
-    this.player = player
-    // @ts-ignore
-    window.player = player
-    playerBody.maxVelocity.y = 0
-    this.map.add(player)
-
-    this.pipes = this.physics.add.group({
-      velocityX: -100,
-    })
-    // this.physics.add.collider(player, this.pipes)
-    this.physics.add.overlap(player, this.pipes, this.onPipeCollision)
-
-    const base = this.physics.add.sprite(0, 0, 'base').setOrigin(0, 1)
-    // Make it static
-    base.setMaxVelocity(0)
-    base.setImmovable(true)
-    this.base = base
-    this.children.bringToTop(base)
-    // this.physics.add.collider(player, base)
-    this.physics.add.overlap(player, base, this.onBaseCollision)
-
-    this.input.on('pointerdown', this.onTouch)
-
-    this.whiteRect = this.add
-      .rectangle(0, 0, designWidth, maxHeight, 0xffffff)
-      .setOrigin(0)
-      .setAlpha(0)
-    this.front.push(this.whiteRect)
-
-    this.ui.gameover = this.add
-      .image(designWidth / 2, this.gameoverY, 'gameover')
-      .setAlpha(0)
-
-    this.ui.board = this.add
-      .image(designWidth / 2, 0, 'board')
-      .setOrigin(0.5, 1)
-      .setAlpha(0)
-
-    const uiContainer = this.add.container(0, 0)
-    this.uiContainer = uiContainer
-    Object.values(this.ui).forEach(e => e && uiContainer.add(e))
-
-    if (debug) {
-      // The design viewport
-      this.debugLines = this.add
-        .graphics()
-        .lineStyle(2, 0xff0000, 0.75)
-        .strokeRect(0, 0, designWidth, designHeight)
-        .lineStyle(2, 0xfffb00, 0.75)
-        .strokeRect(0, (designHeight - minHeight) / 2, designWidth, minHeight)
-      // this.map.add(debugLines)
-    }
-
-    responsive(({ stage }) => {
-      const extraHeight = stage.position.y / stage.scale.y
-      const bottom = designHeight + extraHeight
-      const top = -extraHeight
-      this.map.y = extraHeight
-      uiContainer.y = extraHeight
-      const baseBottom = Math.max(450, bottom) + extraHeight
-      bg.setY(baseBottom)
-      base.setY(baseBottom)
-      if (this.debugLines) {
-        this.debugLines.y = extraHeight
-      }
-    })
-    // setTimeout(this.onGameOver, 50)
   }
 
   onPipeCollision = () => {
     // Prevent calling gameover multiple times
     if (this.state.touchable) {
       this.onGameOver()
+      if (this.player.body.velocity.y < 0) {
+        this.player.setVelocityY(0)
+      }
     }
   }
 
   onBaseCollision = () => {
+    this.player.y =
+      this.base.getBounds().top - this.map.y - this.player.height / 3
     this.onGameOver()
   }
 
@@ -172,7 +89,7 @@ class GameScene extends Phaser.Scene {
   onGameOver = () => {
     if (this.state.touchable) {
       this.state.touchable = false
-      this.pipes.setVelocityX(0)
+      // this.pipes.setVelocityX(0)
       this.whiteRect.setAlpha(1)
       this.tweens.add({
         targets: this.whiteRect,
@@ -196,7 +113,11 @@ class GameScene extends Phaser.Scene {
 
   showBoard = () => {
     const time = 100
-    this.children.bringToTop(this.uiContainer)
+    // this.children.bringToTop(this.uiContainer)
+    Object.values(this.ui).forEach(e => {
+      console.log(e)
+      e?.setDepth(2)
+    })
 
     this.tweens.add({
       targets: this.ui.gameover,
@@ -246,18 +167,18 @@ class GameScene extends Phaser.Scene {
   getVariation = (timePassed: number) => Math.sin(timePassed / 7 / (1000 / 60))
 
   getY = (timePassed: number) =>
-    designHeight / 2 -
-    this.player.height / 2 +
-    Math.round(this.getVariation(timePassed) * 5)
+    this.playerStartY - Math.round(this.getVariation(timePassed) * 5)
 
   rotationThreshold = 0
 
   getRotation = (velocity: number) => {
     const rotation = Math.abs(velocity / 500)
     // Moving upwards
-    if (velocity < this.rotationThreshold) return Math.max(-0.5, -rotation)
+    if (velocity < this.rotationThreshold)
+      return Math.max(-Math.PI / 3, -rotation)
     // Moving downwards
-    else if (velocity > this.rotationThreshold) return Math.min(1.5, rotation)
+    else if (velocity >= this.rotationThreshold)
+      return Math.min(Math.PI / 2, rotation)
     return 0
   }
 
@@ -267,84 +188,184 @@ class GameScene extends Phaser.Scene {
     if (v < -0.33) return 'downflap'
     return 'midflap'
   }
-  pipeDist = 150
-  pipeGap = debug ? 120 : 120
-  angleStep = 3
+  create() {
+    const bg = this.add.image(0, 0, 'background-day').setOrigin(0, 1)
+    this.map = this.add.container(0, 0)
 
-  update(timePassed: number, delta: number) {
-    const px = delta / (1000 / 60)
-    // this.player.rotation += px / 100
-    if (this.state.alive) {
-      const textureName = this.getTextureName(
-        this.state.playing ? timePassed * 3 : timePassed,
-      )
-      if (textureName !== this.player.texture.key) {
-        this.player.setTexture(textureName)
-      }
+    const player = this.physics.add.sprite(
+      designWidth * 0.33,
+      this.playerStartY,
+      'midflap',
+    )
+    const circleOffset = {
+      x: 8,
+      y: 1,
     }
-    if (!this.state.playing) {
-      this.player.y = this.getY(timePassed)
-    }
-    if (this.state.playing) {
-      if (this.state.alive) {
-        const newRotation = this.getRotation(this.player.body.velocity.y)
-        const rotationDegrees = newRotation * (180 / Math.PI)
-        const rotationDegreesClapmed =
-          Math.round(rotationDegrees / this.angleStep) * this.angleStep
-        this.player.angle = rotationDegreesClapmed
-        // this.player.rotation = this.getRotation(this.player.body.velocity.y)
-      }
+    player.setOrigin(
+      0.5 + circleOffset.x / 2 / player.width,
+      0.5 + circleOffset.y / 2 / player.height,
+    )
+    player.setCircle(12, circleOffset.x, circleOffset.y)
+    // player.rotation = 10
+    // player.body.setMass(Number.MAX_SAFE_INTEGER)
+    // playerBody.onCollide()
 
-      const pipeSprites = this.pipes.getChildren() as Phaser.Physics.Arcade.Sprite[]
-      const lastPipeX = pipeSprites.length
-        ? pipeSprites[pipeSprites.length - 1].x
-        : -Infinity
-      if (lastPipeX < designWidth - this.pipeDist) {
-        pipeSprites.forEach(p => {
-          if (p.getBounds().right < 0) {
-            this.pipes.remove(p)
-            p.destroy()
-          }
+    const playerBody = player.body as Phaser.Physics.Arcade.Body
+    this.player = player
+    // @ts-ignore
+    window.player = player
+    playerBody.maxVelocity.y = 0
+    this.map.add(player)
+
+    // this.pipes = this.physics.add.group()
+    // this.pipes.setDepth(1)
+    // this.physics.add.collider(player, this.pipes)
+    // this.physics.add.overlap(player, this.pipes, this.onPipeCollision)
+
+    const base = this.physics.add.sprite(0, 0, 'base').setOrigin(0, 1)
+    // Make it static
+    base.setMaxVelocity(0)
+    base.setImmovable(true)
+    this.base = base
+    this.children.bringToTop(base)
+    // this.physics.add.collider(player, base)
+    this.physics.add.overlap(player, base, this.onBaseCollision)
+
+    this.input.on('pointerdown', this.onTouch)
+
+    this.whiteRect = this.add
+      .rectangle(0, 0, designWidth, maxHeight, 0xffffff)
+      .setOrigin(0)
+      .setAlpha(0)
+    this.front.push(this.whiteRect)
+
+    this.ui.gameover = this.add
+      .sprite(designWidth / 2, this.gameoverY, 'gameover')
+      .setAlpha(0)
+
+    this.ui.board = this.add
+      .sprite(designWidth / 2, 0, 'board')
+      .setOrigin(0.5, 1)
+      .setAlpha(0)
+
+    // const uiContainer = this.add.container(0, 0)
+    // this.uiContainer = uiContainer
+    // Object.values(this.ui).forEach(e => e && uiContainer.add(e))
+
+    if (debug) {
+      // The design viewport
+      this.debugLines = this.add
+        .graphics()
+        .lineStyle(2, 0xff0000, 0.75)
+        .strokeRect(0, 0, designWidth, designHeight)
+        .lineStyle(2, 0xfffb00, 0.75)
+        .strokeRect(0, (designHeight - minHeight) / 2, designWidth, minHeight)
+    }
+
+    responsive(({ stage }) => {
+      const extraHeight = stage.position.y / stage.scale.y
+      const bottom = designHeight + extraHeight
+      const top = -extraHeight
+      this.map.y = extraHeight
+      // uiContainer.y = extraHeight
+      const baseBottom = Math.max(450, bottom) + extraHeight
+      bg.setY(baseBottom)
+      base.setY(baseBottom)
+      if (this.debugLines) {
+        this.debugLines.y = extraHeight
+      }
+    })
+    // setTimeout(this.onGameOver, 50)
+
+    const pipeDist = 150
+    const pipeGap = debug ? 120 : 120
+    const angleStep = 3
+
+    this.update = (timePassed: number, delta: number) => {
+      const px = delta / (1000 / 60)
+      const movement = Math.round(2 * px)
+      // this.player.rotation += px / 100
+      if (this.state.touchable) {
+        this.base.x = this.base.x < -11 ? 0 : this.base.x - movement
+
+        this.pipes.forEach(pipe => {
+          pipe.x -= movement
         })
-        const variation = 125
-        const centerY = Math.round(
-          designHeight / 2 + variation * 0.75 - Math.random() * variation,
+      }
+      if (this.state.alive) {
+        const textureName = this.getTextureName(
+          this.state.playing ? timePassed * 3 : timePassed,
         )
-
-        const topPipe = this.physics.add.sprite(
-          designWidth,
-          centerY - this.pipeGap / 2,
-          'pipe',
-        )
-        topPipe.setOrigin(0, 1)
-        topPipe.flipY = true
-        const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body
-        topPipeBody.maxVelocity.y = 0
-        this.pipes.add(topPipe)
-
-        const bottomPipe = this.physics.add.sprite(
-          designWidth,
-          centerY + this.pipeGap / 2,
-          'pipe',
-        )
-        bottomPipe.setOrigin(0, 0)
-        const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body
-        bottomPipeBody.maxVelocity.y = 0
-        this.pipes.add(bottomPipe)
-
-        // For whatever reason this is necessary
-        this.children.bringToTop(this.map)
-        this.children.bringToTop(this.base)
-        this.front.forEach(go => this.children.bringToTop(go))
-        if (this.debugLines) {
-          this.children.bringToTop(this.debugLines)
+        if (textureName !== this.player.texture.key) {
+          this.player.setTexture(textureName)
+        }
+      }
+      if (!this.state.playing) {
+        this.player.y = this.getY(timePassed)
+      }
+      if (this.state.playing) {
+        if (this.state.alive) {
+          const newRotation = this.getRotation(this.player.body.velocity.y)
+          const rotationDegrees = newRotation * (180 / Math.PI)
+          const rotationDegreesClapmed =
+            Math.round(rotationDegrees / angleStep) * angleStep
+          this.player.angle = rotationDegreesClapmed
+          // this.player.rotation = this.getRotation(this.player.body.velocity.y)
         }
 
-        // this.physics.add.collider(player, pipe)
+        const lastPipeX = this.pipes.length
+          ? this.pipes[this.pipes.length - 1].x
+          : -Infinity
+        if (lastPipeX < designWidth - pipeDist) {
+          this.pipes.forEach(p => {
+            if (p.getBounds().right < 0) {
+              // this.pipes.remove(p)
+              p.destroy()
+            }
+          })
+          const variation = 125
+          const centerY = Math.round(
+            designHeight / 2 + variation * 0.75 - Math.random() * variation,
+          )
+
+          const topPipe = this.physics.add.sprite(
+            designWidth,
+            centerY - pipeGap / 2,
+            'pipe',
+          )
+          topPipe.setOrigin(0, 1)
+          topPipe.flipY = true
+          // topPipe.setDepth(1)
+          const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body
+          topPipeBody.maxVelocity.y = 0
+          this.pipes.push(topPipe)
+          this.physics.add.overlap(this.player, topPipe, this.onPipeCollision)
+
+          const bottomPipe = this.physics.add.sprite(
+            designWidth,
+            centerY + pipeGap / 2,
+            'pipe',
+          )
+          bottomPipe.setOrigin(0, 0)
+          const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body
+          bottomPipeBody.maxVelocity.y = 0
+          this.pipes.push(bottomPipe)
+          this.physics.add.overlap(
+            this.player,
+            bottomPipe,
+            this.onPipeCollision,
+          )
+
+          // For whatever reason this is necessary
+          this.children.bringToTop(this.map)
+          this.children.bringToTop(this.base)
+          this.front.forEach(go => this.children.bringToTop(go))
+          if (this.debugLines) {
+            this.children.bringToTop(this.debugLines)
+          }
+        }
       }
     }
-    // this.player.x += px
-    // this.cameras.main.centerOnX(this.player.x + designWidth / 6)
   }
 }
 
