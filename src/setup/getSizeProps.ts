@@ -8,7 +8,7 @@ import {
 } from './dimensions'
 import { useWindowSize } from 'hooks/useWindowSize'
 
-export type Responsive = (v: ReturnType<typeof getSizeProps>) => void
+export type SizePropsListener = (v: ReturnType<typeof getSizeProps>) => void
 
 export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
   const sizeRatio = width / height

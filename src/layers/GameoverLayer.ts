@@ -1,12 +1,7 @@
 import { GameObjects, Scene } from 'phaser'
 import { designWidth, designHeight, maxHeight } from 'setup/dimensions'
+import { Responsive } from 'gameState'
 export type Flatten<T extends any> = T[number]
-
-type Responsive = (viewport: {
-  top: number
-  bottom: number
-  extraHeight: number
-}) => void
 
 export class GameoverLayer extends GameObjects.Container {
   show: Function
