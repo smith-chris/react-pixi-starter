@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { getSizeProps } from 'setup/getSizeProps'
+import { getSizeProps, Responsive } from 'setup/getSizeProps'
 import {
   designWidth,
   designHeight,
@@ -9,10 +9,9 @@ import {
 import { debug } from 'utils/debug'
 import { GameoverLayer } from 'gameover/Gameover'
 
-type Listener = (v: ReturnType<typeof getSizeProps>) => void
-const listeners: Listener[] = []
+const listeners: Responsive[] = []
 
-const responsive = (listener: Listener) => {
+const responsive = (listener: Responsive) => {
   listeners.push(listener)
   listener(
     getSizeProps({
@@ -26,13 +25,10 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 class GameScene extends Phaser.Scene {
   map!: Phaser.GameObjects.Container
-  front: Phaser.GameObjects.GameObject[] = []
   player!: Phaser.Physics.Arcade.Sprite
   playerStartY = designHeight * 0.5
   base!: Phaser.Physics.Arcade.Sprite
-  // pipes!: Phaser.Physics.Arcade.Group
   pipes: Phaser.GameObjects.Sprite[] = []
-  whiteRect!: Phaser.GameObjects.Rectangle
   debugLines?: Phaser.GameObjects.Graphics
   gameoverLayer!: GameoverLayer
 
@@ -86,19 +82,7 @@ class GameScene extends Phaser.Scene {
   onGameOver = () => {
     if (this.state.touchable) {
       this.state.touchable = false
-      // this.pipes.setVelocityX(0)
-      this.whiteRect.setAlpha(1)
-      this.tweens.add({
-        targets: this.whiteRect,
-        alpha: { from: 1, to: 0 },
-        ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        duration: 250,
-        repeat: 0, // -1: infinity
-        yoyo: false,
-        onComplete: () => {
-          this.gameoverLayer.show()
-        },
-      })
+      this.gameoverLayer.show()
       return
     }
     if (!this.state.alive) {
@@ -179,12 +163,6 @@ class GameScene extends Phaser.Scene {
 
     this.input.on('pointerdown', this.onTouch)
 
-    this.whiteRect = this.add
-      .rectangle(0, 0, designWidth, maxHeight, 0xffffff)
-      .setOrigin(0)
-      .setAlpha(0)
-    this.front.push(this.whiteRect)
-
     this.gameoverLayer = new GameoverLayer(this)
     // @ts-ignore
     window.scene = this
@@ -210,8 +188,9 @@ class GameScene extends Phaser.Scene {
       if (this.debugLines) {
         this.debugLines.y = extraHeight
       }
+      this.gameoverLayer.responsive({ top, bottom, extraHeight })
     })
-    // setTimeout(this.onGameOver, 50)
+    setTimeout(this.onGameOver, 50)
 
     const pipeDist = 150
     const pipeGap = debug ? 120 : 120
@@ -294,7 +273,6 @@ class GameScene extends Phaser.Scene {
           // For whatever reason this is necessary
           this.children.bringToTop(this.map)
           this.children.bringToTop(this.base)
-          this.front.forEach(go => this.children.bringToTop(go))
           if (this.debugLines) {
             this.children.bringToTop(this.debugLines)
           }
