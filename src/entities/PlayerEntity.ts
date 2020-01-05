@@ -12,10 +12,11 @@ export class PlayerEntity {
   sprite: Phaser.Physics.Arcade.Sprite
   responsive: Responsive
 
-  constructor(scene: Scene) {
+  constructor({ scene, depth = 0 }: { scene: Scene; depth?: number }) {
     const startY = designHeight * 0.5
 
     const container = scene.add.container(0, 0)
+    container.setDepth(depth)
 
     const sprite = scene.physics.add.sprite(
       designWidth * 0.33,

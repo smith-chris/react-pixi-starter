@@ -5,6 +5,7 @@ import { debug } from 'utils/debug'
 import { GameoverLayer } from 'layers/GameoverLayer'
 import { PlayerEntity } from 'entities/PlayerEntity'
 import { gameState } from './gameState'
+import { PipesEntity } from 'entities/PipesEntity'
 
 const listeners: SizePropsListener[] = []
 
@@ -22,10 +23,10 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 class GameScene extends Phaser.Scene {
   base!: Phaser.Physics.Arcade.Sprite
-  pipes: Phaser.GameObjects.Sprite[] = []
   debugLines?: Phaser.GameObjects.Graphics
   gameover!: GameoverLayer
   player!: PlayerEntity
+  pipes!: PipesEntity
 
   state = { ...gameState }
 
@@ -45,15 +46,6 @@ class GameScene extends Phaser.Scene {
     for (let i = 0; i <= 9; i++) {
       this.load.image(String(i), `assets/sprites/numbers/${i}.png`)
       this.load.image(`sm${i}`, `assets/sprites/numbers/sm${i}.png`)
-    }
-  }
-
-  onPipeCollision = () => {
-    // Prevent calling gameover multiple times
-    if (this.state.touchable) {
-      this.onGameOver()
-      // Player will fall down
-      this.player.hit()
     }
   }
 
@@ -92,21 +84,36 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    const bg = this.add.image(0, 0, 'background-day').setOrigin(0, 1)
+    const bg = this.add
+      .image(0, 0, 'background-day')
+      .setOrigin(0, 1)
+      .setDepth(0)
 
-    this.player = new PlayerEntity(this)
+    this.player = new PlayerEntity({ scene: this, depth: 2 })
 
-    const base = this.physics.add.sprite(0, 0, 'base').setOrigin(0, 1)
+    this.pipes = new PipesEntity({ scene: this, player: this.player, depth: 1 })
+    this.pipes.onCollision = () => {
+      // Prevent calling gameover multiple times
+      if (this.state.touchable) {
+        this.onGameOver()
+        // Player will fall down
+        this.player.hit()
+      }
+    }
+
+    const base = this.physics.add
+      .sprite(0, 0, 'base')
+      .setOrigin(0, 1)
+      .setDepth(3)
     // Make it static
     base.setMaxVelocity(0)
     base.setImmovable(true)
     this.base = base
-    this.children.bringToTop(base)
     this.physics.add.overlap(this.player.sprite, base, this.onBaseCollision)
 
     this.input.on('pointerdown', this.onTouch)
 
-    this.gameover = new GameoverLayer(this)
+    this.gameover = new GameoverLayer(this).setDepth(4)
     // @ts-ignore
     window.scene = this
 
@@ -136,9 +143,6 @@ class GameScene extends Phaser.Scene {
     })
     // setTimeout(this.onGameOver, 50)
 
-    const pipeDist = 150
-    const pipeGap = debug ? 120 : 120
-
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)
       const movement = Math.round(2 * px)
@@ -149,67 +153,9 @@ class GameScene extends Phaser.Scene {
       }
       if (this.state.touchable) {
         this.base.x = this.base.x < -11 ? 0 : this.base.x - movement
-
-        this.pipes.forEach(pipe => {
-          pipe.x -= movement
-        })
       }
       this.player.update(this.state, data)
-      if (this.state.playing) {
-        const lastPipeX = this.pipes.length
-          ? this.pipes[this.pipes.length - 1].x
-          : -Infinity
-        if (lastPipeX < designWidth - pipeDist) {
-          this.pipes.forEach(p => {
-            if (p.getBounds().right < 0) {
-              // this.pipes.remove(p)
-              p.destroy()
-            }
-          })
-          const variation = 125
-          const centerY = Math.round(
-            designHeight / 2 + variation * 0.75 - Math.random() * variation,
-          )
-
-          const topPipe = this.physics.add.sprite(
-            designWidth,
-            centerY - pipeGap / 2,
-            'pipe',
-          )
-          topPipe.setOrigin(0, 1)
-          topPipe.flipY = true
-          // topPipe.setDepth(1)
-          const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body
-          topPipeBody.maxVelocity.y = 0
-          this.pipes.push(topPipe)
-          this.physics.add.overlap(
-            this.player.sprite,
-            topPipe,
-            this.onPipeCollision,
-          )
-
-          const bottomPipe = this.physics.add.sprite(
-            designWidth,
-            centerY + pipeGap / 2,
-            'pipe',
-          )
-          bottomPipe.setOrigin(0, 0)
-          const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body
-          bottomPipeBody.maxVelocity.y = 0
-          this.pipes.push(bottomPipe)
-          this.physics.add.overlap(
-            this.player.sprite,
-            bottomPipe,
-            this.onPipeCollision,
-          )
-
-          // For whatever reason this is necessary
-          this.children.bringToTop(this.base)
-          if (this.debugLines) {
-            this.children.bringToTop(this.debugLines)
-          }
-        }
-      }
+      this.pipes.update(this.state, data)
     }
   }
 }

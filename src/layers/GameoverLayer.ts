@@ -46,7 +46,6 @@ export class GameoverLayer extends GameObjects.Container {
     }
 
     this.show = () => {
-      scene.children.bringToTop(this)
       whiteRect.setAlpha(1)
       scene.tweens.add({
         targets: whiteRect,
