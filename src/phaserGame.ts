@@ -35,6 +35,9 @@ class GameScene extends Phaser.Scene {
     this.load.image('pipe', 'assets/sprites/pipe.png')
     this.load.image('gameover', 'assets/sprites/gameover.png')
     this.load.image('board', 'assets/sprites/board.png')
+    ;['ok', 'share', 'start', 'score'].forEach(btn => {
+      this.load.image(btn, `assets/sprites/buttons/${btn}.png`)
+    })
 
     for (let i = 0; i <= 9; i++) {
       this.load.image(String(i), `assets/sprites/numbers/${i}.png`)
@@ -165,7 +168,7 @@ class GameScene extends Phaser.Scene {
       pipes.responsive(responsiveData)
       currentScore.y = (top + safeTop) / 2 + 14
     })
-    // setTimeout(onGameOver, 50)
+    setTimeout(onGameOver, 50)
 
     pipes.onScore = () => currentScore.setText(++state.score)
 

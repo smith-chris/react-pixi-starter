@@ -41,24 +41,53 @@ export class GameoverLayer extends GameObjects.Container {
     const best = new NumberComponent({ scene, align: 'right' })
     board.add(score)
     board.add(best)
-    const boardTop = boardBg.getBounds().top
-    const boardRight = boardBg.width / 2
-    const scoreLabelBottom = 30
-    const bestLabelBottom = 72
-    const labelsDist = 30
-    score.x = best.x = boardRight - 22
-    score.y =
-      Math.round(
-        boardTop + scoreLabelBottom + labelsDist / 2 - score.height / 2,
-      ) - 1
-    best.y =
-      Math.round(
-        boardTop + bestLabelBottom + labelsDist / 2 - best.height / 2,
-      ) - 1
-    score.setText(0)
-    best.setText(0)
+    {
+      const boardBounds = boardBg.getBounds()
+      const boardTop = boardBounds.top
+      const boardRight = boardBg.width / 2
+      const scoreLabelBottom = 30
+      const bestLabelBottom = 72
+      const labelsDist = 30
+      score.x = best.x = boardRight - 22
+      score.y =
+        Math.round(
+          boardTop + scoreLabelBottom + labelsDist / 2 - score.height / 2,
+        ) - 1
+      best.y =
+        Math.round(
+          boardTop + bestLabelBottom + labelsDist / 2 - best.height / 2,
+        ) - 1
+      score.setText(0)
+      best.setText(0)
+    }
     this.score = score
     this.best = best
+
+    const ok = add
+      .sprite(0, 0, 'ok')
+      .setOrigin(0)
+      .setAlpha(0)
+
+    const share = add
+      .sprite(0, 0, 'share')
+      .setOrigin(1, 0)
+      .setAlpha(0)
+
+    const btnSpacing = {
+      x: 10,
+      y: 45,
+    }
+
+    const showButtons = () => {
+      setTimeout(() => {
+        const boardBounds = boardBg.getBounds()
+        ok.setAlpha(1)
+        share.setAlpha(1)
+        ok.x = boardBounds.left + btnSpacing.x
+        share.x = boardBounds.right - btnSpacing.x
+        ok.y = share.y = boardBounds.bottom + btnSpacing.y
+      }, 250)
+    }
 
     const whiteRect = add
       .rectangle(0, 0, designWidth, maxHeight, 0xffffff)
@@ -104,6 +133,7 @@ export class GameoverLayer extends GameObjects.Container {
                 y: boardBottom,
                 ease: 'Quad',
                 duration: 333, //166
+                onComplete: showButtons,
               })
             },
           })
