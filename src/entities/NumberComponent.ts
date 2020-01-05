@@ -1,5 +1,5 @@
 import Phaser, { Scene } from 'phaser'
-import { designWidth } from 'setup/dimensions'
+import { designWidth, maxHeight } from 'setup/dimensions'
 
 export class NumberComponent extends Phaser.GameObjects.Container {
   setText: (value: number) => void
@@ -39,6 +39,8 @@ export class NumberComponent extends Phaser.GameObjects.Container {
     const txWidth = testSprite.width
     this.height = testSprite.height
 
+    // scene.add.rectangle(designWidth / 2 - 1, 0, 2, maxHeight, 0xfff)
+
     this.hide = () => {
       container.setAlpha(0)
     }
@@ -57,9 +59,11 @@ export class NumberComponent extends Phaser.GameObjects.Container {
       let left = 0
       switch (align) {
         case 'middle':
-          left = -Math.round(width / 2)
+          left = -Math.round((length * step) / 2)
+          break
         case 'right':
-          left = -Math.round(length * step - spacing)
+          left = -Math.round(width)
+          break
       }
       // case
       sprites.forEach(s => s.setAlpha(0))

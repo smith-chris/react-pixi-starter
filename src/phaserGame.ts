@@ -142,7 +142,7 @@ class GameScene extends Phaser.Scene {
 
     const currentScore = new NumberComponent({ scene: this, depth: depth++ })
     currentScore.x = designWidth / 2
-    currentScore.setText(0)
+    currentScore.setText(state.score)
 
     const gameover = new GameoverLayer(this).setDepth(depth++)
 
