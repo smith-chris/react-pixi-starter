@@ -6,6 +6,7 @@ import { GameoverLayer } from 'layers/GameoverLayer'
 import { PlayerEntity } from 'entities/PlayerEntity'
 import { gameState } from './gameState'
 import { PipesEntity } from 'entities/PipesEntity'
+import { NumberComponent } from 'entities/NumberComponent'
 
 const listeners: SizePropsListener[] = []
 
@@ -84,6 +85,8 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    this.input.on('pointerdown', this.onTouch)
+
     const bg = this.add
       .image(0, 0, 'background-day')
       .setOrigin(0, 1)
@@ -101,19 +104,23 @@ class GameScene extends Phaser.Scene {
       }
     }
 
+    let depth = 3
+
     const base = this.physics.add
       .sprite(0, 0, 'base')
       .setOrigin(0, 1)
-      .setDepth(3)
+      .setDepth(depth++)
     // Make it static
     base.setMaxVelocity(0)
     base.setImmovable(true)
     this.base = base
     this.physics.add.overlap(this.player.sprite, base, this.onBaseCollision)
 
-    this.input.on('pointerdown', this.onTouch)
+    const scoreComponent = new NumberComponent({ scene: this, depth: depth++ })
+    scoreComponent.setText(0)
 
-    this.gameover = new GameoverLayer(this).setDepth(4)
+    this.gameover = new GameoverLayer(this).setDepth(depth++)
+
     // @ts-ignore
     window.scene = this
 
@@ -130,7 +137,7 @@ class GameScene extends Phaser.Scene {
     responsive(({ stage }) => {
       const extraHeight = stage.position.y / stage.scale.y
       const bottom = designHeight + extraHeight
-      const top = -extraHeight
+      const top = 0
       const baseBottom = Math.max(450, bottom) + extraHeight
       bg.setY(baseBottom)
       base.setY(baseBottom)
@@ -139,6 +146,7 @@ class GameScene extends Phaser.Scene {
       }
       const responsiveData = {
         top,
+        safeTop: Math.max(0, extraHeight),
         bottom,
         extraHeight,
         viewportHeight: extraHeight * 2 + designHeight,
@@ -147,8 +155,13 @@ class GameScene extends Phaser.Scene {
       this.gameover.responsive(responsiveData)
       this.player.responsive(responsiveData)
       this.pipes.responsive(responsiveData)
+      scoreComponent.responsive(responsiveData)
     })
     // setTimeout(this.onGameOver, 50)
+
+    let score = 0
+
+    this.pipes.onScore = () => scoreComponent.setText(++score)
 
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)

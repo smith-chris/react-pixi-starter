@@ -6,6 +6,7 @@ import { PlayerEntity } from './PlayerEntity'
 export class PipesEntity {
   update: Update
   onCollision = () => {}
+  onScore = () => {}
   responsive: Responsive
 
   constructor({
@@ -18,7 +19,7 @@ export class PipesEntity {
     depth?: number
   }) {
     const pipeDist = 150
-    const pipeGap = 120
+    const pipeGap = 110
     const minAirHeight = 314
 
     const container = scene.add.container(0, 0)
@@ -39,14 +40,25 @@ export class PipesEntity {
         const lastPipeX = objects.length
           ? objects[objects.length - 1].x
           : -Infinity
+        objects.forEach(p => {
+          if (
+            // @ts-ignore
+            !p._isScored &&
+            // @ts-ignore
+            p._isBottom &&
+            p.getBounds().left + p.width / 2 < player.sprite.getBounds().right
+          ) {
+            // @ts-ignore
+            p._isScored = true
+            this.onScore()
+          }
+          if (p.getBounds().right < 0) {
+            container.remove(p)
+            p.destroy()
+          }
+        })
         if (lastPipeX < designWidth - pipeDist) {
-          objects.forEach(p => {
-            if (p.getBounds().right < 0) {
-              container.remove(p)
-              p.destroy()
-            }
-          })
-          const variation = Math.round(minAirHeight * 0.66)
+          const variation = Math.round(minAirHeight * 0.5)
           const centerY = Math.round(
             minAirHeight / 2 +
               Phaser.Math.Between(-variation / 2, variation / 2),
@@ -73,6 +85,8 @@ export class PipesEntity {
           )
           bottomPipe.setOrigin(0, 0)
           bottomPipe.setDepth(depth)
+          // @ts-ignore
+          bottomPipe._isBottom = true
           container.add(bottomPipe)
 
           const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body
