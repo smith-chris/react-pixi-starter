@@ -1,23 +1,26 @@
 import Phaser, { Scene } from 'phaser'
-import { designWidth, designHeight } from 'setup/dimensions'
-import { Update, Responsive } from 'gameState'
+import { designWidth } from 'setup/dimensions'
 
-export class NumberComponent {
-  responsive: Responsive
+export class NumberComponent extends Phaser.GameObjects.Container {
   setText: (value: number) => void
   hide: Function
   show: Function
+  // height: number
 
   constructor({
     scene,
     depth = 0,
     sm = false,
+    align = 'middle',
   }: {
     scene: Scene
     depth?: number
     sm?: boolean
+    align?: 'right' | 'middle' | 'left'
   }) {
-    const container = scene.add.container(designWidth / 2, 0)
+    super(scene, 0, 0)
+    scene.add.existing(this)
+    const container = this
     const sprites: Phaser.GameObjects.Sprite[] = []
     const getSprite = (v: string, sm = false) => {
       const res = sprites.find(s => s.alpha === 0)
@@ -32,11 +35,9 @@ export class NumberComponent {
       return sprite
     }
 
-    const txWidth = getSprite('0', sm).width
-
-    this.responsive = ({ top, safeTop }) => {
-      container.y = (top + safeTop) / 2 + 14
-    }
+    const testSprite = getSprite('0', sm)
+    const txWidth = testSprite.width
+    this.height = testSprite.height
 
     this.hide = () => {
       container.setAlpha(0)
@@ -49,8 +50,18 @@ export class NumberComponent {
     this.setText = value => {
       const str = value.toString()
       const length = str.length
-      const step = txWidth + (sm ? 1 : 2)
-      let left = -Math.round((length * step) / 2)
+      const spacing = sm ? 1 : 2
+      const step = txWidth + spacing
+      const width = length * step - spacing
+      // align=left
+      let left = 0
+      switch (align) {
+        case 'middle':
+          left = -Math.round(width / 2)
+        case 'right':
+          left = -Math.round(length * step - spacing)
+      }
+      // case
       sprites.forEach(s => s.setAlpha(0))
       for (let i = 0; i < length; i++) {
         const sprite = getSprite(str[i])

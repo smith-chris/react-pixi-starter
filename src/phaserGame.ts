@@ -52,15 +52,25 @@ class GameScene extends Phaser.Scene {
 
     const onGameStart = () => {
       gameover.hide()
-      scoreComponent.show()
+      currentScore.show()
       player.start()
     }
 
     const onGameOver = () => {
       if (state.touchable) {
         state.touchable = false
-        scoreComponent.hide()
+        currentScore.hide()
         gameover.show()
+        gameover.score.setText(state.score)
+        let best = Number(localStorage.getItem('fb_best'))
+        let isNewBest = false
+        if (best < state.score) {
+          isNewBest = true
+          best = state.score
+          localStorage.setItem('fb_best', best.toString())
+        }
+        gameover.score.setText(state.score)
+        gameover.best.setText(best)
         return
       }
       if (!state.alive) {
@@ -111,8 +121,9 @@ class GameScene extends Phaser.Scene {
     base.setImmovable(true)
     this.physics.add.overlap(player.sprite, base, onBaseCollision)
 
-    const scoreComponent = new NumberComponent({ scene: this, depth: depth++ })
-    scoreComponent.setText(0)
+    const currentScore = new NumberComponent({ scene: this, depth: depth++ })
+    currentScore.x = designWidth / 2
+    currentScore.setText(0)
 
     const gameover = new GameoverLayer(this).setDepth(depth++)
 
@@ -140,9 +151,10 @@ class GameScene extends Phaser.Scene {
       if (debugLines) {
         debugLines.y = extraHeight
       }
+      const safeTop = Math.max(0, extraHeight)
       const responsiveData = {
         top,
-        safeTop: Math.max(0, extraHeight),
+        safeTop,
         bottom,
         extraHeight,
         viewportHeight: extraHeight * 2 + designHeight,
@@ -151,11 +163,11 @@ class GameScene extends Phaser.Scene {
       gameover.responsive(responsiveData)
       player.responsive(responsiveData)
       pipes.responsive(responsiveData)
-      scoreComponent.responsive(responsiveData)
+      currentScore.y = (top + safeTop) / 2 + 14
     })
-    // setTimeout(this.onGameOver, 50)
+    // setTimeout(onGameOver, 50)
 
-    pipes.onScore = () => scoreComponent.setText(++state.score)
+    pipes.onScore = () => currentScore.setText(++state.score)
 
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)
