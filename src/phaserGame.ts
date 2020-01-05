@@ -23,14 +23,6 @@ const responsive = (listener: SizePropsListener) => {
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
 class GameScene extends Phaser.Scene {
-  base!: Phaser.Physics.Arcade.Sprite
-  debugLines?: Phaser.GameObjects.Graphics
-  gameover!: GameoverLayer
-  player!: PlayerEntity
-  pipes!: PipesEntity
-
-  state = { ...gameState }
-
   constructor() {
     super('GameScene')
   }
@@ -50,57 +42,61 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  onBaseCollision = () => {
-    this.player.setBottom(this.base.getBounds().top)
-    this.onGameOver()
-  }
-
-  onGameStart = () => {
-    this.gameover.hide()
-    this.player.start()
-  }
-
-  onGameOver = () => {
-    if (this.state.touchable) {
-      this.state.touchable = false
-      this.gameover.show()
-      return
-    }
-    if (!this.state.alive) {
-      return
-    }
-    this.state.alive = false
-    this.player.stop()
-  }
-
-  onTouch = () => {
-    if (!this.state.touchable) {
-      return
-    }
-    if (!this.state.playing) {
-      this.state.playing = true
-      this.onGameStart()
-    }
-    this.player.jump()
-  }
-
   create() {
-    this.input.on('pointerdown', this.onTouch)
+    const state = { ...gameState }
+
+    const onBaseCollision = () => {
+      player.setBottom(base.getBounds().top)
+      onGameOver()
+    }
+
+    const onGameStart = () => {
+      gameover.hide()
+      scoreComponent.show()
+      player.start()
+    }
+
+    const onGameOver = () => {
+      if (state.touchable) {
+        state.touchable = false
+        scoreComponent.hide()
+        gameover.show()
+        return
+      }
+      if (!state.alive) {
+        return
+      }
+      state.alive = false
+      player.stop()
+    }
+
+    const onTouch = () => {
+      if (!state.touchable) {
+        return
+      }
+      if (!state.playing) {
+        state.playing = true
+        onGameStart()
+      }
+      player.jump()
+    }
+
+    this.input.on('pointerdown', onTouch)
 
     const bg = this.add
       .image(0, 0, 'background-day')
       .setOrigin(0, 1)
       .setDepth(0)
 
-    this.player = new PlayerEntity({ scene: this, depth: 2 })
+    const player = new PlayerEntity({ scene: this, depth: 2 })
 
-    this.pipes = new PipesEntity({ scene: this, player: this.player, depth: 1 })
-    this.pipes.onCollision = () => {
+    const pipes = new PipesEntity({ scene: this, player: player, depth: 1 })
+    pipes.onCollision = () => {
       // Prevent calling gameover multiple times
-      if (this.state.touchable) {
-        this.onGameOver()
+      if (state.touchable) {
+        onGameOver()
         // Player will fall down
-        this.player.hit()
+        player.hit()
       }
     }
 
@@ -113,20 +109,20 @@ class GameScene extends Phaser.Scene {
     // Make it static
     base.setMaxVelocity(0)
     base.setImmovable(true)
-    this.base = base
-    this.physics.add.overlap(this.player.sprite, base, this.onBaseCollision)
+    this.physics.add.overlap(player.sprite, base, onBaseCollision)
 
     const scoreComponent = new NumberComponent({ scene: this, depth: depth++ })
     scoreComponent.setText(0)
 
-    this.gameover = new GameoverLayer(this).setDepth(depth++)
+    const gameover = new GameoverLayer(this).setDepth(depth++)
 
     // @ts-ignore
     window.scene = this
+    let debugLines: Phaser.GameObjects.Graphics | undefined
 
     if (debug) {
       // The design viewport
-      this.debugLines = this.add
+      debugLines = this.add
         .graphics()
         .lineStyle(2, 0xff0000, 0.75)
         .strokeRect(0, 0, designWidth, designHeight)
@@ -141,8 +137,8 @@ class GameScene extends Phaser.Scene {
       const baseBottom = Math.max(450, bottom) + extraHeight
       bg.setY(baseBottom)
       base.setY(baseBottom)
-      if (this.debugLines) {
-        this.debugLines.y = extraHeight
+      if (debugLines) {
+        debugLines.y = extraHeight
       }
       const responsiveData = {
         top,
@@ -152,16 +148,14 @@ class GameScene extends Phaser.Scene {
         viewportHeight: extraHeight * 2 + designHeight,
         base: base.getBounds(),
       }
-      this.gameover.responsive(responsiveData)
-      this.player.responsive(responsiveData)
-      this.pipes.responsive(responsiveData)
+      gameover.responsive(responsiveData)
+      player.responsive(responsiveData)
+      pipes.responsive(responsiveData)
       scoreComponent.responsive(responsiveData)
     })
     // setTimeout(this.onGameOver, 50)
 
-    let score = 0
-
-    this.pipes.onScore = () => scoreComponent.setText(++score)
+    pipes.onScore = () => scoreComponent.setText(++state.score)
 
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)
@@ -171,11 +165,11 @@ class GameScene extends Phaser.Scene {
         timePassed,
         delta,
       }
-      if (this.state.touchable) {
-        this.base.x = this.base.x < -11 ? 0 : this.base.x - movement
+      if (state.touchable) {
+        base.x = base.x < -11 ? 0 : base.x - movement
       }
-      this.player.update(this.state, data)
-      this.pipes.update(this.state, data)
+      player.update(state, data)
+      pipes.update(state, data)
     }
   }
 }

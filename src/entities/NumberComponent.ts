@@ -5,6 +5,8 @@ import { Update, Responsive } from 'gameState'
 export class NumberComponent {
   responsive: Responsive
   setText: (value: number) => void
+  hide: Function
+  show: Function
 
   constructor({
     scene,
@@ -36,10 +38,18 @@ export class NumberComponent {
       container.y = (top + safeTop) / 2 + 14
     }
 
+    this.hide = () => {
+      container.setAlpha(0)
+    }
+
+    this.show = () => {
+      container.setAlpha(1)
+    }
+
     this.setText = value => {
       const str = value.toString()
       const length = str.length
-      const step = txWidth + 2
+      const step = txWidth + (sm ? 1 : 2)
       let left = -Math.round((length * step) / 2)
       sprites.forEach(s => s.setAlpha(0))
       for (let i = 0; i < length; i++) {

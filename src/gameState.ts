@@ -1,4 +1,5 @@
 export const gameState = {
+  score: 0,
   playing: false,
   touchable: true,
   alive: true,

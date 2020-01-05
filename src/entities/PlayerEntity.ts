@@ -88,9 +88,10 @@ export class PlayerEntity {
       body.velocity.y = -300
     }
 
+    const hitVelocityCap = -100
     this.hit = () => {
-      if (body.velocity.y < 0) {
-        body.velocity.y = 0
+      if (body.velocity.y < hitVelocityCap) {
+        body.velocity.y = hitVelocityCap
       }
     }
 
