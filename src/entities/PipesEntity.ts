@@ -5,6 +5,7 @@ import { PlayerEntity } from './PlayerEntity'
 
 export class PipesEntity {
   update: Update
+  reset: Function
   onCollision = () => {}
   onScore = () => {}
   responsive: Responsive
@@ -27,6 +28,14 @@ export class PipesEntity {
     this.responsive = ({ base, viewportHeight, extraHeight }) => {
       // const airHeight = viewportHeight - base.top
       container.y = extraHeight
+    }
+
+    this.reset = () => {
+      const objects = container.getAll() as Phaser.GameObjects.Sprite[]
+      objects.forEach(p => {
+        container.remove(p)
+        p.destroy()
+      })
     }
 
     this.update = (state, { movement }) => {

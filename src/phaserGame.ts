@@ -7,18 +7,7 @@ import { PlayerEntity } from 'entities/PlayerEntity'
 import { gameState } from './gameState'
 import { PipesEntity } from 'entities/PipesEntity'
 import { NumberComponent } from 'entities/NumberComponent'
-
-const listeners: SizePropsListener[] = []
-
-const responsive = (listener: SizePropsListener) => {
-  listeners.push(listener)
-  listener(
-    getSizeProps({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    }),
-  )
-}
+import { responsive } from 'onResize'
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
@@ -46,21 +35,35 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
-    const state = { ...gameState }
+    let state = { ...gameState }
 
     const onBaseCollision = () => {
+      if (!state.canCollide) {
+        // F.. phaser triggers collisions after player has been moved outside
+        // even 1500ms after..
+        return
+      }
       player.setBottom(base.getBounds().top)
       onGameOver()
     }
 
-    const onGameStart = () => {
+    const onGameReset = () => {
+      // console.log('game reset')
+      state = { ...gameState }
       gameover.hide()
+      pipes.reset()
+      player.reset()
+      currentScore.setText(state.score)
       currentScore.show()
+    }
+
+    const onGameStart = () => {
       player.start()
     }
 
     const onGameOver = () => {
       if (state.touchable) {
+        // console.log('stop touchable')
         state.touchable = false
         currentScore.hide()
         gameover.show()
@@ -79,6 +82,7 @@ class GameScene extends Phaser.Scene {
       if (!state.alive) {
         return
       }
+      // console.log('stop player')
       state.alive = false
       player.stop()
     }
@@ -88,23 +92,35 @@ class GameScene extends Phaser.Scene {
         return
       }
       if (!state.playing) {
+        // console.log('touch start')
+        player.start()
         state.playing = true
         onGameStart()
       }
       player.jump()
+      if (!state.canCollide) {
+        state.canCollide = true
+      }
     }
-
-    this.input.on('pointerdown', onTouch)
 
     const bg = this.add
       .image(0, 0, 'background-day')
       .setOrigin(0, 1)
       .setDepth(0)
+    // this.input.on('pointerdown', onTouch)
+    bg.setInteractive()
+    bg.on('pointerdown', onTouch)
 
     const player = new PlayerEntity({ scene: this, depth: 2 })
 
     const pipes = new PipesEntity({ scene: this, player: player, depth: 1 })
     pipes.onCollision = () => {
+      if (!state.canCollide) {
+        return
+      }
+      // if (state.alive) {
+      //   console.log('pipes onCollision')
+      // }
       // Prevent calling gameover multiple times
       if (state.touchable) {
         onGameOver()
@@ -130,6 +146,9 @@ class GameScene extends Phaser.Scene {
 
     const gameover = new GameoverLayer(this).setDepth(depth++)
 
+    gameover.ok.on('pointerdown', onGameReset)
+    gameover.share.on('pointerdown', onGameReset)
+
     // @ts-ignore
     window.scene = this
     let debugLines: Phaser.GameObjects.Graphics | undefined
@@ -142,6 +161,7 @@ class GameScene extends Phaser.Scene {
         .strokeRect(0, 0, designWidth, designHeight)
         .lineStyle(2, 0xfffb00, 0.75)
         .strokeRect(0, (designHeight - minHeight) / 2, designWidth, minHeight)
+        .setDepth(99)
     }
 
     responsive(({ stage }) => {
@@ -168,7 +188,7 @@ class GameScene extends Phaser.Scene {
       pipes.responsive(responsiveData)
       currentScore.y = (top + safeTop) / 2 + 14
     })
-    setTimeout(onGameOver, 50)
+    // setTimeout(onGameOver, 50)
 
     pipes.onScore = () => currentScore.setText(++state.score)
 
@@ -183,6 +203,7 @@ class GameScene extends Phaser.Scene {
       if (state.touchable) {
         base.x = base.x < -11 ? 0 : base.x - movement
       }
+      // console.log('update', state.alive)
       player.update(state, data)
       pipes.update(state, data)
     }
@@ -230,31 +251,5 @@ export const game = new Phaser.Game({
   customEnvironment: true,
 })
 
-const onResize = () => {
-  const sizeProps = getSizeProps({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  })
-
-  if (game.scale.baseSize && game.scale.canvas) {
-    game.scale.resize(sizeProps.viewport.width, sizeProps.viewport.height)
-  } else {
-    log('Postponing resize')
-    setTimeout(onResize, 50)
-    return
-  }
-  canvas.style.width = `${sizeProps.canvas.width}px`
-  canvas.style.height = `${sizeProps.canvas.height}px`
-  listeners.forEach(f => f(sizeProps))
-}
-
-window.addEventListener('resize', onResize)
-setTimeout(onResize)
 // @ts-ignore
 window.game = game
-setTimeout(() => {
-  // console.log(game.scene.getScene('OtherScene'))
-  // console.log(game.scene.isActive('OtherScene'))
-  // console.log(game.scene.isActive('MainScene'))
-  // game.scene.run('OtherScene')
-}, 100)

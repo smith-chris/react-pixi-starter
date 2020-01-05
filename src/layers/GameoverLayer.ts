@@ -2,6 +2,8 @@ import { GameObjects, Scene } from 'phaser'
 import { designWidth, designHeight, maxHeight } from 'setup/dimensions'
 import { Responsive } from 'gameState'
 import { NumberComponent } from 'entities/NumberComponent'
+import { onResize } from 'onResize'
+import { debug } from 'utils/debug'
 export type Flatten<T extends any> = T[number]
 
 export class GameoverLayer extends GameObjects.Container {
@@ -10,6 +12,8 @@ export class GameoverLayer extends GameObjects.Container {
   responsive: Responsive
   score: NumberComponent
   best: NumberComponent
+  ok: Phaser.GameObjects.Sprite
+  share: Phaser.GameObjects.Sprite
 
   constructor(scene: Scene) {
     super(scene)
@@ -33,7 +37,7 @@ export class GameoverLayer extends GameObjects.Container {
     ui.add(title)
 
     const boardBottom = designHeight - 135
-    const board = scene.add.container(designWidth / 2, 0).setAlpha(0)
+    const board = scene.add.container(designWidth / 2, 0)
     ui.add(board)
     const boardBg = add.sprite(0, 0, 'board').setOrigin(0.5, 1)
     board.add(boardBg)
@@ -65,13 +69,34 @@ export class GameoverLayer extends GameObjects.Container {
 
     const ok = add
       .sprite(0, 0, 'ok')
-      .setOrigin(0)
-      .setAlpha(0)
+      .setOrigin(0, 0)
+      .setInteractive({
+        cursor: 'pointer',
+      })
+    this.ok = ok
 
     const share = add
       .sprite(0, 0, 'share')
       .setOrigin(1, 0)
-      .setAlpha(0)
+      .setInteractive({
+        cursor: 'pointer',
+      })
+    this.share = share
+
+    this.hide = () => {
+      this.setAlpha(0)
+      board.setAlpha(0)
+      ok.setAlpha(0)
+      share.setAlpha(0)
+    }
+    this.hide()
+
+    // for whatever reason needs to do that after setting buttons :/
+    onResize()
+    if (debug) {
+      scene.input.enableDebug(ok)
+      scene.input.enableDebug(share)
+    }
 
     const btnSpacing = {
       x: 10,
@@ -145,10 +170,6 @@ export class GameoverLayer extends GameObjects.Container {
         ease: 'Bounce',
         duration: time,
       })
-    }
-
-    this.hide = () => {
-      this.setAlpha(0)
     }
   }
 }

@@ -3,6 +3,7 @@ export const gameState = {
   playing: false,
   touchable: true,
   alive: true,
+  canCollide: false,
 }
 
 export type GameState = typeof gameState

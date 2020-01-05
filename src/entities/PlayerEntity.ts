@@ -6,6 +6,7 @@ export class PlayerEntity {
   hit: Function
   stop: Function
   start: Function
+  reset: Function
   jump: Function
   setBottom: (value: number) => void
   update: Update
@@ -41,7 +42,20 @@ export class PlayerEntity {
     window.sprite = sprite
 
     const startVelocityY = body.maxVelocity.y
-    body.maxVelocity.y = 0
+
+    this.start = () => {
+      body.maxVelocity.y = startVelocityY
+    }
+
+    this.reset = () => {
+      body.y = startY
+      sprite.rotation = 0
+    }
+
+    this.stop = () => {
+      body.maxVelocity.y = 0
+    }
+    this.stop()
 
     const getVariation = (timePassed: number) =>
       Math.sin(timePassed / 7 / (1000 / 60))
@@ -76,14 +90,6 @@ export class PlayerEntity {
       sprite.y = value - container.y - sprite.height / 3
     }
 
-    this.start = () => {
-      body.maxVelocity.y = startVelocityY
-    }
-
-    this.stop = () => {
-      body.maxVelocity.y = 0
-    }
-
     this.jump = () => {
       body.velocity.y = -300
     }
@@ -103,10 +109,12 @@ export class PlayerEntity {
           state.playing ? timePassed * 3 : timePassed,
         )
         if (textureName !== sprite.texture.key) {
+          // console.log('set texture', textureName)
           sprite.setTexture(textureName)
         }
       }
       if (!state.playing) {
+        // console.log('set y')
         sprite.y = getY(timePassed)
       }
       if (state.playing) {
