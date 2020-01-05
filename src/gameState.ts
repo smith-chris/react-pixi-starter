@@ -14,4 +14,6 @@ export type Responsive = (viewport: {
   top: number
   bottom: number
   extraHeight: number
+  viewportHeight: number
+  base: Phaser.Geom.Rectangle
 }) => void

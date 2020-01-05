@@ -1,12 +1,12 @@
-import { Scene } from 'phaser'
-import { designWidth, designHeight } from 'setup/dimensions'
+import Phaser, { Scene } from 'phaser'
+import { designWidth } from 'setup/dimensions'
 import { Update, Responsive } from 'gameState'
 import { PlayerEntity } from './PlayerEntity'
 
 export class PipesEntity {
   update: Update
   onCollision = () => {}
-  // responsive: Responsive
+  responsive: Responsive
 
   constructor({
     scene,
@@ -19,29 +19,37 @@ export class PipesEntity {
   }) {
     const pipeDist = 150
     const pipeGap = 120
+    const minAirHeight = 314
 
-    const objects: Phaser.GameObjects.Sprite[] = []
+    const container = scene.add.container(0, 0)
+
+    this.responsive = ({ base, viewportHeight, extraHeight }) => {
+      // const airHeight = viewportHeight - base.top
+      container.y = extraHeight
+    }
 
     this.update = (state, { movement }) => {
       if (state.touchable) {
-        objects.forEach(pipe => {
+        ;(container.getAll() as Phaser.GameObjects.Sprite[]).forEach(pipe => {
           pipe.x -= movement
         })
       }
       if (state.playing) {
+        const objects = container.getAll() as Phaser.GameObjects.Sprite[]
         const lastPipeX = objects.length
           ? objects[objects.length - 1].x
           : -Infinity
         if (lastPipeX < designWidth - pipeDist) {
           objects.forEach(p => {
             if (p.getBounds().right < 0) {
-              // objects.remove(p)
+              container.remove(p)
               p.destroy()
             }
           })
-          const variation = 125
+          const variation = Math.round(minAirHeight * 0.66)
           const centerY = Math.round(
-            designHeight / 2 + variation * 0.75 - Math.random() * variation,
+            minAirHeight / 2 +
+              Phaser.Math.Between(-variation / 2, variation / 2),
           )
 
           const topPipe = scene.physics.add.sprite(
@@ -52,10 +60,10 @@ export class PipesEntity {
           topPipe.setOrigin(0, 1)
           topPipe.flipY = true
           topPipe.setDepth(depth)
+          container.add(topPipe)
 
           const topPipeBody = topPipe.body as Phaser.Physics.Arcade.Body
           topPipeBody.maxVelocity.y = 0
-          objects.push(topPipe)
           scene.physics.add.overlap(player.sprite, topPipe, this.onCollision)
 
           const bottomPipe = scene.physics.add.sprite(
@@ -65,10 +73,10 @@ export class PipesEntity {
           )
           bottomPipe.setOrigin(0, 0)
           bottomPipe.setDepth(depth)
+          container.add(bottomPipe)
 
           const bottomPipeBody = bottomPipe.body as Phaser.Physics.Arcade.Body
           bottomPipeBody.maxVelocity.y = 0
-          objects.push(bottomPipe)
           scene.physics.add.overlap(player.sprite, bottomPipe, this.onCollision)
         }
       }

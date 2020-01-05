@@ -137,9 +137,16 @@ class GameScene extends Phaser.Scene {
       if (this.debugLines) {
         this.debugLines.y = extraHeight
       }
-      const responsiveData = { top, bottom, extraHeight }
+      const responsiveData = {
+        top,
+        bottom,
+        extraHeight,
+        viewportHeight: extraHeight * 2 + designHeight,
+        base: base.getBounds(),
+      }
       this.gameover.responsive(responsiveData)
       this.player.responsive(responsiveData)
+      this.pipes.responsive(responsiveData)
     })
     // setTimeout(this.onGameOver, 50)
 
