@@ -36,7 +36,7 @@ module.exports = ({ isIOS } = {}) => ({
     new HtmlWebpackPlugin({
       template: path.resolve('./src/index.html'),
       inject: 'body',
-      appName: 'React PIXI Starter',
+      appName: 'Flappy Bird',
     }),
     new CopyPlugin([{ from: path.resolve('./src/assets'), to: 'assets' }]),
     new ForkTsCheckerWebpackPlugin(),

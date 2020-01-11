@@ -62,6 +62,7 @@ class GameScene extends Phaser.Scene {
       if (gameover.visible) {
         return
       }
+      this.sound.stopAll()
       this.sound.play('hit')
     }
 
@@ -152,6 +153,7 @@ class GameScene extends Phaser.Scene {
         onGameOver()
         // Player will fall down
         player.hit()
+        this.sound.stopAll()
         this.sound.play('hit')
         setTimeout(() => {
           this.sound.play('die')
@@ -177,7 +179,7 @@ class GameScene extends Phaser.Scene {
     const gameover = new GameoverLayer(this).setDepth(depth++)
 
     const newgame = this.add
-      .container(designWidth / 2, 120)
+      .container(designWidth / 2, 0)
       .setDepth(depth++)
       .setAlpha(0)
     const getready = this.add.sprite(0, 0, 'getready')
@@ -239,6 +241,7 @@ class GameScene extends Phaser.Scene {
         viewportHeight: extraHeight * 2 + designHeight,
         base: base.getBounds(),
       }
+      newgame.y = 90 + extraHeight
       gameover.responsive(responsiveData)
       player.responsive(responsiveData)
       pipes.responsive(responsiveData)
