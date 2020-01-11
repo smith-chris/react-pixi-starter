@@ -14,6 +14,7 @@ export class GameoverLayer extends GameObjects.Container {
   best: NumberComponent
   ok: Phaser.GameObjects.Sprite
   share: Phaser.GameObjects.Sprite
+  newLabel: Phaser.GameObjects.Sprite
   visible = false
 
   constructor(scene: Scene) {
@@ -44,8 +45,14 @@ export class GameoverLayer extends GameObjects.Container {
     board.add(boardBg)
     const score = new NumberComponent({ scene, align: 'right' })
     const best = new NumberComponent({ scene, align: 'right' })
+    const newLabel = scene.add
+      .sprite(0, 0, 'new')
+      .setOrigin(1, 1)
+      .setAlpha(0)
     board.add(score)
     board.add(best)
+    board.add(newLabel)
+    this.newLabel = newLabel
     {
       const boardBounds = boardBg.getBounds()
       const boardTop = boardBounds.top
@@ -54,6 +61,8 @@ export class GameoverLayer extends GameObjects.Container {
       const bestLabelBottom = 72
       const labelsDist = 30
       score.x = best.x = boardRight - 22
+      newLabel.x = boardRight - 22 - 38
+      newLabel.y = boardTop + bestLabelBottom
       score.y =
         Math.round(
           boardTop + scoreLabelBottom + labelsDist / 2 - score.height / 2,
@@ -113,10 +122,13 @@ export class GameoverLayer extends GameObjects.Container {
       setTimeout(() => {
         const boardBounds = boardBg.getBounds()
         ok.setAlpha(1)
-        share.setAlpha(1)
-        ok.x = -boardBounds.width / 2 + btnSpacing.x
-        share.x = boardBounds.width / 2 - btnSpacing.x
+        // share.setAlpha(1)
+        // ok.x = -boardBounds.width / 2 + btnSpacing.x
+        // share.x = boardBounds.width / 2 - btnSpacing.x
         ok.y = share.y = btnSpacing.y
+        // temporairly
+        ok.setOrigin(0.5, 0)
+        ok.x = 0
       }, 250)
     }
 
@@ -130,6 +142,7 @@ export class GameoverLayer extends GameObjects.Container {
     }
 
     this.show = () => {
+      newLabel.setAlpha(0)
       this.visible = true
       this.setAlpha(1)
       whiteRect.setAlpha(1)

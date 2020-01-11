@@ -78,13 +78,12 @@ class GameScene extends Phaser.Scene {
         gameover.show()
         gameover.score.setText(state.score)
         let best = Number(localStorage.getItem('fb_best'))
-        let isNewBest = false
         if (best < state.score) {
-          isNewBest = true
+          // Setting a new high score!
+          gameover.newLabel.setAlpha(1)
           best = state.score
           localStorage.setItem('fb_best', best.toString())
         }
-        gameover.score.setText(state.score)
         gameover.best.setText(best)
         return
       }
@@ -228,10 +227,9 @@ class GameScene extends Phaser.Scene {
     })
 
     // setTimeout(onGameOver, 50)
+    onGameReset()
 
     pipes.onScore = () => currentScore.setText(++state.score)
-
-    onGameReset()
 
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)
