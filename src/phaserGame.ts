@@ -34,6 +34,12 @@ class GameScene extends Phaser.Scene {
     ;['ok', 'share', 'start', 'score'].forEach(btn => {
       this.load.image(btn, `assets/sprites/buttons/${btn}.png`)
     })
+    ;['hit', 'die', 'wing', 'point', 'swoosh'].forEach(sound => {
+      this.load.audio(sound, [
+        `assets/audio/${sound}.ogg`,
+        `assets/audio/${sound}.wav`,
+      ])
+    })
 
     for (let i = 0; i <= 9; i++) {
       this.load.image(String(i), `assets/sprites/numbers/${i}.png`)
@@ -52,12 +58,20 @@ class GameScene extends Phaser.Scene {
       }
       player.setBottom(base.getBounds().top)
       onGameOver()
+      // So dogy, and so mutation-based gamedev..
+      if (gameover.visible) {
+        return
+      }
+      this.sound.play('hit')
     }
 
-    const onGameReset = () => {
+    const onGameReset = (playSound = true) => {
       // console.log('game reset')
       state = { ...gameState }
       gameover.hide()
+      if (playSound) {
+        this.sound.play('swoosh')
+      }
       pipes.reset()
       player.reset()
       currentScore.setText(state.score)
@@ -109,6 +123,7 @@ class GameScene extends Phaser.Scene {
         onGameStart()
       }
       player.jump()
+      this.sound.play('wing')
       if (!state.canCollide) {
         state.canCollide = true
       }
@@ -137,6 +152,10 @@ class GameScene extends Phaser.Scene {
         onGameOver()
         // Player will fall down
         player.hit()
+        this.sound.play('hit')
+        setTimeout(() => {
+          this.sound.play('die')
+        }, 100)
       }
     }
 
@@ -227,9 +246,12 @@ class GameScene extends Phaser.Scene {
     })
 
     // setTimeout(onGameOver, 50)
-    onGameReset()
+    onGameReset(false)
 
-    pipes.onScore = () => currentScore.setText(++state.score)
+    pipes.onScore = () => {
+      currentScore.setText(++state.score)
+      this.sound.play('point')
+    }
 
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)

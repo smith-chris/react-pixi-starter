@@ -101,6 +101,7 @@ export class GameoverLayer extends GameObjects.Container {
       ok.setAlpha(0)
       share.setAlpha(0)
       setTimeout(() => {
+        // scene.sound.play('swoosh')
         this.visible = false
       })
     }
@@ -143,7 +144,9 @@ export class GameoverLayer extends GameObjects.Container {
 
     this.show = () => {
       newLabel.setAlpha(0)
-      this.visible = true
+      setTimeout(() => {
+        this.visible = true
+      })
       this.setAlpha(1)
       whiteRect.setAlpha(1)
       scene.tweens.add({
@@ -165,6 +168,7 @@ export class GameoverLayer extends GameObjects.Container {
         ease: 'Linear',
         duration: time,
         onComplete: () => {
+          scene.sound.play('swoosh')
           scene.tweens.add({
             targets: title,
             y: titleY + 2,
