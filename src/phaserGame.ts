@@ -16,14 +16,21 @@ class GameScene extends Phaser.Scene {
     super('GameScene')
   }
   preload() {
-    this.load.image('background-day', 'assets/sprites/background-day.png')
-    this.load.image('base', 'assets/sprites/base.png')
-    this.load.image('midflap', 'assets/sprites/yellowbird-midflap.png')
-    this.load.image('upflap', 'assets/sprites/yellowbird-upflap.png')
-    this.load.image('downflap', 'assets/sprites/yellowbird-downflap.png')
-    this.load.image('pipe', 'assets/sprites/pipe.png')
-    this.load.image('gameover', 'assets/sprites/gameover.png')
-    this.load.image('board', 'assets/sprites/board.png')
+    ;[
+      ['background-day', 'background-day'],
+      ['base', 'base'],
+      ['midflap', 'yellowbird-midflap'],
+      ['upflap', 'yellowbird-upflap'],
+      ['downflap', 'yellowbird-downflap'],
+      ['pipe', 'pipe'],
+      ['gameover', 'gameover'],
+      ['board', 'board'],
+      ['getready'],
+      ['new'],
+      ['tap'],
+    ].forEach(([name, file]) => {
+      this.load.image(name, `assets/sprites/${file || name}.png`)
+    })
     ;['ok', 'share', 'start', 'score'].forEach(btn => {
       this.load.image(btn, `assets/sprites/buttons/${btn}.png`)
     })
@@ -55,9 +62,11 @@ class GameScene extends Phaser.Scene {
       player.reset()
       currentScore.setText(state.score)
       currentScore.show()
+      showNewgame()
     }
 
     const onGameStart = () => {
+      hideNewgame()
       player.start()
     }
 
@@ -88,6 +97,9 @@ class GameScene extends Phaser.Scene {
     }
 
     const onTouch = () => {
+      if (gameover.visible) {
+        return
+      }
       if (!state.touchable) {
         return
       }
@@ -109,7 +121,7 @@ class GameScene extends Phaser.Scene {
       .setDepth(0)
     // this.input.on('pointerdown', onTouch)
     bg.setInteractive()
-    bg.on('pointerdown', onTouch)
+    this.input.on('pointerdown', onTouch)
 
     const player = new PlayerEntity({ scene: this, depth: 2 })
 
@@ -145,6 +157,32 @@ class GameScene extends Phaser.Scene {
     currentScore.setText(state.score)
 
     const gameover = new GameoverLayer(this).setDepth(depth++)
+
+    const newgame = this.add
+      .container(designWidth / 2, 120)
+      .setDepth(depth++)
+      .setAlpha(0)
+    const getready = this.add.sprite(0, 0, 'getready')
+    const tap = this.add.sprite(0, 100, 'tap')
+    newgame.add(getready)
+    newgame.add(tap)
+    const showNewgame = () => {
+      this.tweens.add({
+        targets: newgame,
+        alpha: { from: 0, to: 1 },
+        ease: 'Quad',
+        duration: 250,
+      })
+    }
+
+    const hideNewgame = () => {
+      this.tweens.add({
+        targets: newgame,
+        alpha: { from: 1, to: 0 },
+        ease: 'Quad',
+        duration: 250,
+      })
+    }
 
     gameover.ok.on('pointerdown', onGameReset)
     gameover.share.on('pointerdown', onGameReset)
@@ -188,9 +226,12 @@ class GameScene extends Phaser.Scene {
       pipes.responsive(responsiveData)
       currentScore.y = (top + safeTop) / 2 + 14
     })
+
     // setTimeout(onGameOver, 50)
 
     pipes.onScore = () => currentScore.setText(++state.score)
+
+    onGameReset()
 
     this.update = (timePassed: number, delta: number) => {
       const px = delta / (1000 / 60)

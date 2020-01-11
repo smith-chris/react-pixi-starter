@@ -14,6 +14,7 @@ export class GameoverLayer extends GameObjects.Container {
   best: NumberComponent
   ok: Phaser.GameObjects.Sprite
   share: Phaser.GameObjects.Sprite
+  visible = false
 
   constructor(scene: Scene) {
     super(scene)
@@ -74,6 +75,7 @@ export class GameoverLayer extends GameObjects.Container {
         cursor: 'pointer',
       })
     this.ok = ok
+    board.add(ok)
 
     const share = add
       .sprite(0, 0, 'share')
@@ -82,12 +84,16 @@ export class GameoverLayer extends GameObjects.Container {
         cursor: 'pointer',
       })
     this.share = share
+    board.add(share)
 
     this.hide = () => {
       this.setAlpha(0)
       board.setAlpha(0)
       ok.setAlpha(0)
       share.setAlpha(0)
+      setTimeout(() => {
+        this.visible = false
+      })
     }
     this.hide()
 
@@ -108,9 +114,9 @@ export class GameoverLayer extends GameObjects.Container {
         const boardBounds = boardBg.getBounds()
         ok.setAlpha(1)
         share.setAlpha(1)
-        ok.x = boardBounds.left + btnSpacing.x
-        share.x = boardBounds.right - btnSpacing.x
-        ok.y = share.y = boardBounds.bottom + btnSpacing.y
+        ok.x = -boardBounds.width / 2 + btnSpacing.x
+        share.x = boardBounds.width / 2 - btnSpacing.x
+        ok.y = share.y = btnSpacing.y
       }, 250)
     }
 
@@ -124,6 +130,7 @@ export class GameoverLayer extends GameObjects.Container {
     }
 
     this.show = () => {
+      this.visible = true
       this.setAlpha(1)
       whiteRect.setAlpha(1)
       scene.tweens.add({
