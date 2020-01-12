@@ -1,14 +1,15 @@
 import { GameObjects, Scene } from 'phaser'
 import { designWidth, designHeight, maxHeight } from 'setup/dimensions'
-import { Responsive } from 'gameState'
+import { Responsive, Medals } from 'gameState'
 import { NumberComponent } from 'entities/NumberComponent'
 import { onResize } from 'onResize'
 import { debug } from 'utils/debug'
-export type Flatten<T extends any> = T[number]
+import { Flatten } from 'utils/typeUtils'
 
 export class GameoverLayer extends GameObjects.Container {
   show: Function
   hide: Function
+  setMedal: (name: Medals) => void
   responsive: Responsive
   score: NumberComponent
   best: NumberComponent
@@ -49,20 +50,28 @@ export class GameoverLayer extends GameObjects.Container {
       .sprite(0, 0, 'new')
       .setOrigin(1, 1)
       .setAlpha(0)
+    const medal = scene.add
+      .sprite(0, 0, 'medal-silver')
+      .setOrigin(0)
+      .setAlpha(0)
     board.add(score)
     board.add(best)
     board.add(newLabel)
+    board.add(medal)
     this.newLabel = newLabel
     {
       const boardBounds = boardBg.getBounds()
       const boardTop = boardBounds.top
       const boardRight = boardBg.width / 2
+      const boardLeft = -boardBg.width / 2
       const scoreLabelBottom = 30
       const bestLabelBottom = 72
       const labelsDist = 30
       score.x = best.x = boardRight - 22
       newLabel.x = boardRight - 22 - 38
       newLabel.y = boardTop + bestLabelBottom
+      medal.x = boardLeft + 26
+      medal.y = boardTop + 42
       score.y =
         Math.round(
           boardTop + scoreLabelBottom + labelsDist / 2 - score.height / 2,
@@ -142,8 +151,14 @@ export class GameoverLayer extends GameObjects.Container {
       ui.y = extraHeight
     }
 
+    this.setMedal = name => {
+      medal.setTexture(`medal-${name}`)
+      medal.setAlpha(1)
+    }
+
     this.show = () => {
       newLabel.setAlpha(0)
+      medal.setAlpha(0)
       setTimeout(() => {
         this.visible = true
       })

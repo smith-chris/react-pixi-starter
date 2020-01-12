@@ -16,6 +16,7 @@ class GameScene extends Phaser.Scene {
     super('GameScene')
   }
   preload() {
+    const sprites = 'assets/sprites'
     ;[
       ['background-day', 'background-day'],
       ['base', 'base'],
@@ -29,10 +30,10 @@ class GameScene extends Phaser.Scene {
       ['new'],
       ['tap'],
     ].forEach(([name, file]) => {
-      this.load.image(name, `assets/sprites/${file || name}.png`)
+      this.load.image(name, `${sprites}/${file || name}.png`)
     })
     ;['ok', 'share', 'start', 'score'].forEach(btn => {
-      this.load.image(btn, `assets/sprites/buttons/${btn}.png`)
+      this.load.image(btn, `${sprites}/buttons/${btn}.png`)
     })
     ;['hit', 'die', 'wing', 'point', 'swoosh'].forEach(sound => {
       this.load.audio(sound, [
@@ -40,10 +41,13 @@ class GameScene extends Phaser.Scene {
         `assets/audio/${sound}.wav`,
       ])
     })
+    ;['silver', 'bronze', 'gold', 'platinum'].forEach(name => {
+      this.load.image(`medal-${name}`, `${sprites}/medal-${name}.png`)
+    })
 
     for (let i = 0; i <= 9; i++) {
-      this.load.image(String(i), `assets/sprites/numbers/${i}.png`)
-      this.load.image(`sm${i}`, `assets/sprites/numbers/sm${i}.png`)
+      this.load.image(String(i), `${sprites}/numbers/${i}.png`)
+      this.load.image(`sm${i}`, `${sprites}/numbers/sm${i}.png`)
     }
   }
 
@@ -92,6 +96,7 @@ class GameScene extends Phaser.Scene {
         currentScore.hide()
         gameover.show()
         gameover.score.setText(state.score)
+
         let best = Number(localStorage.getItem('fb_best'))
         if (best < state.score) {
           // Setting a new high score!
@@ -100,6 +105,15 @@ class GameScene extends Phaser.Scene {
           localStorage.setItem('fb_best', best.toString())
         }
         gameover.best.setText(best)
+        if (state.score >= 80) {
+          gameover.setMedal('platinum')
+        } else if (state.score >= 60) {
+          gameover.setMedal('gold')
+        } else if (state.score >= 30) {
+          gameover.setMedal('silver')
+        } else if (state.score >= 20) {
+          gameover.setMedal('bronze')
+        }
         return
       }
       if (!state.alive) {

@@ -1,3 +1,5 @@
+import { Flatten } from 'utils/typeUtils'
+
 export const gameState = {
   score: 0,
   playing: false,
@@ -5,6 +7,10 @@ export const gameState = {
   alive: true,
   canCollide: false,
 }
+
+export const medals = ['silver', 'bronze', 'gold', 'platinum'] as const
+
+export type Medals = Flatten<typeof medals>
 
 export type GameState = typeof gameState
 
