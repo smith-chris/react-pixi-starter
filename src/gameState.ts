@@ -3,6 +3,7 @@ import { Flatten } from 'utils/typeUtils'
 export const gameState = {
   score: 0,
   playing: false,
+  falling: false,
   touchable: true,
   alive: true,
   canCollide: false,

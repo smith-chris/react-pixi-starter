@@ -29,8 +29,18 @@ class GameScene extends Phaser.Scene {
       ['getready'],
       ['new'],
       ['tap'],
+      ['ghost-hit'],
+      // ['ghost-idle', 'ghost-idle-nm'],
     ].forEach(([name, file]) => {
       this.load.image(name, `${sprites}/${file || name}.png`)
+    })
+    this.load.spritesheet('idle', `${sprites}/ghost-idle-nm.png`, {
+      frameWidth: 32,
+      frameHeight: 32,
+    })
+    this.load.spritesheet('float', `${sprites}/ghost-float-nm.png`, {
+      frameWidth: 32,
+      frameHeight: 32,
     })
     ;['ok', 'share', 'start', 'score'].forEach(btn => {
       this.load.image(btn, `${sprites}/buttons/${btn}.png`)
@@ -55,6 +65,7 @@ class GameScene extends Phaser.Scene {
     let state = { ...gameState }
 
     const onBaseCollision = () => {
+      state.falling = false
       if (!state.canCollide) {
         // F.. phaser triggers collisions after player has been moved outside
         // even 1500ms after..
@@ -155,7 +166,11 @@ class GameScene extends Phaser.Scene {
     const player = new PlayerEntity({ scene: this, depth: 2 })
 
     const pipes = new PipesEntity({ scene: this, player: player, depth: 1 })
-    pipes.onCollision = () => {
+    // @ts-ignore
+    pipes.onCollision = (
+      plr: Phaser.GameObjects.Sprite,
+      pipe: Phaser.GameObjects.Sprite,
+    ) => {
       if (!state.canCollide) {
         return
       }
@@ -166,7 +181,8 @@ class GameScene extends Phaser.Scene {
       if (state.touchable) {
         onGameOver()
         // Player will fall down
-        player.hit()
+        player.hit(state, plr.x > pipe.x)
+        state.falling = true
         this.sound.stopAll()
         this.sound.play('hit')
         setTimeout(() => {
