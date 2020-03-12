@@ -1,4 +1,3 @@
-import { Point } from 'pixi.js'
 import {
   maxRatio,
   designWidth,
@@ -6,7 +5,7 @@ import {
   designHeight,
   minRatio,
 } from './dimensions'
-import { useWindowSize } from 'hooks/useWindowSize'
+import { Point } from 'utils/intersect'
 
 export type SizePropsListener = (v: ReturnType<typeof getSizeProps>) => void
 
@@ -44,17 +43,12 @@ export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
   }
 }
 
-export const useSize = () => {
-  const size = useWindowSize()
-  return getSizeProps(size)
-}
+// export const useViewport = () => {
+//   const { stage } = useSize()
+//   const stageTop = stage.position.y
+//   const stageScale = stage.scale.x
+//   const extraHeight = Math.round(stageTop / stageScale)
+//   return { bottom: designHeight + extraHeight, extraHeight }
+// }
 
-export const useViewport = () => {
-  const { stage } = useSize()
-  const stageTop = stage.position.y
-  const stageScale = stage.scale.x
-  const extraHeight = Math.round(stageTop / stageScale)
-  return { bottom: designHeight + extraHeight, extraHeight }
-}
-
-export type ViewportProps = ReturnType<typeof useViewport>
+// export type ViewportProps = ReturnType<typeof useViewport>

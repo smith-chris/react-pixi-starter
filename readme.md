@@ -1,6 +1,6 @@
-# React PIXI Starter
+# Typescript Starter
 
-Unfancy React boilerplate project. Simple and good for beginners.
+Unfancy boilerplate project. Simple and good for beginners.
 HMR implementation is a work in progress. Only redux state is presered between reloads atm. BUT! It speeds up development anyway ;)
 
 [![deps](https://david-dm.org/smith-chris/react-pixi-starter.svg)](https://david-dm.org/smith-chris/react-pixi-starter)
@@ -9,9 +9,6 @@ HMR implementation is a work in progress. Only redux state is presered between r
 
 - [webpack](https://webpack.js.org/) - for awesome workflow and to tide everything into one sweet js bundle file
 - [babel](https://babeljs.io/) - for newest and greatest JS language features
-- [react](https://reactjs.org/) - because components are the way
-- [react-pixi](https://reactpixi.org/) - because canvas is awesome!
-- [redux](http://redux.js.org/) - for easy state management
 - and others smaller utils
 
 ## How to use

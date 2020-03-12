@@ -15,9 +15,9 @@ const prefixExtensions = (extensions, prefix) => [
   ...extensions,
 ]
 
-module.exports = ({ isIOS } = {}) => ({
+module.exports = () => ({
   entry: {
-    index: ['./src/setup/index.phaser'],
+    index: ['./src/setup/index'],
   },
   output: {
     path: path.resolve('dist'),
@@ -25,10 +25,7 @@ module.exports = ({ isIOS } = {}) => ({
   },
   devtool: false,
   resolve: {
-    extensions: prefixExtensions(
-      ['.ts', '.tsx', '.js', '.json'],
-      isIOS ? '.ios' : '.web',
-    ),
+    extensions: ['.ts', '.js', '.json', isDev ? '.dev.js' : '.prod.js'],
     modules: ['node_modules', path.resolve('./src')],
   },
   devtool: 'source-map',
@@ -36,7 +33,7 @@ module.exports = ({ isIOS } = {}) => ({
     new HtmlWebpackPlugin({
       template: path.resolve('./src/index.html'),
       inject: 'body',
-      appName: 'Flappy Bird',
+      appName: 'Typescript starter',
     }),
     new CopyPlugin([{ from: path.resolve('./src/assets'), to: 'assets' }]),
     new ForkTsCheckerWebpackPlugin(),
@@ -51,7 +48,6 @@ module.exports = ({ isIOS } = {}) => ({
           loader: 'babel-loader',
           options: {
             cacheDirectory: true,
-            // See https://github.com/facebook/create-react-app/issues/6846 for context
             cacheCompression: false,
             babelrc: false,
             presets: [
@@ -60,14 +56,12 @@ module.exports = ({ isIOS } = {}) => ({
                 { targets: { browsers: 'last 2 versions' } }, // or whatever your project requires
               ],
               '@babel/preset-typescript',
-              '@babel/preset-react',
             ],
             plugins: [
               // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
               '@babel/plugin-proposal-optional-chaining',
               ['@babel/plugin-proposal-decorators', { legacy: true }],
               ['@babel/plugin-proposal-class-properties', { loose: true }],
-              'react-hot-loader/babel',
             ],
           },
         },
