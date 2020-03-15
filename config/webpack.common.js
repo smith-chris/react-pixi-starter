@@ -1,12 +1,11 @@
 const path = require('path')
 
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const { wrap } = new (require('speed-measure-webpack-plugin'))()
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
+const IgnoreNotFoundExportPlugin = require('ignore-not-found-export-webpack-plugin')
 
-const { CheckerPlugin } = require('awesome-typescript-loader')
+const { wrap } = new (require('speed-measure-webpack-plugin'))()
 
 const isDev = process.argv.indexOf('-p') === -1
 
@@ -33,7 +32,7 @@ module.exports = () =>
         appName: 'Typescript starter',
       }),
       new CopyPlugin([{ from: path.resolve('./src/assets'), to: 'assets' }]),
-      new CheckerPlugin(),
+      new IgnoreNotFoundExportPlugin(),
       new FriendlyErrorsWebpackPlugin(),
     ],
     module: {

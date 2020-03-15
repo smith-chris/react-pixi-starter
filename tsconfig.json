@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "../../build/dist",
     "moduleResolution": "node",
+    "baseUrl": "./src",
     "sourceMap": true,
     "experimentalDecorators": true,
     "target": "es5",
@@ -14,6 +15,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowUnreachableCode": false,
-    "lib": ["dom", "es5", "es2015.promise", "es2015.collection", "es2015.iterable"]
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise",
+      "es2015.collection",
+      "es2015.iterable"
+    ]
   }
 }

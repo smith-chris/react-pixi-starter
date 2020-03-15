@@ -1,6 +1,5 @@
-// import '../excalibur/engine/globals'
-// import '../excalibur/engine/files'
-import { Engine } from '../excalibur/engine'
+import { Engine } from 'excalibur/engine'
 
 console.log('Hello!!!!!', Engine)
-// console.log('Hello!!')
+const add = (a: number) => a + 5
+console.log(add('5'))
