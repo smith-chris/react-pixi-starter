@@ -17,13 +17,12 @@ const prefixExtensions = (extensions, prefix) => [
 
 module.exports = () => ({
   entry: {
-    index: ['./src/setup/index'],
+    index: ['./src/setup/index.ts'],
   },
   output: {
     path: path.resolve('dist'),
     filename: '[name].js',
   },
-  devtool: false,
   resolve: {
     extensions: ['.ts', '.js', '.json', isDev ? '.dev.js' : '.prod.js'],
     modules: ['node_modules', path.resolve('./src')],
@@ -36,35 +35,39 @@ module.exports = () => ({
       appName: 'Typescript starter',
     }),
     new CopyPlugin([{ from: path.resolve('./src/assets'), to: 'assets' }]),
-    new ForkTsCheckerWebpackPlugin(),
-    new FriendlyErrorsWebpackPlugin(),
+    // new ForkTsCheckerWebpackPlugin(),
+    // new FriendlyErrorsWebpackPlugin(),
   ],
   module: {
     rules: [
+      // {
+      //   test: /\.(j|t)sx?$/,
+      //   include: path.resolve('./src'),
+      //   use: {
+      //     loader: 'babel-loader',
+      //     options: {
+      //       cacheDirectory: true,
+      //       cacheCompression: false,
+      //       babelrc: false,
+      //       presets: [
+      //         [
+      //           '@babel/preset-env',
+      //           { targets: { browsers: 'last 2 versions' } }, // or whatever your project requires
+      //         ],
+      //         '@babel/preset-typescript',
+      //       ],
+      //       plugins: [
+      //         // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
+      //         '@babel/plugin-proposal-optional-chaining',
+      //         ['@babel/plugin-proposal-decorators', { legacy: true }],
+      //         ['@babel/plugin-proposal-class-properties', { loose: true }],
+      //       ],
+      //     },
+      //   },
+      // },
       {
-        test: /\.(j|t)sx?$/,
-        include: path.resolve('./src'),
-        use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-            cacheCompression: false,
-            babelrc: false,
-            presets: [
-              [
-                '@babel/preset-env',
-                { targets: { browsers: 'last 2 versions' } }, // or whatever your project requires
-              ],
-              '@babel/preset-typescript',
-            ],
-            plugins: [
-              // plugin-proposal-decorators is only needed if you're using experimental decorators in TypeScript
-              '@babel/plugin-proposal-optional-chaining',
-              ['@babel/plugin-proposal-decorators', { legacy: true }],
-              ['@babel/plugin-proposal-class-properties', { loose: true }],
-            ],
-          },
-        },
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/,
@@ -112,13 +115,32 @@ module.exports = () => ({
         ],
       },
       {
+        test: /\.(png|jpg|gif)$/i,
+        include: path.resolve('./src/excalibur'),
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        include: path.resolve('./src/excalibur'),
+        use: ['to-string-loader', 'css-loader'],
+      },
+      {
         test: /\.global\.css$/,
         include: path.resolve('./src'),
+        exclude: path.resolve('./src/excalibur'),
         use: ['style-loader', 'css-loader'],
       },
       {
         test: /^(?!.*(\.global)).*\.css$/,
         include: [path.resolve('./src'), path.resolve('./node_modules')],
+        exclude: path.resolve('./src/excalibur'),
         use: [
           'style-loader',
           {
