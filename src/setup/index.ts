@@ -1,1 +1,3 @@
-console.log('Hello!')
+import { Engine } from 'excalibur/engine'
+
+console.log('Hello!!', Engine)
