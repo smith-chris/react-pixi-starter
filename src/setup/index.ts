@@ -1,4 +1,4 @@
-import { Engine, Actor, Color, CollisionType } from 'excalibur/engine'
+import { Engine, Actor, Color } from 'excalibur/engine'
 
 const game = new Engine({
   width: 800,
@@ -21,5 +21,8 @@ paddle.color = Color.Chartreuse
 // `game.add` is the same as calling
 // `game.currentScene.add`
 game.add(paddle)
+game.input.pointers.primary.on('move', function(evt) {
+  paddle.pos.x = evt.target.lastWorldPos.x
+})
 
 game.start()
