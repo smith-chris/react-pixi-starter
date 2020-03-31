@@ -2,7 +2,13 @@
   "compilerOptions": {
     "outDir": "../../build/dist",
     "moduleResolution": "node",
-    "baseUrl": "./src",
+    // "baseUrl": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "@ash.ts/ts": ["./ash/packages/ash/src/index.ts"],
+      "@ash.ts/*": ["./ash/packages/*/src"]
+      // "@ash.ts/*": ["./src/ash"]
+    },
     "sourceMap": true,
     "experimentalDecorators": true,
     "target": "es5",

@@ -5,7 +5,9 @@ import {
   designHeight,
   minRatio,
 } from './dimensions'
-import { Point } from '../utils/intersect'
+import { Point } from 'utils/intersect'
+
+export type SizePropsListener = (v: ReturnType<typeof getSizeProps>) => void
 
 export const getSizeProps = ({ width = 1, height = 1, ratio = pixelRatio }) => {
   const sizeRatio = width / height

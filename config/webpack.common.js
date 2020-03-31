@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 const IgnoreNotFoundExportPlugin = require('ignore-not-found-export-webpack-plugin')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
 const { wrap } = new (require('speed-measure-webpack-plugin'))()
 
@@ -14,7 +15,7 @@ const ASSETS_PATH = path.resolve('./src/assets')
 module.exports = () =>
   wrap({
     entry: {
-      index: ['./src/setup/index.ts'],
+      index: ['./src/index.ts'],
     },
     output: {
       path: path.resolve('dist'),
@@ -23,6 +24,7 @@ module.exports = () =>
     resolve: {
       extensions: ['.ts', '.js', '.json', isDev ? '.dev.js' : '.prod.js'],
       modules: ['node_modules', path.resolve('./src')],
+      plugins: [new TsconfigPathsPlugin()],
     },
     devtool: 'source-map',
     plugins: [
@@ -66,6 +68,14 @@ module.exports = () =>
                       outputPath: 'assets/',
                     },
               ),
+            },
+          ],
+        },
+        {
+          test: /\.(mp3|ogg)$/,
+          use: [
+            {
+              loader: 'file-loader',
             },
           ],
         },
