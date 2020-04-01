@@ -1,5 +1,5 @@
 import { Engine, NodeList, System } from '@ash.ts/ash'
-import { Viewport } from '../Viewport'
+import { Viewport } from '../utils/Viewport'
 import { GameNode, SpaceshipNode } from '../nodes'
 import { createSpaceship } from 'entities/SpaceshipEntity'
 

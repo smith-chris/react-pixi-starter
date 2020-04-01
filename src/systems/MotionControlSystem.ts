@@ -1,5 +1,5 @@
 import { ListIteratingSystem } from '@ash.ts/ash'
-import { KeyPoll } from '../KeyPoll'
+import { KeyPoll } from '../utils/KeyPoll'
 import { MotionControlNode } from '../nodes'
 
 export class MotionControlSystem extends ListIteratingSystem<
