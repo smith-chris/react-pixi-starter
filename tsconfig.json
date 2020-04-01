@@ -7,7 +7,6 @@
     "paths": {
       "@ash.ts/ts": ["./ash/packages/ash/src/index.ts"],
       "@ash.ts/*": ["./ash/packages/*/src"]
-      // "@ash.ts/*": ["./src/ash"]
     },
     "sourceMap": true,
     "experimentalDecorators": true,
@@ -17,6 +16,7 @@
     "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
+    "downlevelIteration": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

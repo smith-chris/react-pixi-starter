@@ -10,7 +10,7 @@ import {
   GameStateComponent,
   GunComponent,
   GunControlsComponent,
-  // HudComponent,
+  HudComponent,
   MotionComponent,
   MotionControlsComponent,
   TransformComponent,
@@ -22,7 +22,7 @@ import {
   AsteroidDeathView,
   AsteroidView,
   BulletView,
-  // HudView,
+  HudView,
   SpaceshipDeathView,
   SpaceshipView,
   WaitForStartView,
@@ -40,22 +40,21 @@ export class EntityCreator {
 
   public createBasicGame() {
     const gameEntity: Entity = new Entity('game').add(new GameStateComponent())
-    console.log('add game', gameEntity)
     this.engine.addEntity(gameEntity)
     return gameEntity
   }
 
-  // public createGame(): Entity {
-  //   const hud: HudView = new HudView()
+  public createGame(): Entity {
+    const hud: HudView = new HudView()
 
-  //   const gameEntity: Entity = new Entity('game')
-  //     .add(new GameStateComponent())
-  //     .add(new HudComponent(hud))
-  //     .add(new DisplayComponent(hud))
-  //     .add(new TransformComponent(this.viewport.width / 2, 25, 0))
-  //   this.engine.addEntity(gameEntity)
-  //   return gameEntity
-  // }
+    const gameEntity: Entity = new Entity('game')
+      .add(new GameStateComponent())
+      .add(new HudComponent(hud))
+      .add(new DisplayComponent(hud))
+      .add(new TransformComponent(this.viewport.width / 2, 25, 0))
+    this.engine.addEntity(gameEntity)
+    return gameEntity
+  }
 
   public createWaitForClick(): Entity {
     if (!this.waitEntity) {

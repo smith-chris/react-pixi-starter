@@ -22,11 +22,9 @@ export class ShipSpawnSystem extends System {
 
   public update(): void {
     const gameNode = this.games!.head
-    console.log(!gameNode?.state.playing)
     if (!gameNode?.state.playing) {
       return
     }
-    console.log(this.spaceships!.empty)
     if (this.spaceships!.empty) {
       if (gameNode.state.lives > 0) {
         console.log('Add spaceship')

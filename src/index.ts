@@ -5,6 +5,5 @@ window.addEventListener('load', async () => {
   if (!containerElement) {
     return
   }
-  console.log('init')
   await initialiseGame(containerElement)
 })
