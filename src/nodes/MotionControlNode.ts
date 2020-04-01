@@ -3,7 +3,7 @@ import {
   MotionComponent,
   MotionControlsComponent,
   TransformComponent,
-} from '../components'
+} from 'components'
 
 export class MotionControlNode extends Node {
   @keep(MotionControlsComponent)

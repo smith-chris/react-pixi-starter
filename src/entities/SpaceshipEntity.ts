@@ -37,3 +37,23 @@ export const createSpaceship = (x: number, y: number) => {
   entityStateMachine.changeState('playing')
   return spaceship
 }
+
+// How it could look like
+const createEntity = (a: any) => a
+
+const entityStateMachine = createEntity({
+  states: {
+    playing: [
+      new MotionComponent(0, 0, 0, 15),
+      new MotionControlsComponent(
+        Keyboard.LEFT,
+        Keyboard.RIGHT,
+        Keyboard.UP,
+        100,
+        3,
+      ),
+      new DisplayComponent(new SpaceshipView()),
+    ],
+  },
+  components: [new TransformComponent(0, 0, 0)],
+})

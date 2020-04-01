@@ -1,6 +1,6 @@
 import { ListIteratingSystem } from '@ash.ts/ash'
 import { Viewport } from '../utils/Viewport'
-import { MovementNode } from '../nodes'
+import { MovementNode } from 'nodes'
 
 export class MovementSystem extends ListIteratingSystem<MovementNode> {
   private readonly viewport: Viewport
