@@ -1,5 +1,4 @@
-import { Engine, FrameTickProvider, someEngineConst } from '@ash.ts/ash'
-import { EntityCreator } from './EntityCreator'
+import { Engine, FrameTickProvider, someEngineConst, Entity } from '@ash.ts/ash'
 import { Viewport } from './Viewport'
 import { KeyPoll } from './KeyPoll'
 import {
@@ -9,13 +8,13 @@ import {
   RenderSystem,
   SystemPriorities,
 } from './systems'
+import { GameStateComponent } from 'components'
 
 console.log('Engine const: ', someEngineConst)
 
 export async function initialiseGame(container: HTMLElement) {
   const viewport = new Viewport(container.clientWidth, container.clientHeight)
   const engine = new Engine()
-  const entityCreator = new EntityCreator(engine, viewport)
   const keyPoll = new KeyPoll()
   const tickProvider = new FrameTickProvider()
 
@@ -26,5 +25,7 @@ export async function initialiseGame(container: HTMLElement) {
   engine.addSystem(new MotionControlSystem(keyPoll), SystemPriorities.update)
   engine.addSystem(new MovementSystem(viewport), SystemPriorities.move)
   engine.addSystem(new RenderSystem(container), SystemPriorities.render)
-  entityCreator.createBasicGame()
+
+  const gameEntity = new Entity('game').add(new GameStateComponent())
+  engine.addEntity(gameEntity)
 }
