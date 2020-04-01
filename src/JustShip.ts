@@ -22,10 +22,7 @@ export async function initialiseGame(container: HTMLElement) {
   tickProvider.add(delta => engine.update(delta))
   tickProvider.start()
 
-  engine.addSystem(
-    new ShipSpawnSystem(entityCreator, viewport),
-    SystemPriorities.preUpdate,
-  )
+  engine.addSystem(new ShipSpawnSystem(viewport), SystemPriorities.preUpdate)
   engine.addSystem(new MotionControlSystem(keyPoll), SystemPriorities.update)
   engine.addSystem(new MovementSystem(viewport), SystemPriorities.move)
   engine.addSystem(new RenderSystem(container), SystemPriorities.render)

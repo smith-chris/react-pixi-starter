@@ -8,6 +8,7 @@ import {
   GameNode,
   SpaceshipNode,
 } from '../nodes'
+import { createSpaceship } from 'entities/SpaceshipEntity'
 
 export class SpawnSystem extends System {
   private games: NodeList<GameNode> | null = null
@@ -18,6 +19,8 @@ export class SpawnSystem extends System {
 
   private bullets: NodeList<BulletCollisionNode> | null = null
 
+  engine: Engine
+
   public constructor(
     public entityCreator: EntityCreator,
     public viewport: Viewport,
@@ -26,6 +29,7 @@ export class SpawnSystem extends System {
   }
 
   public addToEngine(engine: Engine): void {
+    this.engine = engine
     this.games = engine.getNodeList(GameNode)
     this.spaceships = engine.getNodeList(SpaceshipNode)
     this.asteroids = engine.getNodeList(AsteroidCollisionNode)
@@ -57,10 +61,11 @@ export class SpawnSystem extends System {
             }
           }
           if (clearToAddSpaceship) {
-            this.entityCreator.createSpaceship(
+            const spaceship = createSpaceship(
               newSpaceshipPositionX,
               newSpaceshipPositionY,
             )
+            this.engine.addEntity(spaceship)
           }
         } else {
           gameNode.state.playing = false

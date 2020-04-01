@@ -27,7 +27,7 @@ import {
   SpaceshipView,
   WaitForStartView,
 } from './graphics'
-import * as Keyboard from './Keyboard'
+import * as Keyboard from './const/keyboard'
 
 export class EntityCreator {
   private waitEntity!: Entity
@@ -112,53 +112,6 @@ export class EntityCreator {
     entityStateMachine.changeState('alive')
     this.engine.addEntity(asteroid)
     return asteroid
-  }
-
-  public createSpaceship(x: number, y: number): Entity {
-    const spaceship = new Entity()
-    const entityStateMachine = new EntityStateMachine(spaceship)
-
-    entityStateMachine
-      .createState('playing')
-      .add(MotionComponent)
-      .withInstance(new MotionComponent(0, 0, 0, 15))
-      .add(MotionControlsComponent)
-      .withInstance(
-        new MotionControlsComponent(
-          Keyboard.LEFT,
-          Keyboard.RIGHT,
-          Keyboard.UP,
-          100,
-          3,
-        ),
-      )
-      .add(GunComponent)
-      .withInstance(new GunComponent(8, 0, 0.3, 2))
-      .add(GunControlsComponent)
-      .withInstance(new GunControlsComponent(Keyboard.SPACE))
-      .add(CollisionComponent)
-      .withInstance(new CollisionComponent(9))
-      .add(DisplayComponent)
-      .withInstance(new DisplayComponent(new SpaceshipView()))
-
-    const deathView: SpaceshipDeathView = new SpaceshipDeathView()
-    entityStateMachine
-      .createState('destroyed')
-      .add(DeathThroesComponent)
-      .withInstance(new DeathThroesComponent(5))
-      .add(DisplayComponent)
-      .withInstance(new DisplayComponent(deathView))
-      .add(UpdatableComponent)
-      .withInstance(new UpdatableComponent(deathView))
-
-    spaceship
-      .add(new SpaceshipComponent(entityStateMachine))
-      .add(new TransformComponent(x, y, 0))
-      .add(new AudioComponent())
-
-    entityStateMachine.changeState('playing')
-    this.engine.addEntity(spaceship)
-    return spaceship
   }
 
   public createUserBullet(

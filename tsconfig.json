@@ -2,11 +2,10 @@
   "compilerOptions": {
     "outDir": "../../build/dist",
     "moduleResolution": "node",
-    // "baseUrl": "./src",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
-      "@ash.ts/ts": ["./ash/packages/ash/src/index.ts"],
-      "@ash.ts/*": ["./ash/packages/*/src"]
+      "@ash.ts/ts": ["../ash/packages/ash/src/index.ts"],
+      "@ash.ts/*": ["../ash/packages/*/src"]
     },
     "sourceMap": true,
     "experimentalDecorators": true,
