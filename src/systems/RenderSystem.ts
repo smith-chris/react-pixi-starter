@@ -3,7 +3,8 @@ import * as PIXI from 'pixi.js'
 import { RenderNode } from 'nodes'
 import { getSizeProps } from 'setup/getSizeProps'
 import { Viewport } from 'const/types'
-import { designWidth, designHeight } from 'setup/dimensions'
+import { designWidth, designHeight, minHeight } from 'setup/dimensions'
+import { debug } from 'const/debug'
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -44,13 +45,22 @@ export class RenderSystem extends System {
     const canvas = app.view
     const { renderer, stage } = app
 
-    const graphics = new PIXI.Graphics()
+    if (debug) {
+      const graphics = new PIXI.Graphics()
 
-    graphics.lineStyle(2, 0xf44336, 1)
-    graphics.drawRect(0, 0, designWidth, designHeight)
-    graphics.endFill()
+      graphics.lineStyle(2, 0xf44336, 1)
+      graphics.drawRect(0, 0, designWidth, designHeight)
+      graphics.lineStyle(2, 0xffeb3b, 1)
+      graphics.drawRect(
+        0,
+        (designHeight - minHeight) / 2,
+        designWidth,
+        minHeight,
+      )
+      graphics.endFill()
 
-    stage.addChild(graphics)
+      stage.addChild(graphics)
+    }
 
     const onResize = () => {
       const sizeProps = getSizeProps({
