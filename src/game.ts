@@ -10,6 +10,7 @@ import {
 import { GameStateComponent } from 'components'
 import { Viewport } from 'const/types'
 import { designWidth, designHeight } from 'setup/dimensions'
+import { createBird } from 'entities/BirdEntity'
 
 export async function initialiseGame(container: HTMLElement) {
   const viewport: Viewport = {
@@ -21,6 +22,8 @@ export async function initialiseGame(container: HTMLElement) {
   const engine = new Engine()
   const keyPoll = new KeyPoll()
   const tickProvider = new FrameTickProvider()
+  const bird = createBird(designWidth / 2, designHeight / 2)
+  engine.addEntity(bird)
 
   tickProvider.add(delta => engine.update(delta))
   tickProvider.start()
