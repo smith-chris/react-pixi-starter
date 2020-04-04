@@ -9,7 +9,7 @@ export class ShipSpawnSystem extends System {
 
   private spaceships: NodeList<SpaceshipNode> | null = null
 
-  engine: Engine
+  engine!: Engine
 
   public constructor(public viewport: Viewport) {
     super()

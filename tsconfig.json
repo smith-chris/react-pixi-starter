@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "../../build/dist",
     "moduleResolution": "node",
+    "strict": true,
+    "outDir": "./dist/",
     "baseUrl": "./src",
     "paths": {
       "@ash.ts/ts": ["../ash/packages/ash/src/index.ts"],
@@ -27,5 +28,6 @@
       "es2015.collection",
       "es2015.iterable"
     ]
-  }
+  },
+  "include": ["./src/**/*"]
 }

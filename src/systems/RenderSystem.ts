@@ -117,7 +117,7 @@ export class RenderSystem extends System {
     }
   }
 
-  public update(time: number): void {
+  public update(): void {
     for (let node = this.nodes!.head; node; node = node.next) {
       const { display, transform } = node
       display.object.setTransform(
@@ -131,7 +131,7 @@ export class RenderSystem extends System {
     this.renderer.render(this.stage)
   }
 
-  public removeFromEngine(engine: Engine): void {
+  public removeFromEngine(): void {
     this.container.removeChild(this.view)
     this.nodes = null
   }

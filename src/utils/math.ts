@@ -200,6 +200,7 @@ export const intersectRectPoint = (r: Rect, p: Point) => {
       return true
     }
   }
+  return false
 }
 
 export const intersectRectCircle = (r: Rect, c: Circle) => {

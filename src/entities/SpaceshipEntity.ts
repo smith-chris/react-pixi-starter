@@ -7,7 +7,7 @@ import {
   TransformComponent,
 } from 'components'
 import { Keyboard } from 'const'
-import { SpaceshipView } from 'graphics'
+import { SpaceshipView } from 'graphics/SpaceshipView'
 
 export const createSpaceship = (x: number, y: number) => {
   const spaceship = new Entity()
@@ -41,6 +41,7 @@ export const createSpaceship = (x: number, y: number) => {
 // How it could look like
 const createEntity = (a: any) => a
 
+// @ts-ignore
 const entityStateMachine = createEntity({
   states: {
     playing: [
