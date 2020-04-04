@@ -1,7 +1,8 @@
 import { Engine, NodeList, System } from '@ash.ts/ash'
-import { Viewport } from '../utils/Viewport'
+import { Viewport } from 'const/types'
 import { GameNode, SpaceshipNode } from '../nodes'
 import { createSpaceship } from 'entities/SpaceshipEntity'
+import { designWidth, designHeight } from 'setup/dimensions'
 
 export class ShipSpawnSystem extends System {
   private games: NodeList<GameNode> | null = null
@@ -27,8 +28,8 @@ export class ShipSpawnSystem extends System {
     }
     if (this.spaceships!.empty) {
       if (gameNode.state.lives > 0) {
-        const newSpaceshipPositionX = this.viewport.width / 2
-        const newSpaceshipPositionY = this.viewport.height / 2
+        const newSpaceshipPositionX = designWidth / 2
+        const newSpaceshipPositionY = designHeight / 2
         const spaceship = createSpaceship(
           newSpaceshipPositionX,
           newSpaceshipPositionY,

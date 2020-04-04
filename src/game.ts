@@ -1,5 +1,4 @@
 import { Engine, FrameTickProvider, Entity } from '@ash.ts/ash'
-import { Viewport } from './utils/Viewport'
 import { KeyPoll } from './utils/KeyPoll'
 import {
   ShipSpawnSystem,
@@ -9,9 +8,16 @@ import {
   SystemPriorities,
 } from './systems'
 import { GameStateComponent } from 'components'
+import { Viewport } from 'const/types'
+import { designWidth, designHeight } from 'setup/dimensions'
 
 export async function initialiseGame(container: HTMLElement) {
-  const viewport = new Viewport(container.clientWidth, container.clientHeight)
+  const viewport: Viewport = {
+    width: designWidth,
+    height: designHeight,
+    top: 0,
+    bottom: designHeight,
+  }
   const engine = new Engine()
   const keyPoll = new KeyPoll()
   const tickProvider = new FrameTickProvider()
@@ -22,7 +28,10 @@ export async function initialiseGame(container: HTMLElement) {
   engine.addSystem(new ShipSpawnSystem(viewport), SystemPriorities.preUpdate)
   engine.addSystem(new MotionControlSystem(keyPoll), SystemPriorities.update)
   engine.addSystem(new MovementSystem(viewport), SystemPriorities.move)
-  engine.addSystem(new RenderSystem(container), SystemPriorities.render)
+  engine.addSystem(
+    new RenderSystem(container, viewport),
+    SystemPriorities.render,
+  )
 
   const gameEntity = new Entity('game').add(new GameStateComponent())
   engine.addEntity(gameEntity)

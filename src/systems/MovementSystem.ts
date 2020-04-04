@@ -1,5 +1,5 @@
 import { ListIteratingSystem } from '@ash.ts/ash'
-import { Viewport } from '../utils/Viewport'
+import { Viewport } from 'const/types'
 import { MovementNode } from 'nodes'
 
 export class MovementSystem extends ListIteratingSystem<MovementNode> {
@@ -12,21 +12,21 @@ export class MovementSystem extends ListIteratingSystem<MovementNode> {
 
   public updateNode(node: MovementNode, time: number): void {
     const { transform, motion } = node
-    const { width, height } = this.viewport
+    const { viewport } = this
     transform.x += motion.velocityX * time
     transform.y += motion.velocityY * time
     // Check if its out of borders and place it accordingly if it is
     if (transform.x < 0) {
-      transform.x += width
+      transform.x += viewport.width
     }
-    if (transform.x > width) {
-      transform.x -= width
+    if (transform.x > viewport.width) {
+      transform.x -= viewport.width
     }
-    if (transform.y < 0) {
-      transform.y += height
+    if (transform.y < viewport.top) {
+      transform.y += viewport.height
     }
-    if (transform.y > height) {
-      transform.y -= height
+    if (transform.y > viewport.bottom) {
+      transform.y -= viewport.height
     }
     transform.rotation += motion.angularVelocity * time
     if (motion.damping > 0) {

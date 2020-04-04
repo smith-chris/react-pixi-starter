@@ -1,7 +1,9 @@
 import { Engine, NodeList, System } from '@ash.ts/ash'
 import * as PIXI from 'pixi.js'
-import { RenderNode } from '../nodes'
-import { getSizeProps } from '../setup/getSizeProps'
+import { RenderNode } from 'nodes'
+import { getSizeProps } from 'setup/getSizeProps'
+import { Viewport } from 'const/types'
+import { designWidth, designHeight } from 'setup/dimensions'
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -22,6 +24,7 @@ export class RenderSystem extends System {
 
   public constructor(
     container: HTMLElement,
+    viewport: Viewport,
     options: RenderSystemOptions = { emitStageEvents: true },
   ) {
     super()
@@ -31,29 +34,49 @@ export class RenderSystem extends System {
     const app = new PIXI.Application({
       width: container.clientWidth,
       height: container.clientHeight,
-      backgroundColor: 0,
+      backgroundColor: 0x64b5f6,
     })
 
     this.renderer = app.renderer
     this.stage = app.stage
     this.view = app.view
 
-    // const canvas = app.view
-    // const { renderer, stage } = app
-    // const onResize = () => {
-    //   const sizeProps = getSizeProps({
-    //     width: window.innerWidth,
-    //     height: window.innerHeight,
-    //   })
+    const canvas = app.view
+    const { renderer, stage } = app
 
-    //   Object.assign(stage, sizeProps.stage)
+    const graphics = new PIXI.Graphics()
 
-    //   renderer.resize(sizeProps.renderer.width, sizeProps.renderer.height)
-    //   canvas.style.width = `${sizeProps.canvas.width}px`
-    //   canvas.style.height = `${sizeProps.canvas.height}px`
-    // }
-    // onResize()
-    // window.addEventListener('resize', onResize)
+    graphics.lineStyle(2, 0xf44336, 1)
+    graphics.drawRect(0, 0, designWidth, designHeight)
+    graphics.endFill()
+
+    stage.addChild(graphics)
+
+    const onResize = () => {
+      const sizeProps = getSizeProps({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+
+      Object.assign(stage, sizeProps.stage)
+      const { width, height } = sizeProps.renderer
+
+      renderer.resize(width, height)
+      canvas.style.width = `${sizeProps.canvas.width}px`
+      canvas.style.height = `${sizeProps.canvas.height}px`
+
+      const stageTop = stage.position.y
+      const stageScale = stage.scale.x
+      const extraHeight = Math.round(stageTop / stageScale)
+      const bottom = designHeight + extraHeight
+      const top = -extraHeight
+      viewport.width = sizeProps.viewport.width
+      viewport.height = sizeProps.viewport.height
+      viewport.top = top
+      viewport.bottom = bottom
+    }
+    onResize()
+    window.addEventListener('resize', onResize)
   }
 
   public addToEngine(engine: Engine): void {

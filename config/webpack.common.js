@@ -15,7 +15,7 @@ const ASSETS_PATH = path.resolve('./src/assets')
 module.exports = () =>
   wrap({
     entry: {
-      index: ['./src/index.ts'],
+      index: ['./src/game.ts'],
     },
     output: {
       path: path.resolve('dist'),
@@ -29,7 +29,7 @@ module.exports = () =>
     devtool: 'source-map',
     plugins: [
       new HtmlWebpackPlugin({
-        template: path.resolve('./src/index.html'),
+        template: path.resolve('./src/game.html'),
         inject: 'body',
         appName: 'Typescript starter',
       }),
