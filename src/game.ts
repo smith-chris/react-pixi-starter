@@ -1,12 +1,6 @@
+import 'setup/pixiSettings'
 import { Engine, FrameTickProvider, Entity } from '@ash.ts/ash'
-import { KeyPoll } from './utils/KeyPoll'
-import {
-  ShipSpawnSystem,
-  MotionControlSystem,
-  MovementSystem,
-  RenderSystem,
-  SystemPriorities,
-} from './systems'
+import { RenderSystem, SystemPriorities } from './systems'
 import { GameStateComponent } from 'components'
 import { Viewport } from 'const/types'
 import { designWidth, designHeight } from 'setup/dimensions'
@@ -20,7 +14,6 @@ export async function initialiseGame(container: HTMLElement) {
     bottom: designHeight,
   }
   const engine = new Engine()
-  const keyPoll = new KeyPoll()
   const tickProvider = new FrameTickProvider()
   const bird = createBird(designWidth / 2, designHeight / 2)
   engine.addEntity(bird)
@@ -28,9 +21,6 @@ export async function initialiseGame(container: HTMLElement) {
   tickProvider.add(delta => engine.update(delta))
   tickProvider.start()
 
-  engine.addSystem(new ShipSpawnSystem(viewport), SystemPriorities.preUpdate)
-  engine.addSystem(new MotionControlSystem(keyPoll), SystemPriorities.update)
-  engine.addSystem(new MovementSystem(viewport), SystemPriorities.move)
   engine.addSystem(
     new RenderSystem(container, viewport),
     SystemPriorities.render,

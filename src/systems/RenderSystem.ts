@@ -5,6 +5,11 @@ import { getSizeProps } from 'setup/getSizeProps'
 import { Viewport } from 'const/types'
 import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
+import Matter from 'matter-js'
+import midflap from 'assets/sprites/yellowbird-midflap.png'
+// @ts-ignore
+import { Mouse } from './mouse'
+const MatterMouse = Mouse as typeof Matter.Mouse
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -62,13 +67,22 @@ export class RenderSystem extends System {
       stage.addChild(graphics)
     }
 
+    const matterMouse = MatterMouse.create(app.view)
+
     const onResize = () => {
       const sizeProps = getSizeProps({
         width: window.innerWidth,
         height: window.innerHeight,
       })
+      console.log(sizeProps.viewport.width, window.innerWidth)
+      sizeProps.viewport.width = window.innerWidth
+      sizeProps.viewport.height = window.innerHeight
 
-      Object.assign(stage, sizeProps.stage)
+      // Object.assign(stage, sizeProps.stage)
+      // @ts-ignore
+      stage.position = sizeProps.stage.position
+      // @ts-ignore
+      stage.scale = sizeProps.stage.scale
       const { width, height } = sizeProps.renderer
 
       renderer.resize(width, height)
@@ -77,9 +91,13 @@ export class RenderSystem extends System {
 
       const stageTop = stage.position.y
       const stageScale = stage.scale.x
+      console.log(stageScale)
+      matterMouse.offset.y = stageTop
+      matterMouse.scale.x = 1 / stageScale
+      matterMouse.scale.y = 1 / stageScale
       const extraHeight = Math.round(stageTop / stageScale)
       const bottom = designHeight + extraHeight
-      const top = -extraHeight
+      const top = 0 //-extraHeight
       viewport.width = sizeProps.viewport.width
       viewport.height = sizeProps.viewport.height
       viewport.top = top
@@ -87,6 +105,66 @@ export class RenderSystem extends System {
     }
     onResize()
     window.addEventListener('resize', onResize)
+
+    const physics = Matter.Engine.create()
+    console.log(physics)
+    const Bodies = Matter.Bodies
+    const wallTop = Bodies.rectangle(designWidth / 2, 0, designWidth, 10, {
+      isStatic: true,
+    })
+    const wallBottom = Bodies.rectangle(
+      designWidth / 2,
+      designHeight,
+      designWidth,
+      10,
+      {
+        isStatic: true,
+      },
+    )
+    const wallRight = Bodies.rectangle(
+      designWidth,
+      designHeight / 2,
+      10,
+      designHeight,
+      {
+        isStatic: true,
+      },
+    )
+    const wallLeft = Bodies.rectangle(0, designHeight / 2, 10, designHeight, {
+      isStatic: true,
+    })
+    const birdBody = Matter.Bodies.rectangle(
+      designWidth / 2,
+      designHeight / 2,
+      midflap.width * 3,
+      midflap.height * 3,
+      {
+        restitution: 0.8,
+      },
+    )
+    Matter.World.add(physics.world, [
+      birdBody,
+      wallBottom,
+      wallTop,
+      wallLeft,
+      wallRight,
+    ])
+    const imageSprite = PIXI.Sprite.from(midflap.src)
+    imageSprite.width = midflap.width
+    imageSprite.height = midflap.height
+    imageSprite.anchor.set(0.5, 0.5)
+    app.stage.addChild(imageSprite)
+    app.ticker.add(() => {
+      imageSprite.position.x = birdBody.position.x
+      imageSprite.position.y = birdBody.position.y
+    })
+
+    const mouseConstraint = Matter.MouseConstraint.create(physics, {
+      mouse: matterMouse,
+    })
+
+    Matter.World.add(physics.world, mouseConstraint)
+    Matter.Engine.run(physics)
   }
 
   public addToEngine(engine: Engine): void {
