@@ -144,7 +144,7 @@ export class RenderSystem extends System {
       },
     })
     // delete render.canvas.style.background
-    Matter.Render.run(render)
+    MatterRender.run(render)
 
     const onResize = () => {
       const sizeProps = getSizeProps({
@@ -174,6 +174,8 @@ export class RenderSystem extends System {
       // matterMouse.scale.x = 1 / stageScale
       // matterMouse.scale.y = 1 / stageScale
       const extraHeight = Math.round(stageTop / stageScale)
+      // @ts-ignore
+      render.options.offset.y = extraHeight
       const bottom = designHeight + extraHeight
       const top = 0 //-extraHeight
       viewport.width = sizeProps.viewport.width

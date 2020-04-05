@@ -51,6 +51,7 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
       options: {
         width: 800,
         height: 600,
+        offset: { x: 0, y: 0 },
         pixelRatio: 1,
         background: '#18181d',
         wireframeBackground: '#0f0f13',
@@ -778,6 +779,8 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
 
     c.beginPath()
 
+    const offsetY = (render.options.offset && render.options.offset.y) || 0
+
     // render all bodies
     for (i = 0; i < bodies.length; i++) {
       body = bodies[i]
@@ -788,29 +791,29 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
       for (k = body.parts.length > 1 ? 1 : 0; k < body.parts.length; k++) {
         part = body.parts[k]
 
-        c.moveTo(part.vertices[0].x, part.vertices[0].y)
+        c.moveTo(part.vertices[0].x, part.vertices[0].y + offsetY)
 
         for (j = 1; j < part.vertices.length; j++) {
           if (!part.vertices[j - 1].isInternal || showInternalEdges) {
-            c.lineTo(part.vertices[j].x, part.vertices[j].y)
+            c.lineTo(part.vertices[j].x, part.vertices[j].y + offsetY)
           } else {
-            c.moveTo(part.vertices[j].x, part.vertices[j].y)
+            c.moveTo(part.vertices[j].x, part.vertices[j].y + offsetY)
           }
 
           if (part.vertices[j].isInternal && !showInternalEdges) {
             c.moveTo(
               part.vertices[(j + 1) % part.vertices.length].x,
-              part.vertices[(j + 1) % part.vertices.length].y,
+              part.vertices[(j + 1) % part.vertices.length].y + offsetY,
             )
           }
         }
 
-        c.lineTo(part.vertices[0].x, part.vertices[0].y)
+        c.lineTo(part.vertices[0].x, part.vertices[0].y + offsetY)
       }
     }
 
     c.lineWidth = 1
-    c.strokeStyle = '#bbb'
+    c.strokeStyle = '#64dd17'
     c.stroke()
   }
 
