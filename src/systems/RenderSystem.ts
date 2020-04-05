@@ -1,19 +1,14 @@
 import { Engine, NodeList, System } from '@ash.ts/ash'
 import * as PIXI from 'pixi.js'
+import Matter from 'matter-js'
+import { MatterRender, MatterMouse } from 'utils/matter'
+
 import { RenderNode } from 'nodes'
 import { getSizeProps } from 'setup/getSizeProps'
 import { Viewport } from 'const/types'
 import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
-import Matter from 'matter-js'
 import midflap from 'assets/sprites/yellowbird-midflap.png'
-// @ts-ignore
-import { Mouse } from './mouse'
-// @ts-ignore
-import { Render } from './MatterRender'
-
-const MatterRender = Render as typeof Matter.Render
-const MatterMouse = Mouse as typeof Matter.Mouse
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -41,6 +36,8 @@ export class RenderSystem extends System {
 
     this.container = container
     this.options = options
+
+    // Setup pixi
     const app = new PIXI.Application({
       width: container.clientWidth,
       height: container.clientHeight,
@@ -71,6 +68,7 @@ export class RenderSystem extends System {
       stage.addChild(graphics)
     }
 
+    // Setup matter
     const physics = Matter.Engine.create()
     const Bodies = Matter.Bodies
     const wallTop = Bodies.rectangle(designWidth / 2, 0, designWidth, 10, {
@@ -121,6 +119,7 @@ export class RenderSystem extends System {
     app.ticker.add(() => {
       imageSprite.position.x = birdBody.position.x
       imageSprite.position.y = birdBody.position.y
+      imageSprite.rotation = birdBody.angle
     })
     Matter.Engine.run(physics)
     const matterContainer = document.getElementById('matter')
@@ -143,7 +142,6 @@ export class RenderSystem extends System {
     })
 
     Matter.World.add(physics.world, mouseConstraint)
-    // delete render.canvas.style.background
     MatterRender.run(render)
 
     const onResize = () => {
@@ -151,33 +149,30 @@ export class RenderSystem extends System {
         width: window.innerWidth,
         height: window.innerHeight,
       })
-      // delete render.canvas.style.background
-      // console.log(sizeProps.viewport.width, window.innerWidth)
-      // sizeProps.viewport.width = window.innerWidth
-      // sizeProps.viewport.height = window.innerHeight
 
-      Object.assign(stage, sizeProps.stage)
       const { width, height } = sizeProps.renderer
+      const stageTop = sizeProps.stage.position.y
+      const stageScale = sizeProps.stage.scale.x
+      const extraHeight = Math.round(stageTop / stageScale)
+      const bottom = designHeight + extraHeight
+      const top = -extraHeight
 
+      // Transform pixi
+      Object.assign(stage, sizeProps.stage)
       renderer.resize(width, height)
       canvas.style.width = `${sizeProps.canvas.width}px`
       canvas.style.height = `${sizeProps.canvas.height}px`
+
+      // Transform matter
       render.canvas.style.width = `${sizeProps.canvas.width}px`
       render.canvas.style.height = `${sizeProps.canvas.height}px`
       render.canvas.width = sizeProps.viewport.width
       render.canvas.height = sizeProps.viewport.height
-
-      const stageTop = sizeProps.stage.position.y
-      const stageScale = sizeProps.stage.scale.x
-      // console.log(stageScale)
-      matterMouse.offset.y = -stageTop / stageScale
-      // matterMouse.scale.x = 1 / stageScale
-      // matterMouse.scale.y = 1 / stageScale
-      const extraHeight = Math.round(stageTop / stageScale)
       // @ts-ignore
       render.options.offset.y = extraHeight
-      const bottom = designHeight + extraHeight
-      const top = 0 //-extraHeight
+      matterMouse.offset.y = -stageTop / stageScale
+
+      // Setup viewport variables
       viewport.width = sizeProps.viewport.width
       viewport.height = sizeProps.viewport.height
       viewport.top = top
