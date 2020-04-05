@@ -80,13 +80,13 @@ export const Mouse = {}
       mouse.absolute.y = position.y
       mouse.position.x = mouse.absolute.x * mouse.scale.x + mouse.offset.x
       mouse.position.y = mouse.absolute.y * mouse.scale.y + mouse.offset.y
-      console.log(
-        'mousedown pos:',
-        mouse.position.x,
-        mouse.absolute.x,
-        mouse.position.y,
-        mouse.absolute.y,
-      )
+      // console.log(
+      //   'mousedown pos:',
+      //   mouse.position.x,
+      //   mouse.absolute.x,
+      //   mouse.position.y,
+      //   mouse.absolute.y,
+      // )
       mouse.mousedownPosition.x = mouse.position.x
       mouse.mousedownPosition.y = mouse.position.y
       mouse.sourceEvents.mousedown = event

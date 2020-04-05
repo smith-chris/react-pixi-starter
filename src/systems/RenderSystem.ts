@@ -71,8 +71,6 @@ export class RenderSystem extends System {
       stage.addChild(graphics)
     }
 
-    // const matterMouse = MatterMouse.create(app.view)
-
     const physics = Matter.Engine.create()
     const Bodies = Matter.Bodies
     const wallTop = Bodies.rectangle(designWidth / 2, 0, designWidth, 10, {
@@ -124,12 +122,6 @@ export class RenderSystem extends System {
       imageSprite.position.x = birdBody.position.x
       imageSprite.position.y = birdBody.position.y
     })
-
-    // const mouseConstraint = Matter.MouseConstraint.create(physics, {
-    //   mouse: matterMouse,
-    // })
-
-    // Matter.World.add(physics.world, mouseConstraint)
     Matter.Engine.run(physics)
     const matterContainer = document.getElementById('matter')
     if (!matterContainer) {
@@ -143,6 +135,14 @@ export class RenderSystem extends System {
         wireframeBackground: undefined,
       },
     })
+
+    const matterMouse = MatterMouse.create(render.canvas)
+
+    const mouseConstraint = Matter.MouseConstraint.create(physics, {
+      mouse: matterMouse,
+    })
+
+    Matter.World.add(physics.world, mouseConstraint)
     // delete render.canvas.style.background
     MatterRender.run(render)
 
@@ -170,7 +170,7 @@ export class RenderSystem extends System {
       const stageTop = sizeProps.stage.position.y
       const stageScale = sizeProps.stage.scale.x
       // console.log(stageScale)
-      // matterMouse.offset.y = stageTop
+      matterMouse.offset.y = -stageTop / stageScale
       // matterMouse.scale.x = 1 / stageScale
       // matterMouse.scale.y = 1 / stageScale
       const extraHeight = Math.round(stageTop / stageScale)
