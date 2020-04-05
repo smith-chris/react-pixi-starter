@@ -59,11 +59,11 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
         enabled: true,
         wireframes: true,
         showSleeping: true,
-        showDebug: false,
+        showDebug: true,
         showBroadphase: false,
         showBounds: false,
-        showVelocity: false,
-        showCollisions: false,
+        showVelocity: true,
+        showCollisions: true,
         showSeparations: false,
         showAxes: false,
         showPositions: false,
@@ -267,6 +267,8 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
    * @param {render} render
    */
   Render.startViewTransform = function(render) {
+    const offsetY = (render.options.offset && render.options.offset.y) || 0
+
     var boundsWidth = render.bounds.max.x - render.bounds.min.x,
       boundsHeight = render.bounds.max.y - render.bounds.min.y,
       boundsScaleX = boundsWidth / render.options.width,
@@ -278,10 +280,13 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
       0,
       render.options.pixelRatio / boundsScaleY,
       0,
-      0,
+      offsetY,
     )
 
-    render.context.translate(-render.bounds.min.x, -render.bounds.min.y)
+    // render.context.translate(-render.bounds.min.x, -render.bounds.min.y)
+
+    // const offsetY = (render.options.offset && render.options.offset.y) || 0
+    // render.context.translate(0, offsetY)
   }
 
   /**
@@ -290,13 +295,15 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
    * @param {render} render
    */
   Render.endViewTransform = function(render) {
+    const offsetY = (render.options.offset && render.options.offset.y) || 0
+
     render.context.setTransform(
       render.options.pixelRatio,
       0,
       0,
       render.options.pixelRatio,
       0,
-      0,
+      offsetY,
     )
   }
 
@@ -336,6 +343,16 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
     context.fillStyle = 'transparent'
     context.fillRect(0, 0, canvas.width, canvas.height)
     context.globalCompositeOperation = 'source-over'
+    const offsetY = (render.options.offset && render.options.offset.y) || 0
+
+    render.context.setTransform(
+      render.options.pixelRatio,
+      0,
+      0,
+      render.options.pixelRatio,
+      0,
+      offsetY,
+    )
 
     // handle bounds
     if (options.hasBounds) {
@@ -381,17 +398,6 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
     } else {
       constraints = allConstraints
       bodies = allBodies
-
-      if (render.options.pixelRatio !== 1) {
-        render.context.setTransform(
-          render.options.pixelRatio,
-          0,
-          0,
-          render.options.pixelRatio,
-          0,
-          0,
-        )
-      }
     }
 
     if (
@@ -777,9 +783,9 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
       j,
       k
 
+    const offsetY = 0 //(render.options.offset && render.options.offset.y) || 0
+    // c.translate(0, offsetY)
     c.beginPath()
-
-    const offsetY = (render.options.offset && render.options.offset.y) || 0
 
     // render all bodies
     for (i = 0; i < bodies.length; i++) {
@@ -812,8 +818,9 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
       }
     }
 
-    c.lineWidth = 1
-    c.strokeStyle = '#64dd17'
+    // c.globalAlpha = 0.5
+    c.lineWidth = 2
+    c.strokeStyle = 'rgba(100, 221, 23, 1)'
     c.stroke()
   }
 
@@ -1413,7 +1420,9 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
       context.translate(-0.5, -0.5)
     }
 
-    if (options.hasBounds) context.setTransform(1, 0, 0, 1, 0, 0)
+    const offsetY = (render.options.offset && render.options.offset.y) || 0
+
+    if (options.hasBounds) context.setTransform(1, 0, 0, 1, 0, offsetY)
   }
 
   /**
