@@ -9,6 +9,10 @@ import Matter from 'matter-js'
 import midflap from 'assets/sprites/yellowbird-midflap.png'
 // @ts-ignore
 import { Mouse } from './mouse'
+// @ts-ignore
+import { Render } from './MatterRender'
+
+const MatterRender = Render as typeof Matter.Render
 const MatterMouse = Mouse as typeof Matter.Mouse
 
 interface RenderSystemOptions {
@@ -37,35 +41,35 @@ export class RenderSystem extends System {
 
     this.container = container
     this.options = options
-    // const app = new PIXI.Application({
-    //   width: container.clientWidth,
-    //   height: container.clientHeight,
-    //   backgroundColor: 0x64b5f6,
-    // })
+    const app = new PIXI.Application({
+      width: container.clientWidth,
+      height: container.clientHeight,
+      backgroundColor: 0x64b5f6,
+    })
 
-    // this.renderer = app.renderer
-    // this.stage = app.stage
-    // this.view = app.view
+    this.renderer = app.renderer
+    this.stage = app.stage
+    this.view = app.view
 
-    // const canvas = app.view
-    // const { renderer, stage } = app
+    const canvas = app.view
+    const { renderer, stage } = app
 
-    // if (debug) {
-    //   const graphics = new PIXI.Graphics()
+    if (debug) {
+      const graphics = new PIXI.Graphics()
 
-    //   graphics.lineStyle(2, 0xf44336, 1)
-    //   graphics.drawRect(0, 0, designWidth, designHeight)
-    //   graphics.lineStyle(2, 0xffeb3b, 1)
-    //   graphics.drawRect(
-    //     0,
-    //     (designHeight - minHeight) / 2,
-    //     designWidth,
-    //     minHeight,
-    //   )
-    //   graphics.endFill()
+      graphics.lineStyle(2, 0xf44336, 1)
+      graphics.drawRect(0, 0, designWidth, designHeight)
+      graphics.lineStyle(2, 0xffeb3b, 1)
+      graphics.drawRect(
+        0,
+        (designHeight - minHeight) / 2,
+        designWidth,
+        minHeight,
+      )
+      graphics.endFill()
 
-    //   stage.addChild(graphics)
-    // }
+      stage.addChild(graphics)
+    }
 
     // const matterMouse = MatterMouse.create(app.view)
 
@@ -98,8 +102,8 @@ export class RenderSystem extends System {
     const birdBody = Matter.Bodies.rectangle(
       designWidth / 2,
       designHeight / 2,
-      midflap.width * 3,
-      midflap.height * 3,
+      midflap.width,
+      midflap.height,
       {
         restitution: 0.8,
       },
@@ -115,11 +119,11 @@ export class RenderSystem extends System {
     imageSprite.width = midflap.width
     imageSprite.height = midflap.height
     imageSprite.anchor.set(0.5, 0.5)
-    // app.stage.addChild(imageSprite)
-    // app.ticker.add(() => {
-    //   imageSprite.position.x = birdBody.position.x
-    //   imageSprite.position.y = birdBody.position.y
-    // })
+    app.stage.addChild(imageSprite)
+    app.ticker.add(() => {
+      imageSprite.position.x = birdBody.position.x
+      imageSprite.position.y = birdBody.position.y
+    })
 
     // const mouseConstraint = Matter.MouseConstraint.create(physics, {
     //   mouse: matterMouse,
@@ -127,10 +131,19 @@ export class RenderSystem extends System {
 
     // Matter.World.add(physics.world, mouseConstraint)
     Matter.Engine.run(physics)
-    const render = Matter.Render.create({
-      element: container,
+    const matterContainer = document.getElementById('matter')
+    if (!matterContainer) {
+      console.warn(`Can't find matter container!`)
+      return
+    }
+    const render = MatterRender.create({
+      element: matterContainer,
       engine: physics,
+      options: {
+        wireframeBackground: undefined,
+      },
     })
+    // delete render.canvas.style.background
     Matter.Render.run(render)
 
     const onResize = () => {
@@ -138,16 +151,17 @@ export class RenderSystem extends System {
         width: window.innerWidth,
         height: window.innerHeight,
       })
+      // delete render.canvas.style.background
       // console.log(sizeProps.viewport.width, window.innerWidth)
       // sizeProps.viewport.width = window.innerWidth
       // sizeProps.viewport.height = window.innerHeight
 
-      // Object.assign(stage, sizeProps.stage)
-      // const { width, height } = sizeProps.renderer
+      Object.assign(stage, sizeProps.stage)
+      const { width, height } = sizeProps.renderer
 
-      // renderer.resize(width, height)
-      // canvas.style.width = `${sizeProps.canvas.width}px`
-      // canvas.style.height = `${sizeProps.canvas.height}px`
+      renderer.resize(width, height)
+      canvas.style.width = `${sizeProps.canvas.width}px`
+      canvas.style.height = `${sizeProps.canvas.height}px`
       render.canvas.style.width = `${sizeProps.canvas.width}px`
       render.canvas.style.height = `${sizeProps.canvas.height}px`
       render.canvas.width = sizeProps.viewport.width
@@ -172,17 +186,17 @@ export class RenderSystem extends System {
   }
 
   public addToEngine(engine: Engine): void {
-    // this.container.appendChild(this.view)
-    // this.nodes = engine.getNodeList(RenderNode)
-    // for (
-    //   let node: RenderNode | null = this.nodes.head;
-    //   node;
-    //   node = node.next
-    // ) {
-    //   this.addToStage(node)
-    // }
-    // this.nodes.nodeAdded.add(this.addToStage)
-    // this.nodes.nodeRemoved.add(this.removeFromStage)
+    this.container.appendChild(this.view)
+    this.nodes = engine.getNodeList(RenderNode)
+    for (
+      let node: RenderNode | null = this.nodes.head;
+      node;
+      node = node.next
+    ) {
+      this.addToStage(node)
+    }
+    this.nodes.nodeAdded.add(this.addToStage)
+    this.nodes.nodeRemoved.add(this.removeFromStage)
   }
 
   private addToStage = (node: RenderNode) => {
@@ -200,17 +214,17 @@ export class RenderSystem extends System {
   }
 
   public update(): void {
-    // for (let node = this.nodes!.head; node; node = node.next) {
-    //   const { display, transform } = node
-    //   display.object.setTransform(
-    //     transform.x,
-    //     transform.y,
-    //     1,
-    //     1,
-    //     transform.rotation,
-    //   )
-    // }
-    // this.renderer.render(this.stage)
+    for (let node = this.nodes!.head; node; node = node.next) {
+      const { display, transform } = node
+      display.object.setTransform(
+        transform.x,
+        transform.y,
+        1,
+        1,
+        transform.rotation,
+      )
+    }
+    this.renderer.render(this.stage)
   }
 
   public removeFromEngine(): void {

@@ -32,7 +32,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
       }
       .fullscreen-centered canvas {
         image-rendering: -moz-crisp-edges;
@@ -44,6 +48,7 @@
   </head>
   <body>
     <div id="game" class="fullscreen-centered"></div>
+    <div id="matter" class="fullscreen-centered"></div>
     <%= htmlWebpackPlugin.options.body %>
   </body>
 </html>
