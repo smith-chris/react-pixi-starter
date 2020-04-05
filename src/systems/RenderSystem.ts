@@ -69,45 +69,7 @@ export class RenderSystem extends System {
 
     // const matterMouse = MatterMouse.create(app.view)
 
-    // const onResize = () => {
-    //   const sizeProps = getSizeProps({
-    //     width: window.innerWidth,
-    //     height: window.innerHeight,
-    //   })
-    //   console.log(sizeProps.viewport.width, window.innerWidth)
-    //   sizeProps.viewport.width = window.innerWidth
-    //   sizeProps.viewport.height = window.innerHeight
-
-    //   // Object.assign(stage, sizeProps.stage)
-    //   // @ts-ignore
-    //   stage.position = sizeProps.stage.position
-    //   // @ts-ignore
-    //   stage.scale = sizeProps.stage.scale
-    //   const { width, height } = sizeProps.renderer
-
-    //   renderer.resize(width, height)
-    //   canvas.style.width = `${sizeProps.canvas.width}px`
-    //   canvas.style.height = `${sizeProps.canvas.height}px`
-
-    //   const stageTop = stage.position.y
-    //   const stageScale = stage.scale.x
-    //   console.log(stageScale)
-    //   matterMouse.offset.y = stageTop
-    //   matterMouse.scale.x = 1 / stageScale
-    //   matterMouse.scale.y = 1 / stageScale
-    //   const extraHeight = Math.round(stageTop / stageScale)
-    //   const bottom = designHeight + extraHeight
-    //   const top = 0 //-extraHeight
-    //   viewport.width = sizeProps.viewport.width
-    //   viewport.height = sizeProps.viewport.height
-    //   viewport.top = top
-    //   viewport.bottom = bottom
-    // }
-    // onResize()
-    // window.addEventListener('resize', onResize)
-
     const physics = Matter.Engine.create()
-    console.log(physics)
     const Bodies = Matter.Bodies
     const wallTop = Bodies.rectangle(designWidth / 2, 0, designWidth, 10, {
       isStatic: true,
@@ -166,10 +128,47 @@ export class RenderSystem extends System {
     // Matter.World.add(physics.world, mouseConstraint)
     Matter.Engine.run(physics)
     const render = Matter.Render.create({
-      element: document.body,
+      element: container,
       engine: physics,
     })
     Matter.Render.run(render)
+
+    const onResize = () => {
+      const sizeProps = getSizeProps({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+      // console.log(sizeProps.viewport.width, window.innerWidth)
+      // sizeProps.viewport.width = window.innerWidth
+      // sizeProps.viewport.height = window.innerHeight
+
+      // Object.assign(stage, sizeProps.stage)
+      // const { width, height } = sizeProps.renderer
+
+      // renderer.resize(width, height)
+      // canvas.style.width = `${sizeProps.canvas.width}px`
+      // canvas.style.height = `${sizeProps.canvas.height}px`
+      render.canvas.style.width = `${sizeProps.canvas.width}px`
+      render.canvas.style.height = `${sizeProps.canvas.height}px`
+      render.canvas.width = sizeProps.viewport.width
+      render.canvas.height = sizeProps.viewport.height
+
+      const stageTop = sizeProps.stage.position.y
+      const stageScale = sizeProps.stage.scale.x
+      // console.log(stageScale)
+      // matterMouse.offset.y = stageTop
+      // matterMouse.scale.x = 1 / stageScale
+      // matterMouse.scale.y = 1 / stageScale
+      const extraHeight = Math.round(stageTop / stageScale)
+      const bottom = designHeight + extraHeight
+      const top = 0 //-extraHeight
+      viewport.width = sizeProps.viewport.width
+      viewport.height = sizeProps.viewport.height
+      viewport.top = top
+      viewport.bottom = bottom
+    }
+    onResize()
+    window.addEventListener('resize', onResize)
   }
 
   public addToEngine(engine: Engine): void {

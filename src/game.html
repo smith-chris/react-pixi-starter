@@ -21,7 +21,7 @@
     />
     <title><%= htmlWebpackPlugin.options.appName %></title>
     <style>
-      /* body {
+      body {
         margin: 0;
         padding: 0;
         overflow-x: hidden;
@@ -33,7 +33,13 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
-      } */
+      }
+      .fullscreen-centered canvas {
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-crisp-edges;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+      }
     </style>
   </head>
   <body>
