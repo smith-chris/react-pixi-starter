@@ -16,6 +16,7 @@ export async function initialiseGame(container: HTMLElement) {
   const engine = new Engine()
   const tickProvider = new FrameTickProvider()
   const bird = createBird(designWidth / 2, designHeight / 2)
+
   engine.addEntity(bird)
 
   tickProvider.add(delta => engine.update(delta))

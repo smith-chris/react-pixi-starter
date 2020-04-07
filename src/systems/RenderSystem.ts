@@ -95,28 +95,51 @@ export class RenderSystem extends System {
     const wallLeft = Bodies.rectangle(0, designHeight / 2, 10, designHeight, {
       isStatic: true,
     })
+    const startY = designHeight * 0.5
+    const startX = designWidth * 0.28
     const birdBody = Matter.Bodies.rectangle(
-      designWidth / 2,
-      designHeight / 2,
+      startX,
+      startY,
       midflap.width,
       midflap.height,
       {
         restitution: 0.8,
+        isStatic: true,
       },
     )
+
+    const partA = Bodies.rectangle(20, 200, 120, 50)
+    const partB = Bodies.rectangle(60, 200, 50, 190),
+      compound = Matter.Body.create({
+        parts: [partA, partB],
+        isStatic: true,
+      })
     Matter.World.add(physics.world, [
       birdBody,
       wallBottom,
       wallTop,
       wallLeft,
       wallRight,
+      // compound,
     ])
     const imageSprite = PIXI.Sprite.from(midflap.src)
     imageSprite.width = midflap.width
     imageSprite.height = midflap.height
     imageSprite.anchor.set(0.5, 0.5)
     app.stage.addChild(imageSprite)
-    app.ticker.add(() => {
+
+    let timePassed = 0
+
+    const getVariation = (timePassed: number) =>
+      Math.sin(timePassed / 7 / (1000 / 60))
+
+    const getY = (timePassed: number) =>
+      startY - Math.round(getVariation(timePassed) * 5)
+
+    app.ticker.add(delta => {
+      timePassed += delta * (1000 / 60)
+      const newPosition = { x: birdBody.position.x, y: getY(timePassed) }
+      Matter.Body.setPosition(birdBody, newPosition)
       imageSprite.position.x = birdBody.position.x
       imageSprite.position.y = birdBody.position.y
       imageSprite.rotation = birdBody.angle
@@ -130,9 +153,6 @@ export class RenderSystem extends System {
     const render = MatterRender.create({
       element: matterContainer,
       engine: physics,
-      options: {
-        wireframeBackground: undefined,
-      },
     })
 
     const matterMouse = MatterMouse.create(render.canvas)

@@ -54,7 +54,7 @@ const { Common, Composite, Bounds, Events, Grid, Vector, Mouse } = Matter
         offset: { x: 0, y: 0 },
         pixelRatio: 1,
         background: '#18181d',
-        wireframeBackground: '#0f0f13',
+        wireframeBackground: undefined,
         hasBounds: !!options.bounds,
         enabled: true,
         wireframes: true,
