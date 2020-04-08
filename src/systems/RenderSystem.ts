@@ -9,15 +9,18 @@ import { Viewport } from 'const/types'
 import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
 import midflap from 'assets/sprites/yellowbird-midflap.png'
+import { BodyRenderNode } from 'nodes/BodyRenderNode'
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
 }
 
 export class RenderSystem extends System {
-  private nodes: NodeList<RenderNode> | null = null
+  private renderNodes: NodeList<RenderNode> | null = null
+  private bodyNodes: NodeList<BodyRenderNode> | null = null
 
   private readonly renderer: PIXI.Renderer
+  private readonly physics: Matter.Engine
 
   private readonly stage: PIXI.Container
 
@@ -70,6 +73,7 @@ export class RenderSystem extends System {
 
     // Setup matter
     const physics = Matter.Engine.create()
+    this.physics = physics
     const Bodies = Matter.Bodies
     const wallTop = Bodies.rectangle(designWidth / 2, 0, designWidth, 10, {
       isStatic: true,
@@ -97,36 +101,36 @@ export class RenderSystem extends System {
     })
     const startY = designHeight * 0.5
     const startX = designWidth * 0.28
-    const birdBody = Matter.Bodies.rectangle(
-      startX,
-      startY,
-      midflap.width,
-      midflap.height,
-      {
-        restitution: 0.8,
-        isStatic: true,
-      },
-    )
+    // const birdBody = Matter.Bodies.rectangle(
+    //   startX,
+    //   startY,
+    //   midflap.width,
+    //   midflap.height,
+    //   {
+    //     restitution: 0.8,
+    //     isStatic: true,
+    //   },
+    // )
 
-    const partA = Bodies.rectangle(20, 200, 120, 50)
-    const partB = Bodies.rectangle(60, 200, 50, 190),
-      compound = Matter.Body.create({
-        parts: [partA, partB],
-        isStatic: true,
-      })
+    // const partA = Bodies.rectangle(20, 200, 120, 50)
+    // const partB = Bodies.rectangle(60, 200, 50, 190),
+    // compound = Matter.Body.create({
+    //   parts: [partA, partB],
+    //   isStatic: true,
+    // })
     Matter.World.add(physics.world, [
-      birdBody,
+      // birdBody,
       wallBottom,
       wallTop,
       wallLeft,
       wallRight,
       // compound,
     ])
-    const imageSprite = PIXI.Sprite.from(midflap.src)
-    imageSprite.width = midflap.width
-    imageSprite.height = midflap.height
-    imageSprite.anchor.set(0.5, 0.5)
-    app.stage.addChild(imageSprite)
+    // const imageSprite = PIXI.Sprite.from(midflap.src)
+    // imageSprite.width = midflap.width
+    // imageSprite.height = midflap.height
+    // imageSprite.anchor.set(0.5, 0.5)
+    // app.stage.addChild(imageSprite)
 
     let timePassed = 0
 
@@ -136,14 +140,14 @@ export class RenderSystem extends System {
     const getY = (timePassed: number) =>
       startY - Math.round(getVariation(timePassed) * 5)
 
-    app.ticker.add(delta => {
-      timePassed += delta * (1000 / 60)
-      const newPosition = { x: birdBody.position.x, y: getY(timePassed) }
-      Matter.Body.setPosition(birdBody, newPosition)
-      imageSprite.position.x = birdBody.position.x
-      imageSprite.position.y = birdBody.position.y
-      imageSprite.rotation = birdBody.angle
-    })
+    // app.ticker.add(delta => {
+    //   timePassed += delta * (1000 / 60)
+    //   const newPosition = { x: birdBody.position.x, y: getY(timePassed) }
+    //   Matter.Body.setPosition(birdBody, newPosition)
+    //   imageSprite.position.x = birdBody.position.x
+    //   imageSprite.position.y = birdBody.position.y
+    //   imageSprite.rotation = birdBody.angle
+    // })
     Matter.Engine.run(physics)
     const matterContainer = document.getElementById('matter')
     if (!matterContainer) {
@@ -204,16 +208,25 @@ export class RenderSystem extends System {
 
   public addToEngine(engine: Engine): void {
     this.container.appendChild(this.view)
-    this.nodes = engine.getNodeList(RenderNode)
+    this.renderNodes = engine.getNodeList(RenderNode)
     for (
-      let node: RenderNode | null = this.nodes.head;
+      let node: RenderNode | null = this.renderNodes.head;
       node;
       node = node.next
     ) {
       this.addToStage(node)
     }
-    this.nodes.nodeAdded.add(this.addToStage)
-    this.nodes.nodeRemoved.add(this.removeFromStage)
+    this.renderNodes.nodeAdded.add(this.addToStage)
+    this.renderNodes.nodeRemoved.add(this.removeFromStage)
+    // Bodies
+    this.bodyNodes = engine.getNodeList(BodyRenderNode)
+    for (
+      let node: BodyRenderNode | null = this.bodyNodes.head;
+      node;
+      node = node.next
+    ) {
+      this.addBody(node)
+    }
   }
 
   private addToStage = (node: RenderNode) => {
@@ -221,6 +234,13 @@ export class RenderSystem extends System {
     if (this.options.emitStageEvents) {
       node.display.object.emit('addedToStage')
     }
+  }
+  private addBody = (node: BodyRenderNode) => {
+    this.stage.addChild(node.display.object)
+    if (this.options.emitStageEvents) {
+      node.display.object.emit('addedToStage')
+    }
+    Matter.World.add(this.physics.world, node.body.body)
   }
 
   private removeFromStage = (node: RenderNode) => {
@@ -231,7 +251,7 @@ export class RenderSystem extends System {
   }
 
   public update(): void {
-    for (let node = this.nodes!.head; node; node = node.next) {
+    for (let node = this.renderNodes!.head; node; node = node.next) {
       const { display, transform } = node
       display.object.setTransform(
         transform.x,
@@ -241,11 +261,25 @@ export class RenderSystem extends System {
         transform.rotation,
       )
     }
+    // Bodies
+    for (let node = this.bodyNodes!.head; node; node = node.next) {
+      const {
+        display,
+        body: { body },
+      } = node
+      display.object.setTransform(
+        body.position.x,
+        body.position.y,
+        1,
+        1,
+        body.angle,
+      )
+    }
     this.renderer.render(this.stage)
   }
 
   public removeFromEngine(): void {
     this.container.removeChild(this.view)
-    this.nodes = null
+    this.renderNodes = null
   }
 }
