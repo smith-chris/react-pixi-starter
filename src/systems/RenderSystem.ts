@@ -1,4 +1,4 @@
-import { Engine, NodeList, System } from '@ash.ts/ash'
+import { Engine, NodeList, System, Node } from '@ash.ts/ash'
 import * as PIXI from 'pixi.js'
 import Matter from 'matter-js'
 import { MatterRender, MatterMouse } from 'utils/matter'
@@ -10,6 +10,7 @@ import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
 import midflap from 'assets/sprites/yellowbird-midflap.png'
 import { BodyRenderNode } from 'nodes/BodyRenderNode'
+import { BodyDefinitionNode } from 'nodes/BodyDefinitionNode'
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -18,6 +19,7 @@ interface RenderSystemOptions {
 export class RenderSystem extends System {
   private renderNodes: NodeList<RenderNode> | null = null
   private bodyNodes: NodeList<BodyRenderNode> | null = null
+  private definitionNodes: NodeList<BodyDefinitionNode> | null = null
 
   private readonly renderer: PIXI.Renderer
   private readonly physics: Matter.Engine
@@ -207,26 +209,47 @@ export class RenderSystem extends System {
   }
 
   public addToEngine(engine: Engine): void {
+    // Attach canvas to the container div
     this.container.appendChild(this.view)
+
+    const handleNodes = <T extends Node>(
+      nodeList: NodeList<T>,
+      {
+        nodeAdded,
+        nodeRemoved,
+      }: { nodeAdded?: (node: T) => void; nodeRemoved?: (node: T) => void },
+    ) => {
+      if (typeof nodeAdded === 'function') {
+        for (let node: T | null = nodeList.head; node; node = node.next) {
+          nodeAdded(node)
+        }
+        nodeList.nodeAdded.add(nodeAdded)
+      }
+      if (typeof nodeRemoved === 'function') {
+        nodeList.nodeRemoved.add(nodeRemoved)
+      }
+    }
+
+    // Pixi
     this.renderNodes = engine.getNodeList(RenderNode)
-    for (
-      let node: RenderNode | null = this.renderNodes.head;
-      node;
-      node = node.next
-    ) {
-      this.addToStage(node)
-    }
-    this.renderNodes.nodeAdded.add(this.addToStage)
-    this.renderNodes.nodeRemoved.add(this.removeFromStage)
-    // Bodies
+    handleNodes(this.renderNodes, {
+      nodeAdded: this.addToStage,
+      nodeRemoved: this.removeFromStage,
+    })
+
+    // Matter Bodies
     this.bodyNodes = engine.getNodeList(BodyRenderNode)
-    for (
-      let node: BodyRenderNode | null = this.bodyNodes.head;
-      node;
-      node = node.next
-    ) {
-      this.addBody(node)
-    }
+    handleNodes(this.bodyNodes, {
+      nodeAdded: this.addBody,
+      nodeRemoved: this.removeBody,
+    })
+
+    // Matter Body definitions
+    handleNodes(engine.getNodeList(BodyDefinitionNode), {
+      nodeAdded: ({ body: { body }, definition: { definition } }) => {
+        Object.assign(body, definition)
+      },
+    })
   }
 
   private addToStage = (node: RenderNode) => {
@@ -235,19 +258,28 @@ export class RenderSystem extends System {
       node.display.object.emit('addedToStage')
     }
   }
-  private addBody = (node: BodyRenderNode) => {
-    this.stage.addChild(node.display.object)
-    if (this.options.emitStageEvents) {
-      node.display.object.emit('addedToStage')
-    }
-    Matter.World.add(this.physics.world, node.body.body)
-  }
 
   private removeFromStage = (node: RenderNode) => {
     this.stage.removeChild(node.display.object)
     if (this.options.emitStageEvents) {
       node.display.object.emit('removedFromStage')
     }
+  }
+
+  private addBody = (node: BodyRenderNode) => {
+    this.stage.addChild(node.display.object)
+    if (this.options.emitStageEvents) {
+      node.display.object.emit('addedBody')
+    }
+    Matter.World.add(this.physics.world, node.body.body)
+  }
+
+  private removeBody = (node: BodyRenderNode) => {
+    this.stage.removeChild(node.display.object)
+    if (this.options.emitStageEvents) {
+      node.display.object.emit('removedBody')
+    }
+    Matter.World.remove(this.physics.world, node.body.body)
   }
 
   public update(): void {

@@ -1,5 +1,5 @@
 import { EntityStateMachine } from '@ash.ts/ash'
 
-export class SpaceshipComponent {
+export class StateMachineComponent {
   public constructor(public entityStateMachine: EntityStateMachine) {}
 }

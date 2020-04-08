@@ -3,7 +3,7 @@ import {
   MotionComponent,
   MotionControlsComponent,
   DisplayComponent,
-  SpaceshipComponent,
+  StateMachineComponent,
   TransformComponent,
 } from 'components'
 import { Keyboard } from 'const'
@@ -31,7 +31,7 @@ export const createSpaceship = (x: number, y: number) => {
     .withInstance(new DisplayComponent(new SpaceshipView()))
 
   spaceship
-    .add(new SpaceshipComponent(entityStateMachine))
+    .add(new StateMachineComponent(entityStateMachine))
     .add(new TransformComponent(x, y, 0))
 
   entityStateMachine.changeState('playing')
