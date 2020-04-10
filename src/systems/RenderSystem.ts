@@ -1,4 +1,4 @@
-import { Engine, NodeList, System, Node } from '@ash.ts/ash'
+import { Engine, NodeList, System } from '@ash.ts/ash'
 import * as PIXI from 'pixi.js'
 import Matter from 'matter-js'
 import { MatterRender, MatterMouse } from 'utils/matter'
@@ -10,7 +10,8 @@ import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
 import { BodyRenderNode } from 'nodes/BodyRenderNode'
 import { BodyDefinitionNode } from 'nodes/BodyDefinitionNode'
-import { handleNodes } from './systemUtils'
+import { handleNodes, eachNode } from './systemUtils'
+import { ResizeNode } from 'nodes/ResizeNode'
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -20,27 +21,23 @@ export class RenderSystem extends System {
   private renderNodes: NodeList<RenderNode> | null = null
   private bodyNodes: NodeList<BodyRenderNode> | null = null
 
-  private readonly renderer: PIXI.Renderer
-  private readonly physics: Matter.Engine
+  private renderer!: PIXI.Renderer
+  private physics!: Matter.Engine
+  private stage!: PIXI.Container
 
-  private readonly stage: PIXI.Container
-
-  private readonly view: HTMLCanvasElement
-
-  private container: HTMLElement
-
-  private options: RenderSystemOptions
+  private view: HTMLCanvasElement
 
   public constructor(
-    container: HTMLElement,
-    viewport: Viewport,
-    options: RenderSystemOptions = { emitStageEvents: true },
+    private container: HTMLElement,
+    private viewport: Viewport,
+    private options: RenderSystemOptions = { emitStageEvents: true },
   ) {
     super()
     // this.debug('render')
+  }
 
-    this.container = container
-    this.options = options
+  public addToEngine(engine: Engine): void {
+    const container = this.container
 
     // Setup pixi
     const app = new PIXI.Application({
@@ -53,8 +50,9 @@ export class RenderSystem extends System {
     this.stage = app.stage
     this.view = app.view
 
+    const { renderer, stage, view } = app
+
     const canvas = app.view
-    const { renderer, stage } = app
 
     if (debug) {
       const graphics = new PIXI.Graphics()
@@ -95,7 +93,11 @@ export class RenderSystem extends System {
     })
 
     Matter.World.add(physics.world, mouseConstraint)
-    MatterRender.run(render)
+    if (debug) {
+      MatterRender.run(render)
+    }
+
+    const resizeNodes = engine.getNodeList(ResizeNode)
 
     const onResize = () => {
       const sizeProps = getSizeProps({
@@ -126,18 +128,18 @@ export class RenderSystem extends System {
       matterMouse.offset.y = -stageTop / stageScale
 
       // Setup viewport variables
-      viewport.width = sizeProps.viewport.width
-      viewport.height = sizeProps.viewport.height
-      viewport.top = top
-      viewport.bottom = bottom
+      this.viewport.width = sizeProps.viewport.width
+      this.viewport.height = sizeProps.viewport.height
+      this.viewport.top = top
+      this.viewport.bottom = bottom
+      eachNode(resizeNodes, ({ node: { handler } }) => {
+        handler(this.viewport)
+      })
     }
     onResize()
     window.addEventListener('resize', onResize)
-  }
-
-  public addToEngine(engine: Engine): void {
     // Attach canvas to the container div
-    this.container.appendChild(this.view)
+    this.container.appendChild(view)
 
     // Pixi
     this.renderNodes = engine.getNodeList(RenderNode)

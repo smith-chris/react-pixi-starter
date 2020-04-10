@@ -8,6 +8,8 @@ import { RenderSystem } from 'systems/RenderSystem'
 import { SystemPriorities } from 'systems/SystemPriorities'
 import { MovementSystem } from 'systems/MovementSystem'
 import { ControlSystem } from 'systems/ControlSystem'
+import { createMap } from 'entities/MapEntity'
+import { UpdateSystem } from 'systems/UpdateSystem'
 
 export async function initialiseGame(container: HTMLElement) {
   const viewport: Viewport = {
@@ -18,15 +20,16 @@ export async function initialiseGame(container: HTMLElement) {
   }
   const engine = new Engine()
   const tickProvider = new FrameTickProvider()
-  const bird = createBird()
 
-  engine.addEntity(bird)
+  engine.addEntity(createBird())
+  engine.addEntity(createMap())
 
   tickProvider.add(delta => engine.update(delta))
   tickProvider.start()
 
   engine.addSystem(new ControlSystem(), SystemPriorities.move)
   engine.addSystem(new MovementSystem(viewport), SystemPriorities.move)
+  engine.addSystem(new UpdateSystem(viewport), SystemPriorities.updatable)
   engine.addSystem(
     new RenderSystem(container, viewport),
     SystemPriorities.render,
