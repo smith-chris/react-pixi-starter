@@ -1,6 +1,6 @@
 import 'setup/pixiSettings'
 import { Engine, FrameTickProvider, Entity } from '@ash.ts/ash'
-import { RenderSystem, SystemPriorities } from './systems'
+import { RenderSystem, SystemPriorities, MovementSystem } from './systems'
 import { GameStateComponent } from 'components'
 import { Viewport } from 'const/types'
 import { designWidth, designHeight } from 'setup/dimensions'
@@ -15,7 +15,7 @@ export async function initialiseGame(container: HTMLElement) {
   }
   const engine = new Engine()
   const tickProvider = new FrameTickProvider()
-  const bird = createBird(designWidth / 2, designHeight / 2)
+  const bird = createBird()
 
   engine.addEntity(bird)
 
@@ -26,6 +26,7 @@ export async function initialiseGame(container: HTMLElement) {
     new RenderSystem(container, viewport),
     SystemPriorities.render,
   )
+  engine.addSystem(new MovementSystem(viewport), SystemPriorities.move)
 
   const gameEntity = new Entity('game').add(new GameStateComponent())
   engine.addEntity(gameEntity)

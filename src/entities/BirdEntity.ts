@@ -1,5 +1,9 @@
 import { Entity, EntityStateMachine } from 'ash'
-import { DisplayComponent, StateMachineComponent } from 'components'
+import {
+  DisplayComponent,
+  StateMachineComponent,
+  TransformComponent,
+} from 'components'
 import { BirdView } from 'graphics/BirdView'
 import { BodyComponent } from 'components/BodyComponent'
 import { Bodies } from 'matter-js'
@@ -16,7 +20,6 @@ export const createBird = () => {
   const startX = designWidth * 0.28
 
   entity
-    //
     .add(new DisplayComponent(new BirdView()))
     .add(
       new BodyComponent(
@@ -26,6 +29,9 @@ export const createBird = () => {
 
   entityStateMachine
     .createState('floating')
+    .add(TransformComponent)
+    // How could we have multiple transform components on an entity? (named flavours?)
+    .withInstance(new TransformComponent(startX, startY))
     .add(BodyDefinitionComponent)
     .withInstance(
       new BodyDefinitionComponent({
@@ -43,17 +49,7 @@ export const createBird = () => {
     )
 
   entity.add(new StateMachineComponent(entityStateMachine))
-  entityStateMachine.changeState('playing')
-
-  setTimeout(() => {
-    entityStateMachine.changeState('floating')
-    setTimeout(() => {
-      entityStateMachine.changeState('playing')
-      setTimeout(() => {
-        entityStateMachine.changeState('floating')
-      }, 300)
-    }, 500)
-  }, 300)
+  entityStateMachine.changeState('floating')
 
   return entity
 }

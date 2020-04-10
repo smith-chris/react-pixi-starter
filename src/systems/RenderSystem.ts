@@ -8,7 +8,6 @@ import { getSizeProps } from 'setup/getSizeProps'
 import { Viewport } from 'const/types'
 import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
-import midflap from 'assets/sprites/yellowbird-midflap.png'
 import { BodyRenderNode } from 'nodes/BodyRenderNode'
 import { BodyDefinitionNode } from 'nodes/BodyDefinitionNode'
 
@@ -19,7 +18,6 @@ interface RenderSystemOptions {
 export class RenderSystem extends System {
   private renderNodes: NodeList<RenderNode> | null = null
   private bodyNodes: NodeList<BodyRenderNode> | null = null
-  private definitionNodes: NodeList<BodyDefinitionNode> | null = null
 
   private readonly renderer: PIXI.Renderer
   private readonly physics: Matter.Engine
@@ -76,80 +74,7 @@ export class RenderSystem extends System {
     // Setup matter
     const physics = Matter.Engine.create()
     this.physics = physics
-    const Bodies = Matter.Bodies
-    const wallTop = Bodies.rectangle(designWidth / 2, 0, designWidth, 10, {
-      isStatic: true,
-    })
-    const wallBottom = Bodies.rectangle(
-      designWidth / 2,
-      designHeight,
-      designWidth,
-      10,
-      {
-        isStatic: true,
-      },
-    )
-    const wallRight = Bodies.rectangle(
-      designWidth,
-      designHeight / 2,
-      10,
-      designHeight,
-      {
-        isStatic: true,
-      },
-    )
-    const wallLeft = Bodies.rectangle(0, designHeight / 2, 10, designHeight, {
-      isStatic: true,
-    })
-    const startY = designHeight * 0.5
-    const startX = designWidth * 0.28
-    // const birdBody = Matter.Bodies.rectangle(
-    //   startX,
-    //   startY,
-    //   midflap.width,
-    //   midflap.height,
-    //   {
-    //     restitution: 0.8,
-    //     isStatic: true,
-    //   },
-    // )
 
-    // const partA = Bodies.rectangle(20, 200, 120, 50)
-    // const partB = Bodies.rectangle(60, 200, 50, 190),
-    // compound = Matter.Body.create({
-    //   parts: [partA, partB],
-    //   isStatic: true,
-    // })
-    Matter.World.add(physics.world, [
-      // birdBody,
-      wallBottom,
-      wallTop,
-      wallLeft,
-      wallRight,
-      // compound,
-    ])
-    // const imageSprite = PIXI.Sprite.from(midflap.src)
-    // imageSprite.width = midflap.width
-    // imageSprite.height = midflap.height
-    // imageSprite.anchor.set(0.5, 0.5)
-    // app.stage.addChild(imageSprite)
-
-    let timePassed = 0
-
-    const getVariation = (timePassed: number) =>
-      Math.sin(timePassed / 7 / (1000 / 60))
-
-    const getY = (timePassed: number) =>
-      startY - Math.round(getVariation(timePassed) * 5)
-
-    // app.ticker.add(delta => {
-    //   timePassed += delta * (1000 / 60)
-    //   const newPosition = { x: birdBody.position.x, y: getY(timePassed) }
-    //   Matter.Body.setPosition(birdBody, newPosition)
-    //   imageSprite.position.x = birdBody.position.x
-    //   imageSprite.position.y = birdBody.position.y
-    //   imageSprite.rotation = birdBody.angle
-    // })
     Matter.Engine.run(physics)
     const matterContainer = document.getElementById('matter')
     if (!matterContainer) {
