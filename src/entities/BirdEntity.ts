@@ -1,15 +1,20 @@
-import { Entity, EntityStateMachine } from 'ash'
-import {
-  DisplayComponent,
-  StateMachineComponent,
-  TransformComponent,
-} from 'components'
+import { Entity, EntityStateMachine, keep, Node } from 'ash'
+import { DisplayComponent } from 'components'
 import { BirdView } from 'graphics/BirdView'
 import { BodyComponent } from 'components/BodyComponent'
 import { Bodies } from 'matter-js'
 import { designHeight, designWidth } from 'setup/dimensions'
 import midflap from 'assets/sprites/yellowbird-midflap.png'
 import { BodyDefinitionComponent } from 'components/BodyDefinitionComponent'
+import { BirdStateMachine, InitialPosition } from 'components/BirdComponents'
+
+export class BirdNode extends Node {
+  @keep(BirdStateMachine)
+  public state!: BirdStateMachine
+
+  @keep(BodyComponent)
+  public body!: BodyComponent
+}
 
 export const createBird = () => {
   const entity = new Entity()
@@ -29,9 +34,9 @@ export const createBird = () => {
 
   entityStateMachine
     .createState('floating')
-    .add(TransformComponent)
+    .add(InitialPosition)
     // How could we have multiple transform components on an entity? (named flavours?)
-    .withInstance(new TransformComponent(startX, startY))
+    .withInstance(new InitialPosition(startX, startY))
     .add(BodyDefinitionComponent)
     .withInstance(
       new BodyDefinitionComponent({
@@ -48,7 +53,7 @@ export const createBird = () => {
       }),
     )
 
-  entity.add(new StateMachineComponent(entityStateMachine))
+  entity.add(new BirdStateMachine(entityStateMachine))
   entityStateMachine.changeState('floating')
 
   return entity

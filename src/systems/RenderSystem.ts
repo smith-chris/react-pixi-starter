@@ -10,6 +10,7 @@ import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
 import { BodyRenderNode } from 'nodes/BodyRenderNode'
 import { BodyDefinitionNode } from 'nodes/BodyDefinitionNode'
+import { handleNodes } from './systemUtils'
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -36,6 +37,7 @@ export class RenderSystem extends System {
     options: RenderSystemOptions = { emitStageEvents: true },
   ) {
     super()
+    // this.debug('render')
 
     this.container = container
     this.options = options
@@ -137,29 +139,12 @@ export class RenderSystem extends System {
     // Attach canvas to the container div
     this.container.appendChild(this.view)
 
-    const handleNodes = <T extends Node>(
-      nodeList: NodeList<T>,
-      {
-        nodeAdded,
-        nodeRemoved,
-      }: { nodeAdded?: (node: T) => void; nodeRemoved?: (node: T) => void },
-    ) => {
-      if (typeof nodeAdded === 'function') {
-        for (let node: T | null = nodeList.head; node; node = node.next) {
-          nodeAdded(node)
-        }
-        nodeList.nodeAdded.add(nodeAdded)
-      }
-      if (typeof nodeRemoved === 'function') {
-        nodeList.nodeRemoved.add(nodeRemoved)
-      }
-    }
-
     // Pixi
     this.renderNodes = engine.getNodeList(RenderNode)
     handleNodes(this.renderNodes, {
       nodeAdded: this.addToStage,
       nodeRemoved: this.removeFromStage,
+      debugName: 'renderNodes',
     })
 
     // Matter Bodies
@@ -167,6 +152,7 @@ export class RenderSystem extends System {
     handleNodes(this.bodyNodes, {
       nodeAdded: this.addBody,
       nodeRemoved: this.removeBody,
+      debugName: 'render.bodyNodes',
     })
 
     // Matter Body definitions
@@ -174,6 +160,7 @@ export class RenderSystem extends System {
       nodeAdded: ({ body: { body }, definition: { definition } }) => {
         Object.assign(body, definition)
       },
+      debugName: 'render.bodyDefNodes',
     })
   }
 

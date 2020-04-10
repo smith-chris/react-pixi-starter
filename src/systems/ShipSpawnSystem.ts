@@ -1,11 +1,11 @@
 import { Engine, NodeList, System } from '@ash.ts/ash'
 import { Viewport } from 'const/types'
-import { GameNode, SpaceshipNode } from '../nodes'
+import { GameStateNode, SpaceshipNode } from '../nodes'
 import { createSpaceship } from 'entities/SpaceshipEntity'
 import { designWidth, designHeight } from 'setup/dimensions'
 
 export class ShipSpawnSystem extends System {
-  private games: NodeList<GameNode> | null = null
+  private games: NodeList<GameStateNode> | null = null
 
   private spaceships: NodeList<SpaceshipNode> | null = null
 
@@ -17,7 +17,7 @@ export class ShipSpawnSystem extends System {
 
   public addToEngine(engine: Engine): void {
     this.engine = engine
-    this.games = engine.getNodeList(GameNode)
+    this.games = engine.getNodeList(GameStateNode)
     this.spaceships = engine.getNodeList(SpaceshipNode)
   }
 

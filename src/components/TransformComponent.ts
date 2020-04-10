@@ -1,3 +1,12 @@
+export class PositionComponent {
+  public constructor(public x: number, public y: number) {}
+}
+
+interface Point {
+  x: number
+  y: number
+}
+
 export class TransformComponent {
   public constructor(
     public x: number,

@@ -5,7 +5,7 @@ export class GameStateComponent {
 
   public hits: number = 0
 
-  public playing: boolean = true
+  public playing: boolean = false
 
   public setForStart(): void {
     this.lives = 1
