@@ -1,17 +1,49 @@
-import { Engine, NodeList, System } from '@ash.ts/ash'
+import { Engine, NodeList, System, Node, keep } from '@ash.ts/ash'
 import * as PIXI from 'pixi.js'
 import Matter from 'matter-js'
 import { MatterRender, MatterMouse } from 'utils/matter'
 
-import { RenderNode } from 'nodes'
 import { getSizeProps } from 'setup/getSizeProps'
 import { Viewport } from 'const/types'
 import { designWidth, designHeight, minHeight } from 'setup/dimensions'
 import { debug } from 'const/debug'
-import { BodyRenderNode } from 'nodes/BodyRenderNode'
-import { BodyDefinitionNode } from 'nodes/BodyDefinitionNode'
 import { handleNodes, eachNode } from './systemUtils'
-import { ResizeNode } from 'nodes/ResizeNode'
+import {
+  DisplayComponent,
+  TransformComponent,
+  BodyComponent,
+  BodyDefinitionComponent,
+  ResizeComponent,
+} from 'components'
+
+class RenderNode extends Node {
+  @keep(TransformComponent)
+  public transform!: TransformComponent
+
+  @keep(DisplayComponent)
+  public display!: DisplayComponent
+}
+
+class BodyRenderNode extends Node {
+  @keep(BodyComponent)
+  public body!: BodyComponent
+
+  @keep(DisplayComponent)
+  public display!: DisplayComponent
+}
+
+class BodyDefinitionNode extends Node {
+  @keep(BodyComponent)
+  public body!: BodyComponent
+
+  @keep(BodyDefinitionComponent)
+  public definition!: BodyDefinitionComponent
+}
+
+class ResizeNode extends Node {
+  @keep(ResizeComponent)
+  public node!: ResizeComponent
+}
 
 interface RenderSystemOptions {
   emitStageEvents: boolean
@@ -25,7 +57,7 @@ export class RenderSystem extends System {
   private physics!: Matter.Engine
   private stage!: PIXI.Container
 
-  private view: HTMLCanvasElement
+  private view!: HTMLCanvasElement
 
   public constructor(
     private container: HTMLElement,

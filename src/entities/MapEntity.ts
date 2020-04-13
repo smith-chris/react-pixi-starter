@@ -1,19 +1,22 @@
 import { Entity } from 'ash'
-import { DisplayComponent } from 'components'
+import { DisplayComponent, ResizeComponent } from 'components'
 import { BodyComponent } from 'components/BodyComponent'
 import { Bodies, Body } from 'matter-js'
 import { designWidth } from 'setup/dimensions'
 import base from 'assets/sprites/base.png'
 import { Sprite } from 'pixi.js'
-import { ResizeComponent } from 'nodes/ResizeNode'
 
 export const createMap = () => {
   const entity = new Entity()
 
+  // 4x bigger height to prevent bird from falling below base on resize
+  const heightMultiplier = 4
+  const bodyHeight = base.height * heightMultiplier
+  const yOffset = bodyHeight / 2 - base.height / 2
   const sprite = Sprite.from(base.src)
-  sprite.anchor.set(0.5)
+  sprite.anchor.set(0.5, 0.5 * heightMultiplier)
 
-  const body = Bodies.rectangle(designWidth / 2, 0, base.width, base.height, {
+  const body = Bodies.rectangle(designWidth / 2, 0, base.width, bodyHeight, {
     isStatic: true,
   })
 
@@ -24,7 +27,7 @@ export const createMap = () => {
       new ResizeComponent(({ bottom }) => {
         const newPosition = {
           x: body.position.x,
-          y: Math.max(450, bottom),
+          y: Math.max(390 + yOffset, bottom),
         }
         Body.setPosition(body, newPosition)
       }),

@@ -1,7 +1,15 @@
-import { ListIteratingSystem } from '@ash.ts/ash'
+import { ListIteratingSystem, Node, keep } from '@ash.ts/ash'
 import { Viewport } from 'const/types'
-import { FloatNode } from 'nodes/FloatNode'
 import { Body } from 'matter-js'
+import { FloatPosition, BodyComponent } from 'components'
+
+ class FloatNode extends Node {
+  @keep(FloatPosition)
+  public start!: FloatPosition
+
+  @keep(BodyComponent)
+  public body!: BodyComponent
+}
 
 export class MovementSystem extends ListIteratingSystem<FloatNode> {
   public constructor(public viewport: Viewport) {

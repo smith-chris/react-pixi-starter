@@ -1,6 +1,11 @@
-import { ListIteratingSystem } from '@ash.ts/ash'
-import { UpdatableNode } from 'nodes/UpdatableNode'
+import { ListIteratingSystem, keep, Node } from '@ash.ts/ash'
 import { Viewport } from 'const/types'
+import { UpdateComponent } from 'components'
+
+class UpdatableNode extends Node {
+  @keep(UpdateComponent)
+  public updatable!: UpdateComponent
+}
 
 export class UpdateSystem extends ListIteratingSystem<UpdatableNode> {
   public constructor(public viewport: Viewport) {
@@ -8,6 +13,6 @@ export class UpdateSystem extends ListIteratingSystem<UpdatableNode> {
   }
 
   public updateNode(node: UpdatableNode, time: number): void {
-    node.updatable.updatable.update(time, this.viewport)
+    node.updatable.update(time, this.viewport)
   }
 }

@@ -6,7 +6,8 @@ import { Bodies } from 'matter-js'
 import { designHeight, designWidth } from 'setup/dimensions'
 import midflap from 'assets/sprites/yellowbird-midflap.png'
 import { BodyDefinitionComponent } from 'components/BodyDefinitionComponent'
-import { BirdStateMachine, InitialPosition } from 'components/BirdComponents'
+import { BirdStateMachine, FloatPosition } from 'components/BirdComponents'
+import { UpdateComponent } from 'components/UpdatableComponent'
 
 export class BirdNode extends Node {
   @keep(BirdStateMachine)
@@ -34,13 +35,18 @@ export const createBird = () => {
 
   entityStateMachine
     .createState('floating')
-    .add(InitialPosition)
-    // How could we have multiple transform components on an entity? (named flavours?)
-    .withInstance(new InitialPosition(startX, startY))
+    .add(FloatPosition)
+    .withInstance(new FloatPosition(startX, startY))
     .add(BodyDefinitionComponent)
     .withInstance(
       new BodyDefinitionComponent({
         isStatic: true,
+      }),
+    )
+    .add(UpdateComponent)
+    .withInstance(
+      new UpdateComponent(time => {
+        console.log('update!')
       }),
     )
 

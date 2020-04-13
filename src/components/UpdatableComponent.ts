@@ -1,9 +1,7 @@
 import { Viewport } from 'const/types'
 
-export interface Updatable {
-  update(time: number, viewport: Viewport): void
-}
+export type UpdateHandler = (time: number, viewport: Viewport) => void
 
-export class UpdatableComponent {
-  public constructor(public updatable: Updatable) {}
+export class UpdateComponent {
+  public constructor(public update: UpdateHandler) {}
 }
