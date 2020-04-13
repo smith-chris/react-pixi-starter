@@ -33,10 +33,10 @@ export const handleNodes = <T extends Node>(
     debugName?: string
   },
 ) => {
-  if (debug && debugName) {
-    nodeAdded = withLog(nodeAdded, `${debugName}.nodeAdded`)
-    nodeRemoved = withLog(nodeRemoved, `${debugName}.nodeRemoved`)
-  }
+  // if (debug && debugName) {
+  //   nodeAdded = withLog(nodeAdded, `${debugName}.nodeAdded`)
+  //   nodeRemoved = withLog(nodeRemoved, `${debugName}.nodeRemoved`)
+  // }
   if (typeof nodeAdded === 'function') {
     eachNode(nodeList, nodeAdded)
     nodeList.nodeAdded.add(nodeAdded)

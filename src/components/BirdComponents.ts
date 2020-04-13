@@ -3,4 +3,4 @@ import { PositionComponent } from './TransformComponent'
 
 export class BirdStateMachine extends StateMachineComponent {}
 
-export class FloatPosition extends PositionComponent {}
+export class FloatPositionComponent extends PositionComponent {}

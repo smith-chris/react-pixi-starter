@@ -6,8 +6,10 @@ import { Bodies } from 'matter-js'
 import { designHeight, designWidth } from 'setup/dimensions'
 import midflap from 'assets/sprites/yellowbird-midflap.png'
 import { BodyDefinitionComponent } from 'components/BodyDefinitionComponent'
-import { BirdStateMachine, FloatPosition } from 'components/BirdComponents'
-import { UpdateComponent } from 'components/UpdatableComponent'
+import {
+  BirdStateMachine,
+  FloatPositionComponent,
+} from 'components/BirdComponents'
 
 export class BirdNode extends Node {
   @keep(BirdStateMachine)
@@ -35,18 +37,12 @@ export const createBird = () => {
 
   entityStateMachine
     .createState('floating')
-    .add(FloatPosition)
-    .withInstance(new FloatPosition(startX, startY))
+    .add(FloatPositionComponent)
+    .withInstance(new FloatPositionComponent(startX, startY))
     .add(BodyDefinitionComponent)
     .withInstance(
       new BodyDefinitionComponent({
         isStatic: true,
-      }),
-    )
-    .add(UpdateComponent)
-    .withInstance(
-      new UpdateComponent(time => {
-        console.log('update!')
       }),
     )
 
