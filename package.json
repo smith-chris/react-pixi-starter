@@ -70,7 +70,7 @@
     "prettier": "^1.18.2",
     "raw-loader": "^3.1.0",
     "react-hot-loader": "^4.12.15",
-    "set-value": "^3.0.1",
+    "set-value": "^4.0.1",
     "sizeof-loader": "^1.1.1",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.4",
