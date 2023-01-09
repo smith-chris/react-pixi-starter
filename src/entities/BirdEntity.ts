@@ -1,4 +1,4 @@
-import { Entity, EntityStateMachine, keep, Node } from 'ash'
+import { Entity, EntityStateMachine, keep, Node } from '@ash.ts/ash'
 import { DisplayComponent } from 'components'
 import { BirdView } from 'graphics/BirdView'
 import { BodyComponent } from 'components/BodyComponent'

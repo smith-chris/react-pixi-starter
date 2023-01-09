@@ -1,4 +1,4 @@
-import { Entity, EntityStateMachine } from 'ash'
+import { Entity, EntityStateMachine } from '@ash.ts/ash'
 import {
   MotionComponent,
   MotionControlsComponent,

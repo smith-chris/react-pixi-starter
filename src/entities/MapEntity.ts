@@ -1,4 +1,4 @@
-import { Entity } from 'ash'
+import { Entity } from '@ash.ts/ash'
 import { DisplayComponent, ResizeComponent } from 'components'
 import { BodyComponent } from 'components/BodyComponent'
 import { Bodies, Body } from 'matter-js'
