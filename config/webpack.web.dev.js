@@ -3,7 +3,7 @@ const common = require('./webpack.common.js')
 
 module.exports = merge(common(), {
   entry: {
-    index: ['./src/game.ts'],
+    index: ['./src/game.web.ts'],
   },
   mode: 'development',
   devtool: 'cheap-module-source-map',

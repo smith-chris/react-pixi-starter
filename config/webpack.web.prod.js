@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = merge(common(), {
   entry: {
-    index: ['./src/game.ts'],
+    index: ['./src/game.web.ts'],
   },
   mode: 'production',
   devtool: 'nosources-source-map',
