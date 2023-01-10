@@ -108,7 +108,7 @@ export class RenderSystem extends System {
     this.physics = physics
 
     Matter.Engine.run(physics)
-    const matterContainer = document.getElementById('matter')
+    const matterContainer = document.getElementById('canvas')
     if (!matterContainer) {
       console.warn(`Can't find matter container!`)
       return
