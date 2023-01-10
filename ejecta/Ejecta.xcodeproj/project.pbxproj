@@ -193,7 +193,7 @@
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* FruitsVsVeggies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FruitsVsVeggies.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* Ejecta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ejecta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		33BE9DE0186817D900E0D16E /* EJBindingImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingImagePicker.h; sourceTree = "<group>"; };
@@ -358,7 +358,7 @@
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B6F629CF16F353C600F16BAC /* EJBindingCanvasStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasStyle.h; sourceTree = "<group>"; };
 		B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasStyle.m; sourceTree = "<group>"; };
-		B6F714ED1BCF126A0082A90F /* FruitsVsVeggies-TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FruitsVsVeggies-TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6F714ED1BCF126A0082A90F /* Ejecta-TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ejecta-TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6F714EE1BCF126B0082A90F /* Info-TV.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-TV.plist"; path = "/Users/dominic/xcode/Ejecta/Resources/Info-TV.plist"; sourceTree = "<absolute>"; };
 		B6F9AFBE169F81D400ABD91A /* EJBindingWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWindowEvents.h; sourceTree = "<group>"; };
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
@@ -429,8 +429,8 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* FruitsVsVeggies.app */,
-				B6F714ED1BCF126A0082A90F /* FruitsVsVeggies-TV.app */,
+				1D6058910D05DD3D006BFB54 /* Ejecta.app */,
+				B6F714ED1BCF126A0082A90F /* Ejecta-TV.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -720,9 +720,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* FruitsVsVeggies */ = {
+		1D6058900D05DD3D006BFB54 /* Ejecta */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "FruitsVsVeggies" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -732,14 +732,14 @@
 			);
 			dependencies = (
 			);
-			name = FruitsVsVeggies;
+			name = Ejecta;
 			productName = iOSImpact;
-			productReference = 1D6058910D05DD3D006BFB54 /* FruitsVsVeggies.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* Ejecta.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B6F714811BCF126A0082A90F /* FruitsVsVeggies-TV */ = {
+		B6F714811BCF126A0082A90F /* Ejecta-TV */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B6F714EA1BCF126A0082A90F /* Build configuration list for PBXNativeTarget "FruitsVsVeggies-TV" */;
+			buildConfigurationList = B6F714EA1BCF126A0082A90F /* Build configuration list for PBXNativeTarget "Ejecta-TV" */;
 			buildPhases = (
 				B6F714821BCF126A0082A90F /* Resources */,
 				B6F714901BCF126A0082A90F /* Sources */,
@@ -749,9 +749,9 @@
 			);
 			dependencies = (
 			);
-			name = "FruitsVsVeggies-TV";
+			name = "Ejecta-TV";
 			productName = iOSImpact;
-			productReference = B6F714ED1BCF126A0082A90F /* FruitsVsVeggies-TV.app */;
+			productReference = B6F714ED1BCF126A0082A90F /* Ejecta-TV.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -763,19 +763,14 @@
 				LastUpgradeCheck = 0800;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = AN5PBL5C6H;
-						SystemCapabilities = {
-							com.apple.InAppPurchase = {
-								enabled = 1;
-							};
-						};
+						DevelopmentTeam = TYQN4X28QA;
 					};
 					B6F714811BCF126A0082A90F = {
 						DevelopmentTeam = TYQN4X28QA;
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "FruitsVsVeggies" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -789,8 +784,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* FruitsVsVeggies */,
-				B6F714811BCF126A0082A90F /* FruitsVsVeggies-TV */,
+				1D6058900D05DD3D006BFB54 /* Ejecta */,
+				B6F714811BCF126A0082A90F /* Ejecta-TV */,
 			);
 		};
 /* End PBXProject section */
@@ -976,22 +971,20 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = AN5PBL5C6H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.smithchris.fruitsstory;
-				PRODUCT_NAME = FruitsVsVeggies;
+				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta;
+				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1004,18 +997,16 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = AN5PBL5C6H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.smithchris.fruitsstory;
-				PRODUCT_NAME = FruitsVsVeggies;
+				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta;
+				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1141,7 +1132,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "FruitsVsVeggies" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -1150,7 +1141,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B6F714EA1BCF126A0082A90F /* Build configuration list for PBXNativeTarget "FruitsVsVeggies-TV" */ = {
+		B6F714EA1BCF126A0082A90F /* Build configuration list for PBXNativeTarget "Ejecta-TV" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B6F714EB1BCF126A0082A90F /* Debug */,
@@ -1159,7 +1150,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "FruitsVsVeggies" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

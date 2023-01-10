@@ -17,5 +17,6 @@ profile
 DerivedData
 .idea/
 
-# Webpack build files
-/App
+# Ignoring App folder for
+# ease of implementation
+App
