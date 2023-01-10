@@ -28,11 +28,11 @@
   },
   "dependencies": {
     "@types/matter-js": "^0.14.2",
-    "@types/pixi.js": "5",
+    "@types/pixi.js": "4",
     "core-js": "^3.6.4",
     "file-loader": "^6.0.0",
     "matter-js": "^0.14.2",
-    "pixi.js": "5",
+    "pixi.js": "4",
     "tsconfig-paths-webpack-plugin": "^3.2.0"
   },
   "devDependencies": {
