@@ -10,8 +10,10 @@ import { MovementSystem } from 'systems/MovementSystem'
 import { ControlSystem } from 'systems/ControlSystem'
 import { createMap } from 'entities/MapEntity'
 import { UpdateSystem } from 'systems/UpdateSystem'
+import { onLoad } from 'setup/onLoad'
 
-export async function initialiseGame(container: HTMLElement) {
+async function initialiseGame(container: HTMLElement) {
+  console.log('Initializing game 2')
   const viewport: Viewport = {
     width: designWidth,
     height: designHeight,
@@ -20,11 +22,18 @@ export async function initialiseGame(container: HTMLElement) {
   }
   const engine = new Engine()
   const tickProvider = new FrameTickProvider()
+  console.log('engine ftp')
 
   engine.addEntity(createBird())
+  console.log('created bird')
   engine.addEntity(createMap())
+  console.log('created map')
 
-  tickProvider.add(delta => engine.update(delta))
+  tickProvider.add(delta => {
+    // console.log('updating engine')
+    engine.update(delta)
+  })
+  console.log('calling tickProvider.start()')
   tickProvider.start()
 
   engine.addSystem(new ControlSystem(), SystemPriorities.move)
@@ -39,10 +48,14 @@ export async function initialiseGame(container: HTMLElement) {
   engine.addEntity(gameEntity)
 }
 
-window.addEventListener('load', async () => {
-  const containerElement = document.getElementById('game')
-  if (!containerElement) {
-    return
-  }
-  await initialiseGame(containerElement)
-})
+export const runGame = () => {
+  onLoad(async () => {
+    console.log('Game Loaded')
+    const containerElement = document.getElementById('canvas')
+    if (!containerElement) {
+      console.log('No container element found! Initialization aborted')
+      return
+    }
+    await initialiseGame(containerElement)
+  })
+}

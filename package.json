@@ -19,7 +19,7 @@
     "ios:prod": "webpack --config config/webpack.ios.js -p && yarn ios:xc",
     "ios:watch": "webpack --watch --config config/webpack.ios.js",
     "ios:build": "webpack --config config/webpack.ios.js",
-    "ios:xc": "open ./ejecta/FruitsVsVeggies.xcodeproj"
+    "ios:xc": "open ./ejecta/Ejecta.xcodeproj"
   },
   "lint-staged": {
     "src/**/*.test.{ts}": [

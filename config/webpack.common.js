@@ -12,17 +12,23 @@ const isDev = process.argv.indexOf('-p') === -1
 
 const ASSETS_PATH = path.resolve('./src/assets')
 
-module.exports = () =>
+const prioritisePrefixedExtensions = (extensions, prefix) => [
+  ...extensions.map(v => prefix + v),
+  ...extensions,
+]
+
+module.exports = ({ isIOS } = {}) =>
   wrap({
-    entry: {
-      index: ['./src/game.ts'],
-    },
     output: {
       path: path.resolve('dist'),
       filename: '[name].js',
     },
+    devtool: false,
     resolve: {
-      extensions: ['.ts', '.js', '.json', isDev ? '.dev.js' : '.prod.js'],
+      extensions: prioritisePrefixedExtensions(
+        ['.ts', '.tsx', '.js', '.json'],
+        isIOS ? '.ios' : '.web',
+      ),
       modules: ['node_modules', path.resolve('./src')],
       plugins: [new TsconfigPathsPlugin()],
     },
@@ -31,7 +37,7 @@ module.exports = () =>
       new HtmlWebpackPlugin({
         template: path.resolve('./src/game.html'),
         inject: 'body',
-        appName: 'Typescript starter',
+        appName: 'Flappy Bird',
       }),
       new CopyPlugin([{ from: path.resolve('./src/assets'), to: 'assets' }]),
       new IgnoreNotFoundExportPlugin(),
@@ -61,21 +67,13 @@ module.exports = () =>
                 },
                 isDev
                   ? {
-                      // use full path in development for better readability
-                      name: '[path][name].[ext]',
-                    }
+                    // use full path in development for better readability
+                    name: '[path][name].[ext]',
+                  }
                   : {
-                      outputPath: 'assets/',
-                    },
+                    outputPath: 'assets/',
+                  },
               ),
-            },
-          ],
-        },
-        {
-          test: /\.(mp3|ogg)$/,
-          use: [
-            {
-              loader: 'file-loader',
             },
           ],
         },
@@ -103,32 +101,21 @@ module.exports = () =>
           ],
         },
         {
-          test: /\.(png|jpg|gif)$/i,
-          include: path.resolve('./src/excalibur'),
+          test: /\.(mp3|ogg)$/,
           use: [
             {
-              loader: 'url-loader',
-              options: {
-                limit: 8192,
-              },
+              loader: 'file-loader',
             },
           ],
         },
         {
-          test: /\.css$/,
-          include: path.resolve('./src/excalibur'),
-          use: ['to-string-loader', 'css-loader'],
-        },
-        {
           test: /\.global\.css$/,
           include: path.resolve('./src'),
-          exclude: path.resolve('./src/excalibur'),
           use: ['style-loader', 'css-loader'],
         },
         {
           test: /^(?!.*(\.global)).*\.css$/,
           include: [path.resolve('./src'), path.resolve('./node_modules')],
-          exclude: path.resolve('./src/excalibur'),
           use: [
             'style-loader',
             {

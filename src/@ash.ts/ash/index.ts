@@ -31,7 +31,7 @@ import {
 } from '@ash.ts/tick'
 import { ComponentPool, defineNode, ListIteratingSystem } from '@ash.ts/tools'
 
-console.log('Hello from the engine!')
+// console.log('Hello from the engine!')
 
 export const someEngineConst = 5
 

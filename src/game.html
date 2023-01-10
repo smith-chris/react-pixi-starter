@@ -1,54 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="apple-touch-icon" href="assets/icon.png" />
-    <link rel="shortcut icon" type="image/x-icon" href="assets/icon.ico" />
-    <meta
-      name="apple-mobile-web-app-title"
-      content="<%= htmlWebpackPlugin.options.appName %>"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui, viewport-fit=cover"
-    />
-    <title><%= htmlWebpackPlugin.options.appName %></title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        background: lightgray;
-      }
-      .fullscreen-centered {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
-      .fullscreen-centered canvas {
-        image-rendering: -moz-crisp-edges;
-        image-rendering: -webkit-crisp-edges;
-        image-rendering: pixelated;
-        image-rendering: crisp-edges;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="game" class="fullscreen-centered"></div>
-    <div id="matter" class="fullscreen-centered"></div>
-    <%= htmlWebpackPlugin.options.body %>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="apple-touch-icon" href="assets/icon.png" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/icon.ico" />
+  <meta name="apple-mobile-web-app-title" content="<%= htmlWebpackPlugin.options.appName %>" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport"
+    content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui, viewport-fit=cover" />
+  <title>
+    <%= htmlWebpackPlugin.options.appName %>
+  </title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      background: lightgray;
+    }
+
+    .fullscreen-centered {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    .fullscreen-centered canvas {
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -webkit-crisp-edges;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="canvas" class="fullscreen-centered"></div>
+  <div id="matter" class="fullscreen-centered"></div>
+  <%= htmlWebpackPlugin.options.body %>
+</body>
+
 </html>

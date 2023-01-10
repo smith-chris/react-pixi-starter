@@ -27,34 +27,42 @@ export const createBird = () => {
   const startY = designHeight * 0.5
   const startX = designWidth * 0.28
 
-  entity
-    .add(new DisplayComponent(new BirdView()))
-    .add(
-      new BodyComponent(
-        Bodies.rectangle(startX, startY, midflap.width, midflap.height),
-      ),
-    )
+  console.log('entity 1')
+  try {
+    entity
+      .add(new DisplayComponent(new BirdView()))
+      .add(
+        new BodyComponent(
+          Bodies.rectangle(startX, startY, midflap.width, midflap.height),
+        ),
+      )
 
-  entityStateMachine
-    .createState('floating')
-    .add(FloatPositionComponent)
-    .withInstance(new FloatPositionComponent(startX, startY))
-    .add(BodyDefinitionComponent)
-    .withInstance(
-      new BodyDefinitionComponent({
-        isStatic: true,
-      }),
-    )
+    console.log('entity 2')
+    entityStateMachine
+      .createState('floating')
+      .add(FloatPositionComponent)
+      .withInstance(new FloatPositionComponent(startX, startY))
+      .add(BodyDefinitionComponent)
+      .withInstance(
+        new BodyDefinitionComponent({
+          isStatic: true,
+        }),
+      )
 
-  entityStateMachine
-    .createState('playing')
-    .add(BodyDefinitionComponent)
-    .withInstance(
-      new BodyDefinitionComponent({
-        isStatic: false,
-      }),
-    )
+    console.log('entity 3')
+    entityStateMachine
+      .createState('playing')
+      .add(BodyDefinitionComponent)
+      .withInstance(
+        new BodyDefinitionComponent({
+          isStatic: false,
+        }),
+      )
+  } catch (err) {
+    console.log('Err', err.message)
+  }
 
+  console.log('entity 4')
   entity.add(new BirdStateMachine(entityStateMachine))
   entityStateMachine.changeState('floating')
 
