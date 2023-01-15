@@ -50,7 +50,7 @@
 import * as PIXI from 'pixi.js'
 import { onLoad } from 'setup/onLoad'
 import bunnysImage from 'assets/bunnys.png'
-import { Sprite, Math2 } from 'pixi.js'
+// import { Sprite, Math2 } from 'pixi.js'
 
 // $(document).ready(onReady)
 
@@ -70,8 +70,8 @@ export const runGame = () => {
     let width = 480
     let height = 320
 
-    let wabbitTexture
-    let pirateTexture
+    // let wabbitTexture
+    // let pirateTexture
 
     let bunnys = []
     let gravity = 0.5 //1.5 ;
@@ -84,9 +84,9 @@ export const runGame = () => {
     let startBunnyCount = 2
     let isAdding = false
     let count = 0
-    let container
-    let pixiLogo
-    let clickImage
+    // let container
+    // let pixiLogo
+    // let clickImage
 
     let amount = 100
 
@@ -134,20 +134,20 @@ export const runGame = () => {
     // stats.domElement.style.top = '0px'
     requestAnimationFrame(update)
 
-    wabbitTexture = await PIXI.Texture.fromURL(bunnysImage.src)
+    const wabbitTexture = await PIXI.Texture.fromImage(bunnysImage.src)
 
     // counter = document.createElement('div')
     // counter.className = 'counter'
     // document.body.appendChild(counter)
 
-    pixiLogo = document.getElementById('pixi')
-    clickImage = document.getElementById('clickImage')
+    // const pixiLogo = document.getElementById('pixi')
+    // const clickImage = document.getElementById('clickImage')
 
     count = startBunnyCount
     // counter.innerHTML = count + ' BUNNIES'
 
     // container = new PIXI.DisplayObjectContainer()
-    container = new PIXI.ParticleContainer(200000, {
+    const container = new PIXI.particles.ParticleContainer(200000, {
       position: true,
       rotation: false,
       uvs: false,
@@ -214,11 +214,11 @@ export const runGame = () => {
     document.addEventListener('touchstart', onTouchStart, true)
     document.addEventListener('touchend', onTouchEnd, true)
 
-    function onTouchStart(event) {
+    function onTouchStart() {
       isAdding = true
     }
 
-    function onTouchEnd(event) {
+    function onTouchEnd() {
       bunnyType++
       bunnyType %= 5
       currentTexture = bunnyTextures[bunnyType]
@@ -259,6 +259,11 @@ export const runGame = () => {
     //   renderer.resize(width, height)
     // }
 
+    function getRandomInt(min: number, max: number) {
+      min = Math.ceil(min)
+      max = Math.floor(max)
+      return Math.floor(Math.random() * (max - min + 1)) + min
+    }
     function update() {
       // stats.begin()
       if (isAdding) {
@@ -277,7 +282,7 @@ export const runGame = () => {
             bunny.rotation = Math.random() - 0.5
 
             //bunny.rotation = Math.random() - 0.5;
-            let random = Math2.randomInt(0, container.children.length - 2)
+            // let random = getRandomInt(0, container.children.length - 2)
             container.addChild(bunny) //, random);
 
             count++
