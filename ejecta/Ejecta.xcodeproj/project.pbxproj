@@ -79,7 +79,6 @@
 		B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
 		B6D4B281183CDFBB008251EB /* EJBindingGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */; };
 		B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D4B282183CF43A008251EB /* CoreLocation.framework */; };
-		B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D6E09916F7D03C009AB75F /* StoreKit.framework */; };
 		B6D6E0A016F7E7B4009AB75F /* EJBindingIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */; };
 		B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A216F7E7D8009AB75F /* EJBindingIAPTransaction.m */; };
 		B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A516F7E81B009AB75F /* EJBindingIAPProduct.m */; };
@@ -173,7 +172,6 @@
 		B6F714D51BCF126A0082A90F /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6E314E11BC7D08A00D024C3 /* AVKit.framework */; };
 		B6F714D61BCF126A0082A90F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BE9DE31868183900E0D16E /* MobileCoreServices.framework */; };
 		B6F714D71BCF126A0082A90F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D4B282183CF43A008251EB /* CoreLocation.framework */; };
-		B6F714D91BCF126A0082A90F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D6E09916F7D03C009AB75F /* StoreKit.framework */; };
 		B6F714DA1BCF126A0082A90F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
 		B6F714DB1BCF126A0082A90F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B6F714DD1BCF126A0082A90F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
@@ -309,7 +307,6 @@
 		B6D4B27F183CDFBB008251EB /* EJBindingGeolocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGeolocation.h; sourceTree = "<group>"; };
 		B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingGeolocation.m; sourceTree = "<group>"; };
 		B6D4B282183CF43A008251EB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		B6D6E09916F7D03C009AB75F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		B6D6E09E16F7E7B4009AB75F /* EJBindingIAPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingIAPManager.h; sourceTree = "<group>"; };
 		B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingIAPManager.m; sourceTree = "<group>"; };
 		B6D6E0A116F7E7D8009AB75F /* EJBindingIAPTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingIAPTransaction.h; sourceTree = "<group>"; };
@@ -377,7 +374,6 @@
 				B6E314E61BC7D1D000D024C3 /* AVKit.framework in Frameworks */,
 				33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
-				B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */,
 				B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */,
 				B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */,
 				B6F1151C1677FCF5001F1324 /* CoreMotion.framework in Frameworks */,
@@ -404,7 +400,6 @@
 				B6F714D51BCF126A0082A90F /* AVKit.framework in Frameworks */,
 				B6F714D61BCF126A0082A90F /* MobileCoreServices.framework in Frameworks */,
 				B6F714D71BCF126A0082A90F /* CoreLocation.framework in Frameworks */,
-				B6F714D91BCF126A0082A90F /* StoreKit.framework in Frameworks */,
 				B6F714DA1BCF126A0082A90F /* Security.framework in Frameworks */,
 				B6F714DB1BCF126A0082A90F /* CFNetwork.framework in Frameworks */,
 				B6F714DD1BCF126A0082A90F /* SystemConfiguration.framework in Frameworks */,
@@ -456,7 +451,6 @@
 				B6E314E11BC7D08A00D024C3 /* AVKit.framework */,
 				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
 				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
-				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
 				B63D256916E8DF33007E6034 /* Security.framework */,
 				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
 				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
@@ -763,7 +757,7 @@
 				LastUpgradeCheck = 0800;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = TYQN4X28QA;
+						DevelopmentTeam = AN5PBL5C6H;
 					};
 					B6F714811BCF126A0082A90F = {
 						DevelopmentTeam = TYQN4X28QA;
@@ -971,19 +965,21 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = AN5PBL5C6H;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smithchris.ejecta;
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -997,15 +993,17 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = AN5PBL5C6H;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.smithchris.ejecta;
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;

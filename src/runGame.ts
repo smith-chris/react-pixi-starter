@@ -224,6 +224,7 @@ export const runGame = () => {
       currentTexture = bunnyTextures[bunnyType]
 
       isAdding = false
+      console.log('Bunnys amount', amount)
     }
 
     // function resize() {

@@ -97,13 +97,13 @@ EJ_BIND_FUNCTION(purchase, ctx, argc, argv) {
 	
 	NSLog(@"IAP: Purchase %@ x %d", product.productIdentifier, quantity);
 	
-	SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
-	payment.quantity = quantity;
-	[SKPaymentQueue.defaultQueue addPayment:payment];
+	// SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
+	// payment.quantity = quantity;
+	// [SKPaymentQueue.defaultQueue addPayment:payment];
 	
-	callback = JSValueToObject(ctx, argv[1], NULL);
-	JSValueProtect(ctx, callback);
-	JSValueProtect(ctx, jsObject);
+	// callback = JSValueToObject(ctx, argv[1], NULL);
+	// JSValueProtect(ctx, callback);
+	// JSValueProtect(ctx, jsObject);
 	return NULL;
 }
 
