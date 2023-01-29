@@ -2,7 +2,7 @@ export const maxRatio = 6 / 13
 export const designRatio = 6 / 8 // 4 / 3
 export const minRatio = 6 / 7
 
-export const designWidth = 288
+export const designWidth = 471
 export const viewportWidth = designWidth
 export const designHeight = designWidth * (1 / designRatio) // 800
 export const minHeight = designWidth * (1 / minRatio)

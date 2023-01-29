@@ -24,10 +24,10 @@ async function initialiseGame(container: HTMLCanvasElement) {
   const tickProvider = new FrameTickProvider()
   console.log('engine ftp')
 
-  engine.addEntity(createBird())
-  console.log('created bird')
   engine.addEntity(createMap())
   console.log('created map')
+  engine.addEntity(createBird())
+  console.log('created bird')
 
   tickProvider.add(delta => {
     // console.log('updating engine')

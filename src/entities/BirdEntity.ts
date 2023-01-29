@@ -4,7 +4,7 @@ import { BirdView } from 'graphics/BirdView'
 import { BodyComponent } from 'components/BodyComponent'
 import { Bodies } from 'matter-js'
 import { designHeight, designWidth } from 'setup/dimensions'
-import midflap from 'assets/sprites/yellowbird-midflap.png'
+import ship from 'assets/ship.png'
 import { BodyDefinitionComponent } from 'components/BodyDefinitionComponent'
 import {
   BirdStateMachine,
@@ -30,10 +30,10 @@ export const createBird = () => {
   console.log('entity 1')
   try {
     entity
-      .add(new DisplayComponent(new BirdView()))
+      .add(new DisplayComponent(new BirdView(ship)))
       .add(
         new BodyComponent(
-          Bodies.rectangle(startX, startY, midflap.width, midflap.height),
+          Bodies.rectangle(startX, startY, ship.width, ship.height),
         ),
       )
 
