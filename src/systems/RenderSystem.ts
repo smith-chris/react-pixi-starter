@@ -1,5 +1,6 @@
 import { Engine, NodeList, System, Node, keep } from '@ash.ts/ash'
 import * as PIXI from 'pixi.js'
+import { RendererOptions } from 'pixi.js'
 import Matter from 'matter-js'
 import { MatterRender, MatterMouse } from 'utils/matter'
 
@@ -53,14 +54,14 @@ export class RenderSystem extends System {
   private renderNodes: NodeList<RenderNode> | null = null
   private bodyNodes: NodeList<BodyRenderNode> | null = null
 
-  private renderer!: PIXI.Renderer
+  private renderer!: PIXI.WebGLRenderer
   private physics!: Matter.Engine
   private stage!: PIXI.Container
 
   private view!: HTMLCanvasElement
 
   public constructor(
-    private container: HTMLElement,
+    private canvas: HTMLCanvasElement,
     private viewport: Viewport,
     private options: RenderSystemOptions = { emitStageEvents: true },
   ) {
@@ -69,22 +70,25 @@ export class RenderSystem extends System {
   }
 
   public addToEngine(engine: Engine): void {
-    const container = this.container
+    const container = this.canvas
 
     // Setup pixi
     const app = new PIXI.Application({
       width: container.clientWidth,
       height: container.clientHeight,
       backgroundColor: 0x64b5f6,
+      view: container,
     })
 
-    this.renderer = app.renderer
+    this.renderer = app.renderer as PIXI.WebGLRenderer
     this.stage = app.stage
     this.view = app.view
 
     const { renderer, stage, view } = app
 
     const canvas = app.view
+
+    console.log('canvas', canvas)
 
     if (debug) {
       const graphics = new PIXI.Graphics()
@@ -171,7 +175,7 @@ export class RenderSystem extends System {
     onResize()
     window.addEventListener('resize', onResize)
     // Attach canvas to the container div
-    this.container.appendChild(view)
+    this.canvas.appendChild(view)
 
     // Pixi
     this.renderNodes = engine.getNodeList(RenderNode)
@@ -199,6 +203,7 @@ export class RenderSystem extends System {
   }
 
   private addToStage = (node: RenderNode) => {
+    console.log('-- addToStage')
     this.stage.addChild(node.display.object)
     if (this.options.emitStageEvents) {
       node.display.object.emit('addedToStage')
@@ -253,11 +258,12 @@ export class RenderSystem extends System {
         body.angle,
       )
     }
+    // console.log('calling renderer.render')
     this.renderer.render(this.stage)
   }
 
   public removeFromEngine(): void {
-    this.container.removeChild(this.view)
+    this.canvas.removeChild(this.view)
     this.renderNodes = null
   }
 }
