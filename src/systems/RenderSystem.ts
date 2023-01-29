@@ -1,6 +1,5 @@
 import { Engine, NodeList, System, Node, keep } from '@ash.ts/ash'
 import * as PIXI from 'pixi.js'
-import { RendererOptions } from 'pixi.js'
 import Matter from 'matter-js'
 import { MatterRender, MatterMouse } from 'utils/matter'
 
@@ -84,11 +83,9 @@ export class RenderSystem extends System {
     this.stage = app.stage
     this.view = app.view
 
-    const { renderer, stage, view } = app
+    const { renderer, stage } = app
 
     const canvas = app.view
-
-    console.log('canvas', canvas)
 
     if (debug) {
       const graphics = new PIXI.Graphics()
@@ -174,8 +171,6 @@ export class RenderSystem extends System {
     }
     onResize()
     window.addEventListener('resize', onResize)
-    // Attach canvas to the container div
-    this.canvas.appendChild(view)
 
     // Pixi
     this.renderNodes = engine.getNodeList(RenderNode)
@@ -203,7 +198,6 @@ export class RenderSystem extends System {
   }
 
   private addToStage = (node: RenderNode) => {
-    console.log('-- addToStage')
     this.stage.addChild(node.display.object)
     if (this.options.emitStageEvents) {
       node.display.object.emit('addedToStage')
@@ -234,6 +228,7 @@ export class RenderSystem extends System {
   }
 
   public update(): void {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     for (let node = this.renderNodes!.head; node; node = node.next) {
       const { display, transform } = node
       display.object.setTransform(
@@ -245,6 +240,7 @@ export class RenderSystem extends System {
       )
     }
     // Bodies
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     for (let node = this.bodyNodes!.head; node; node = node.next) {
       const {
         display,
@@ -258,7 +254,6 @@ export class RenderSystem extends System {
         body.angle,
       )
     }
-    // console.log('calling renderer.render')
     this.renderer.render(this.stage)
   }
 
