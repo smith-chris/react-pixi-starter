@@ -1,6 +1,6 @@
 import { Point, SimplePoint } from './../utils/intersect'
 import { TransformComponent } from './../components/TransformComponent'
-import { Entity } from '@ash.ts/ash'
+import { Entity, keep, Node } from '@ash.ts/ash'
 import { DisplayComponent, ResizeComponent } from 'components'
 import { BodyComponent } from 'components/BodyComponent'
 import { Bodies, Body } from 'matter-js'
@@ -18,6 +18,15 @@ const pipeDist = Math.round(150 * fpRatio)
 const pipeGap = Math.round(110 * fpRatio)
 const minAirHeight = Math.round(314 * fpRatio)
 
+class PipeTagComponent {}
+
+export class PipeNode extends Node {
+  @keep(PipeTagComponent)
+  public tag!: PipeTagComponent
+  @keep(BodyComponent)
+  public body!: BodyComponent
+}
+
 const createPipe = ({
   x,
   y,
@@ -31,13 +40,16 @@ const createPipe = ({
   if (type === 'top') {
     sprite.scale.set(1, -1)
   }
-  entity.add(new DisplayComponent(sprite)).add(
-    new BodyComponent(
-      Bodies.rectangle(x, y, pipe.width, pipe.height, {
-        isStatic: true,
-      }),
-    ),
-  )
+  entity
+    .add(new DisplayComponent(sprite))
+    .add(
+      new BodyComponent(
+        Bodies.rectangle(x, y, pipe.width, pipe.height, {
+          isStatic: true,
+        }),
+      ),
+    )
+    .add(new PipeTagComponent())
 
   return entity
 }

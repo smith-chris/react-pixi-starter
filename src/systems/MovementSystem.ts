@@ -1,11 +1,14 @@
 import { System, Node, NodeList, keep, Engine } from '@ash.ts/ash'
 import { Viewport } from 'const/types'
-import { Body } from 'matter-js'
+import Matter, { Body } from 'matter-js'
 import { FloatPositionComponent, BodyComponent } from 'components'
 import { eachNode } from './systemUtils'
 import { BirdNode, FloatingBirdNode } from 'entities/BirdEntity'
 import { GameStateNode } from 'nodes'
+import { PipeNode } from 'entities/PipeSetEntity'
+import { designWidth } from 'setup/dimensions'
 
+const fpRatio = designWidth / 288
 const rotationThreshold = 0
 
 export class MovementSystem extends System {
@@ -25,11 +28,13 @@ export class MovementSystem extends System {
 
   floatingBirdNodes!: NodeList<FloatingBirdNode>
   birdNodes!: NodeList<BirdNode>
+  pipeNodes!: NodeList<PipeNode>
   games!: NodeList<GameStateNode>
   public addToEngine(engine: Engine) {
     this.floatingBirdNodes = engine.getNodeList(FloatingBirdNode)
     this.birdNodes = engine.getNodeList(BirdNode)
     this.games = engine.getNodeList(GameStateNode)
+    this.pipeNodes = engine.getNodeList(PipeNode)
   }
 
   timePassed = 0
@@ -38,15 +43,23 @@ export class MovementSystem extends System {
 
   update(time: number) {
     const gameState = this.games?.head
+    this.timePassed += time * 1000
     eachNode(this.floatingBirdNodes, ({ start, body: { body } }) => {
-      this.timePassed += time * 1000
-
       const newPosition = {
         x: body.position.x,
         y: start.y + this.getY(this.timePassed),
       }
       // 'Float' the body
       Body.setPosition(body, newPosition)
+    })
+    eachNode(this.pipeNodes, ({ body: { body } }) => {
+      const px = (time * 1000) / (1000 / 60)
+      const movement = Math.round(2 * px * fpRatio)
+      const newPositionX = body.position.x - movement
+      Matter.Body.set(body, 'position', {
+        x: newPositionX,
+        y: body.position.y,
+      })
     })
     eachNode(this.birdNodes, ({ body: { body }, state }) => {
       if (gameState?.state.playing) {

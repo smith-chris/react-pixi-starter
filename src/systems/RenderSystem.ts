@@ -244,7 +244,7 @@ export class RenderSystem extends System {
     for (let node = this.bodyNodes!.head; node; node = node.next) {
       const {
         display,
-        body: { body, anchor },
+        body: { body },
       } = node
       display.object.setTransform(
         body.position.x,
