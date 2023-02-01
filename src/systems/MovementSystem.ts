@@ -7,13 +7,14 @@ import {
   BirdStateMachine,
 } from 'components'
 import { eachNode } from './systemUtils'
+import { BirdNode } from 'entities/BirdEntity'
 
-class BirdNode extends Node {
-  @keep(BodyComponent)
-  public body!: BodyComponent
-  @keep(BirdStateMachine)
-  public state!: BirdStateMachine
-}
+// class BirdNode extends Node {
+//   @keep(BodyComponent)
+//   public body!: BodyComponent
+//   @keep(BirdStateMachine)
+//   public state!: BirdStateMachine
+// }
 
 class FloatNode extends Node {
   @keep(FloatPositionComponent)

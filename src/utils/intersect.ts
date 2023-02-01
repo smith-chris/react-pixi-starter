@@ -18,7 +18,12 @@ export function sign(value: number): number {
   return value < 0 ? -1 : 1
 }
 
-export class Point {
+export interface SimplePoint {
+  x: number
+  y: number
+}
+
+export class Point implements SimplePoint {
   public x: number
   public y: number
 

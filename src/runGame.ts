@@ -11,6 +11,8 @@ import { ControlSystem } from 'systems/ControlSystem'
 import { createMap } from 'entities/MapEntity'
 import { UpdateSystem } from 'systems/UpdateSystem'
 import { onLoad } from 'setup/onLoad'
+import { createPipeSet } from 'entities/PipeSetEntity'
+// import { createPipeSet } from 'entities/PipeEntity'
 
 async function initialiseGame(container: HTMLCanvasElement) {
   console.log('Initializing game 2', container)
@@ -25,9 +27,8 @@ async function initialiseGame(container: HTMLCanvasElement) {
   console.log('engine ftp')
 
   engine.addEntity(createMap())
-  console.log('created map')
   engine.addEntity(createBird())
-  console.log('created bird')
+  createPipeSet().map(pipe => engine.addEntity(pipe))
 
   tickProvider.add(delta => {
     // console.log('updating engine')

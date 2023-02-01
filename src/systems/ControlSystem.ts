@@ -28,6 +28,7 @@ export class ControlSystem extends System {
     eachNode(
       this.birds,
       ({ state: { entityStateMachine }, body: { body } }) => {
+        console.log('change state to playing')
         entityStateMachine.changeState('playing')
         // Make it jump
         Body.setVelocity(body, { x: 0, y: -6 })

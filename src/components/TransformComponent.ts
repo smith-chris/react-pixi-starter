@@ -12,6 +12,7 @@ export class TransformComponent {
     public x: number,
     public y: number,
     public rotation: number = 0,
+    public scale?: Point,
   ) {}
 
   public static distance(pointA: Point, pointB: Point): number {

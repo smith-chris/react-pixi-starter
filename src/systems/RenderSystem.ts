@@ -234,8 +234,8 @@ export class RenderSystem extends System {
       display.object.setTransform(
         transform.x,
         transform.y,
-        1,
-        1,
+        transform.scale?.x ?? 1,
+        transform.scale?.y ?? 1,
         transform.rotation,
       )
     }
@@ -244,13 +244,13 @@ export class RenderSystem extends System {
     for (let node = this.bodyNodes!.head; node; node = node.next) {
       const {
         display,
-        body: { body },
+        body: { body, anchor },
       } = node
       display.object.setTransform(
         body.position.x,
         body.position.y,
-        1,
-        1,
+        display.object.scale.x ?? 1,
+        display.object.scale.y ?? 1,
         body.angle,
       )
     }

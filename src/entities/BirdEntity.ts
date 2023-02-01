@@ -29,13 +29,16 @@ export const createBird = () => {
 
   console.log('entity 1')
   try {
+    const birdDisplayComponent = new DisplayComponent(new BirdView(ship))
     entity
-      .add(new DisplayComponent(new BirdView(ship)))
+      .add(birdDisplayComponent)
       .add(
         new BodyComponent(
           Bodies.rectangle(startX, startY, ship.width, ship.height),
         ),
       )
+
+    // birdDisplayComponent.object.scale.x = 0.5
 
     console.log('entity 2')
     entityStateMachine
@@ -74,11 +77,10 @@ const createEntity = (a: any) => a
 const texture = (a: any) => a
 const bodyDefinition = (a?: any) => a
 
-// @ts-ignore
 const entityStateMachine = createEntity({
   components: [
     // This way we are not strictly tied to pixi
-    texture('assets/sprites/yellowbird-midflap.png'),
+    // texture('assets/sprites/yellowbird-midflap.png'),
     // or assets.texture('midflap')
     bodyDefinition({
       restitution: 0.8,
@@ -88,7 +90,7 @@ const entityStateMachine = createEntity({
   states: {
     playing: [
       // Overrides the texture component only under 'playing' state
-      texture('assets/sprites/yellowbird-downflap.png'),
+      // texture('assets/sprites/yellowbird-downflap.png'),
       bodyDefinition({ isStatic: false }),
     ],
   },
