@@ -1,28 +1,10 @@
 import { System, Node, NodeList, keep, Engine } from '@ash.ts/ash'
 import { Viewport } from 'const/types'
 import { Body } from 'matter-js'
-import {
-  FloatPositionComponent,
-  BodyComponent,
-  BirdStateMachine,
-} from 'components'
+import { FloatPositionComponent, BodyComponent } from 'components'
 import { eachNode } from './systemUtils'
-import { BirdNode } from 'entities/BirdEntity'
-
-// class BirdNode extends Node {
-//   @keep(BodyComponent)
-//   public body!: BodyComponent
-//   @keep(BirdStateMachine)
-//   public state!: BirdStateMachine
-// }
-
-class FloatNode extends Node {
-  @keep(FloatPositionComponent)
-  public start!: FloatPositionComponent
-
-  @keep(BodyComponent)
-  public body!: BodyComponent
-}
+import { BirdNode, FloatingBirdNode } from 'entities/BirdEntity'
+import { GameStateNode } from 'nodes'
 
 const rotationThreshold = 0
 
@@ -41,11 +23,13 @@ export class MovementSystem extends System {
     return 0
   }
 
-  floatNodes!: NodeList<FloatNode>
+  floatingBirdNodes!: NodeList<FloatingBirdNode>
   birdNodes!: NodeList<BirdNode>
+  games!: NodeList<GameStateNode>
   public addToEngine(engine: Engine) {
-    this.floatNodes = engine.getNodeList(FloatNode)
+    this.floatingBirdNodes = engine.getNodeList(FloatingBirdNode)
     this.birdNodes = engine.getNodeList(BirdNode)
+    this.games = engine.getNodeList(GameStateNode)
   }
 
   timePassed = 0
@@ -53,7 +37,8 @@ export class MovementSystem extends System {
   getY = (timePassed: number) => -Math.round(this.getVariation(timePassed) * 5)
 
   update(time: number) {
-    eachNode(this.floatNodes, ({ start, body: { body } }) => {
+    const gameState = this.games?.head
+    eachNode(this.floatingBirdNodes, ({ start, body: { body } }) => {
       this.timePassed += time * 1000
 
       const newPosition = {
@@ -64,8 +49,9 @@ export class MovementSystem extends System {
       Body.setPosition(body, newPosition)
     })
     eachNode(this.birdNodes, ({ body: { body }, state }) => {
-      if (state.entityStateMachine.name === 'playing') {
-        Body.setVelocity(body, { x: 0, y: body.velocity.y })
+      if (gameState?.state.playing) {
+        console.log('whats up')
+        // Body.setVelocity(body, { x: 0, y: body.velocity.y })
         Body.setAngle(body, this.getRotation(body.velocity.y))
       }
     })

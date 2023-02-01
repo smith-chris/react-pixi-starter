@@ -3,6 +3,9 @@ import { GameStateNode } from 'nodes'
 import { BirdNode } from 'entities/BirdEntity'
 import { eachNode } from './systemUtils'
 import { Body } from 'matter-js'
+import { designWidth } from 'setup/dimensions'
+
+const fpRatio = designWidth / 288
 
 export class ControlSystem extends System {
   private games!: NodeList<GameStateNode>
@@ -28,10 +31,9 @@ export class ControlSystem extends System {
     eachNode(
       this.birds,
       ({ state: { entityStateMachine }, body: { body } }) => {
-        console.log('change state to playing')
         entityStateMachine.changeState('playing')
         // Make it jump
-        Body.setVelocity(body, { x: 0, y: -6 })
+        Body.setVelocity(body, { x: 0, y: Math.round(-6 * fpRatio) })
       },
     )
   }

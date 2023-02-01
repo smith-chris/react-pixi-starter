@@ -19,6 +19,15 @@ export class BirdNode extends Node {
   public body!: BodyComponent
 }
 
+
+export class FloatingBirdNode extends Node {
+  @keep(FloatPositionComponent)
+  public start!: FloatPositionComponent
+
+  @keep(BodyComponent)
+  public body!: BodyComponent
+}
+
 export const createBird = () => {
   const entity = new Entity()
   const entityStateMachine = new EntityStateMachine(entity)
